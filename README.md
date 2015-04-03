@@ -1,4 +1,4 @@
-ScreeningAnalysisPackage
+Screening Analysis Package
 ====
 
 Overview
@@ -6,8 +6,6 @@ Overview
 ## Description
 
 ## Demo
-
-## VS. 
 
 ## Requirement
 
