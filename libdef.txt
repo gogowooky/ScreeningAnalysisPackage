@@ -1,0 +1,9 @@
+./RESOURCE.bas
+./T1.bas
+./T1M.bas
+./TSUKUBA_UTIL.bas
+./AssayResults.cls
+./CompoundPlatemap.cls
+./PlateAlignment.cls
+./PlateAlignments.cls
+./Well2RowCol.cls
