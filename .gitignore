@@ -1,3 +1,9 @@
+# temporary file
+~*
+
+# emacs backupfile
+\#*\#
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db

@@ -10,6 +10,18 @@ Rem
 Rem ä÷êî
 Rem
 Rem ******************************************************************************************************
+' EnumlateValues
+Public Function EnumrateValues(rng As Variant) As String
+  Dim csv As String
+  Dim item As String
+  Dim r As Variant
+  For Each r In rng
+    item = CStr(r.Value) & ","
+    If 1 < Len(item) And InStr(csv, item) = 0 Then csv = csv & item
+  Next
+  EnumrateValues = Left(csv, Len(csv) - 1)
+End Function
+
 
 ' ExistNameP
 Public Function ExistNameP(sht As String, nam As String) As Boolean

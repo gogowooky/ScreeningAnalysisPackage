@@ -18,6 +18,10 @@ Rem
 Private well2rc As Collection  '  Value: ( rw, cl, "A1", "A01", "0A01" ),   Key: "A1"
 Private rowletter As Variant
 
+Rem
+Rem ä÷êî
+Rem
+
 Public Function GetRC(wellpos As String) As Variant
   GetRC = well2rc.item(wellpos)
 End Function
@@ -48,6 +52,9 @@ Public Function GetWellpos(ByVal rw As Integer, ByVal cl As Integer, Optional op
   End Select
 End Function
 
+Rem
+Rem èâä˙âª 
+Rem
 
 Private Sub Class_Initialize()
   rowletter = Array("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", _
@@ -65,7 +72,9 @@ Private Sub Class_Initialize()
       pos0 = Me.GetWellpos(rw, cl, "pos0")
       pos00 = Me.GetWellpos(rw, cl, "pos00")
       val = Array(rw, cl, pos, pos0, pos00)
+
       well2rc.Add val, pos
+
       If Len(CStr(cl)) = 1 Then well2rc.Add val, pos0
       If Len(rowletter(rw - 1)) = 1 Then well2rc.Add val, pos00
     Next

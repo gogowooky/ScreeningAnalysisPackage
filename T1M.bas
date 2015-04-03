@@ -29,6 +29,7 @@ Const END_SECTION_THEME_COLOR = xlThemeColorDark1 ' 灰色
 Const END_SECTION_TINT1_COLOR = -0.5
 Const END_SECTION_TINT2_COLOR = -0.2
 
+
 Rem ******************************************************************************************************
 Rem システム設定値
 Rem ******************************************************************************************************
@@ -38,10 +39,10 @@ Public Const SYSTEM_SUPPORT_PLATE_FORMAT = "PRIMARY,CONFIRMATION,DOSE_RESPONSE,F
 Public Const SYSTEM_SUPPORT_REALTIME_PLATE_READER = "FDSS,FLIPR"
 
 
-
 Rem ******************************************************************************************************
 Rem ワークブックイベント
 Rem ******************************************************************************************************
+
 ' 保存前再計算オフ
 Public Sub Action_WorkBook_BeforeSave()
   T1M.Action_MainMenu_Maintenance_CalculateOff
@@ -52,13 +53,13 @@ Public Sub Action_WorkBook_AfterSave()
   T1M.Action_MainMenu_Maintenance_CalculateOn
 End Sub
 
-'
+' ファイルオープン時
 Public Sub Action_WorkBook_Finalize()
   On Error Resume Next
   Application.CommandBars("Worksheet Menu Bar").Controls(T1.SYSTEM()).Delete  ' メニュー削除
 End Sub
 
-
+' ファイルクローズ時
 Public Sub Action_WorkBook_Initialize()
   On Error Resume Next
   Application.Calculation = xlCalculationManual
@@ -121,6 +122,59 @@ Public Sub Action_WorkBook_Initialize()
   End With
 End Sub
 
+
+Rem ******************************************************************************************************
+Rem ダイアログイベント
+Rem ******************************************************************************************************
+' ホームページを開く
+Public Sub Action_Menu_OpenSite()
+  TSUKUBA_UTIL.OpenUrl "http://www.ddi.u-tokyo.ac.jp/wp/"
+End Sub
+
+' アッセイ系バリデーション方法について
+Public Sub Action_Menu_OpenAssayValidation()
+  TSUKUBA_UTIL.OpenUrl "http://www.ocdd.u-tokyo.ac.jp/sinsei/assay_validation_method.pdf"
+End Sub
+
+' 化合物配布について
+Public Sub Action_Menu_OpenCompoundDistribution()
+  TSUKUBA_UTIL.OpenUrl "http://www.ddi.u-tokyo.ac.jp/wp/application/"
+End Sub
+
+' 質問メール送信フォームを開く
+Public Sub Action_Menu_OpenMail()
+  TSUKUBA_UTIL.OpenUrl "mailto:" & T1.SYSTEM("mail")
+End Sub
+
+
+Rem ******************************************************************************************************
+Rem メインメニューイベント
+Rem ******************************************************************************************************
+' 関数ヘルプを開く
+Private Sub Action_Menu_Show_Help()
+  If TSUKUBA_UTIL.ExistSheetP("HELP") Then
+    Worksheets("HELP").Select
+  Else
+    TSUKUBA_UTIL.DupulicateHiddenSheetAndShow "TSUKUBA_HELP", "HELP"
+  End If
+End Sub
+
+' バージョン、その他情報のダイアログを開く
+Private Sub Action_Menu_Show_Information()
+  Version.Caption = T1.SYSTEM()
+  Version.Label1 = T1.SYSTEM("title")
+  Version.Label2 = T1.SYSTEM("version")
+  Version.Label7 = "last updated at " & T1.SYSTEM("update")
+  Version.Label4 = T1.SYSTEM("mail")
+  Version.Label5 = T1.SYSTEM("affiliation")
+  Version.Label9 = "アッセイ系の評価"
+  Version.Label6 = "化合物ライブラリ利用申込"
+  Version.Label10 = T1.SYSTEM("copyright")
+  Version.Left = Application.Left + (Application.Width - Version.Width) / 2
+  Version.Show
+End Sub
+
+
 ' 全プレートを再計算
 Private Sub Action_MainMenu_Maintenance_UpdateAllPlate()
   For Each plt In T1.CSV2ARY(T1.ASSAY("plates"))
@@ -145,50 +199,6 @@ End Sub
 Private Sub Action_MainMenu_Maintenance_CalculateOn()
   For Each ws In ActiveWorkbook.Worksheets: ws.EnableCalculation = True
   Next
-End Sub
-
-' ホームページを開く
-Public Sub Action_Menu_OpenSite()
-  TSUKUBA_UTIL.OpenUrl "http://www.ddi.u-tokyo.ac.jp/wp/"
-End Sub
-
-' アッセイ系バリデーション方法について
-Public Sub Action_Menu_OpenAssayValidation()
-  TSUKUBA_UTIL.OpenUrl "http://www.ocdd.u-tokyo.ac.jp/sinsei/assay_validation_method.pdf"
-End Sub
-
-' 化合物配布について
-Public Sub Action_Menu_OpenCompoundDistribution()
-  TSUKUBA_UTIL.OpenUrl "http://www.ddi.u-tokyo.ac.jp/wp/application/"
-End Sub
-
-' 質問メール送信フォームを開く
-Public Sub Action_Menu_OpenMail()
-  TSUKUBA_UTIL.OpenUrl "mailto:" & T1.SYSTEM("mail")
-End Sub
-
-' 関数ヘルプを開く
-Private Sub Action_Menu_Show_Help()
-  If TSUKUBA_UTIL.ExistSheetP("HELP") Then
-    Worksheets("HELP").Select
-  Else
-    TSUKUBA_UTIL.DupulicateHiddenSheetAndShow "TSUKUBA_HELP", "HELP"
-  End If
-End Sub
-
-' バージョン、その他情報のダイアログを開く
-Private Sub Action_Menu_Show_Information()
-  Version.Caption = T1.SYSTEM()
-  Version.Label1 = T1.SYSTEM("title")
-  Version.Label2 = T1.SYSTEM("version")
-  Version.Label7 = "last updated at " & T1.SYSTEM("update")
-  Version.Label4 = T1.SYSTEM("mail")
-  Version.Label5 = T1.SYSTEM("affiliation")
-  Version.Label9 = "アッセイ系の評価"
-  Version.Label6 = "化合物ライブラリ利用申込"
-  Version.Label10 = T1.SYSTEM("copyright")
-  Version.Left = Application.Left + (Application.Width - Version.Width) / 2
-  Version.Show
 End Sub
 
 ' 他ブックに関数をExportする
@@ -217,6 +227,35 @@ Private Sub Action_MainMenu_Export_Extended_Functions()
     End With
   End If
 End Sub
+
+
+Rem ******************************************************************************************************
+Rem ワークシートイベント
+Rem ******************************************************************************************************
+
+' StatusBarのメッセージを消去
+Public Sub Action_WorkSheet_ClearStatusMessage()
+  Call TSUKUBA_UTIL.ShowStatusMessage("")
+End Sub
+
+' セクションを開閉する
+Public Function Action_WorkSheet_ToggleSection()
+	If ActiveCell.Interior.ThemeColor <> -4142 Then
+		If ActiveCell.Interior.ThemeColor = Cells(ActiveCell.row, 1).Interior.ThemeColor Then
+			If T1M.SECTION(ActiveCell, "hide?") Then
+				Rows(T1M.SECTION(ActiveCell, "inrows")).Hidden = False
+			Else
+				Rows(T1M.SECTION(ActiveCell, "inrows")).Hidden = True
+			End If
+		End If
+	End If
+End Function
+
+
+
+Rem ******************************************************************************************************
+Rem コンテキストメニューイベント
+Rem ******************************************************************************************************
 
 ' 結果をPDFに出力する
 Private Sub Action_MainMenu_Export_PDF()
@@ -311,8 +350,7 @@ Private Sub Action_MainMenu_Data_Analysis()
   With ThisWorkbook.Worksheets("Plates")
     Dim item_cnt As Integer: item_cnt = 0
     Dim named_data As Variant
-		
-		
+				
     .Activate
     For Each named_data In Worksheets("Template").names
       If named_data.RefersToRange.COUNT = 1 Then
@@ -1868,18 +1906,6 @@ Private Function CopySection(Name As String, typ As String, fmt As String)
   End If
 End Function
 
-
-Public Function Action_WorkSheet_ToggleSection()
-	If ActiveCell.Interior.ThemeColor <> -4142 Then
-		If ActiveCell.Interior.ThemeColor = Cells(ActiveCell.row, 1).Interior.ThemeColor Then
-			If T1M.SECTION(ActiveCell, "hide?") Then
-				Rows(T1M.SECTION(ActiveCell, "inrows")).Hidden = False
-			Else
-				Rows(T1M.SECTION(ActiveCell, "inrows")).Hidden = True
-			End If
-		End If
-	End If
-End Function
 
 Public Sub Action_ContextMenu_HideAllSection()
 	Application.DisplayAlerts = False

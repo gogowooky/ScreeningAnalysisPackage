@@ -32,7 +32,6 @@ End Function
 
 Public Sub Remove(sht As String)
   On Error Resume Next
-  
   If plts.item(sht) Is Nothing Then
     a = Nothing
   Else

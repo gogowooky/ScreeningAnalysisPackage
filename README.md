@@ -1,7 +1,7 @@
 Screening Analysis Package
 ====
 
-Overview
+Plate Reader等 HTS機器から出力されたデータファイルを自動で処理する。
 
 ## Description
 

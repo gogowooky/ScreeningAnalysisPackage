@@ -8,13 +8,9 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Rem
-Rem Key:   PlateName @ WellPos @ Label
-Rem Key:   PlateName @ "" @ Label
-Rem Key:   PlateName # Field # Row(êîíl)
-Rem Value: String
 Rem
 
-Private asyrslts As Collection
+Private asyrslts As Collection  '  Value: "value",   Key: "Platename@Wellpos@Label" / "Platename@@Label" / "Platename#Field#Row" 
 
 Private Sub Class_Initialize()
   Set asyrslts = New Collection
