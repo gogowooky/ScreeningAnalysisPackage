@@ -37,6 +37,9 @@ Public Const SYSTEM_SUPPORT_PLATE_READER = "FDSS,PHERASTER,EZREADER,ENSPIRE,HTFC
 Public Const SYSTEM_SUPPORT_PLATE_TYPE = "24,96,384,1536"
 Public Const SYSTEM_SUPPORT_PLATE_FORMAT = "PRIMARY,CONFIRMATION,DOSE_RESPONSE,FREE"
 Public Const SYSTEM_SUPPORT_REALTIME_PLATE_READER = "FDSS,FLIPR"
+Public Const ASSAY_SUMMARY_SHEET_NAME = "Plates"
+Public Const REPORT_QC_RESULT_SHEET_NAME = "QC結果"
+Public Const REPORT_ASSAY_RESULT_SHEET_NAME = "アッセイ結果"
 
 
 Rem ******************************************************************************************************
@@ -272,11 +275,11 @@ Rem ****************************************************************************
 
 ' "1-1.データファイルをリストアップし、プレート名を対応付ける"
 Private Sub Action_MainMenu_Binding_RawData_To_PlateName()
-  If TSUKUBA_UTIL.ExistSheetP("Plates") = False Then
-    Worksheets.Add: ActiveSheet.Name = "Plates"
+  If TSUKUBA_UTIL.ExistSheetP(ASSAY_SUMMARY_SHEET_NAME) = False Then
+    Worksheets.Add: ActiveSheet.Name = ASSAY_SUMMARY_SHEET_NAME
   End If
 	
-  With Worksheets("Plates")
+  With Worksheets(ASSAY_SUMMARY_SHEET_NAME)
     .Select
     .Range("A1").Value = "RawDataFilename"
     .Range("B1").Value = "PlateID"
@@ -301,15 +304,15 @@ Private Sub Action_MainMenu_Data_Analysis()
   TSUKUBA_UTIL.ShowStatusMessage "データファイルの読み込みと数値処理を開始します。"
   
   With ThisWorkbook
-    .Worksheets("Plates").Select
+    .Worksheets(ASSAY_SUMMARY_SHEET_NAME).Select
 		
     Dim filenm As String
     Dim platenm As String
     Dim i As Integer: i = 0
-    While .Worksheets("Plates").Range("A2").Offset(i, 0).Value <> ""
+    While .Worksheets(ASSAY_SUMMARY_SHEET_NAME).Range("A2").Offset(i, 0).Value <> ""
       ' ファイル名とプレート名取得
-      filenm = .Worksheets("Plates").Range("A2").Offset(i, 0).Value
-      platenm = .Worksheets("Plates").Range("B2").Offset(i, 0).Value
+      filenm = .Worksheets(ASSAY_SUMMARY_SHEET_NAME).Range("A2").Offset(i, 0).Value
+      platenm = .Worksheets(ASSAY_SUMMARY_SHEET_NAME).Range("B2").Offset(i, 0).Value
 
       ' 計算テンプレートをコピーして、データシート名を書き変える
       Application.DisplayAlerts = False
@@ -334,7 +337,7 @@ Private Sub Action_MainMenu_Data_Analysis()
     ' 再計算する
     Dim j As Integer
     For j = 0 To i - 1
-      platenm = .Worksheets("Plates").Range("B2").Offset(j, 0).Value
+      platenm = .Worksheets(ASSAY_SUMMARY_SHEET_NAME).Range("B2").Offset(j, 0).Value
       TSUKUBA_UTIL.ShowStatusMessage "データ再計算中 [" & platenm & "]"
       
       .Worksheets(platenm).EnableCalculation = True
@@ -347,7 +350,7 @@ Private Sub Action_MainMenu_Data_Analysis()
   End With
   
   ' 解析値をListup
-  With ThisWorkbook.Worksheets("Plates")
+  With ThisWorkbook.Worksheets(ASSAY_SUMMARY_SHEET_NAME)
     Dim item_cnt As Integer: item_cnt = 0
     Dim named_data As Variant
 				
@@ -389,8 +392,8 @@ Private Sub Action_MainMenu_Data_Analysis()
 	
   TSUKUBA_UTIL.ShowStatusMessage "Excel表示を更新中"
 	
-  ThisWorkbook.Worksheets("Plates").Activate
-  ThisWorkbook.Worksheets("Plates").Calculate
+  ThisWorkbook.Worksheets(ASSAY_SUMMARY_SHEET_NAME).Activate
+  ThisWorkbook.Worksheets(ASSAY_SUMMARY_SHEET_NAME).Calculate
 
   TSUKUBA_UTIL.ShowStatusMessage "データファイルの読み込みと数値処理を終了しました。"
 	
@@ -411,7 +414,7 @@ Private Sub Action_MainMenu_Clear_All_Analyzed_Data()
   Application.DisplayAlerts = False
   Application.ScreenUpdating = False
 
-  Worksheets("Plates").Activate
+  Worksheets(ASSAY_SUMMARY_SHEET_NAME).Activate
 
   Dim i As Integer
   Dim rawdatas As Variant
@@ -419,7 +422,7 @@ Private Sub Action_MainMenu_Clear_All_Analyzed_Data()
   ReDim rawdatas(1)
   ReDim templates(1)
 
-  With Worksheets("Plates").Range("B2")
+  With Worksheets(ASSAY_SUMMARY_SHEET_NAME).Range("B2")
     i = 0
     Do While .Offset(i, 0).Value <> ""
       ReDim Preserve rawdatas(i)
@@ -599,7 +602,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
     Dim repwb As String: repwb = ActiveWorkbook.Name
     Dim colplate As Integer
     
-    If TSUKUBA_UTIL.ExistSheetP("QC結果") = True Then
+    If TSUKUBA_UTIL.ExistSheetP(REPORT_QC_RESULT_SHEET_NAME) = True Then
       TSUKUBA_UTIL.ShowStatusMessage "報告書への転記処理: [QC結果]"
       Dim colsb As Integer
       Dim colcvpbk As Integer
@@ -608,7 +611,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
       Dim cl As Variant
       Dim rw As Variant
       
-      For Each rw In Sheets("QC結果").UsedRange.Rows
+      For Each rw In Sheets(REPORT_QC_RESULT_SHEET_NAME).UsedRange.Rows
         If rw.row = 1 Then
           For Each cl In rw.Columns
             If 1 < InStr(" Plate", cl.Value) Then colplate = cl.Column
@@ -618,7 +621,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
             If 1 < InStr(" Z'", cl.Value) Then colzprime = cl.Column
           Next
         Else
-          With Workbooks(repwb).Sheets("QC結果")
+          With Workbooks(repwb).Sheets(REPORT_QC_RESULT_SHEET_NAME)
             plt = .Cells(rw.row, colplate).Value
             val = RESOURCE.GetAssayResult(plt, "", "QC_ZPRIME")
             If val <> "" Then
@@ -632,7 +635,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
       Next
     End If
     
-    If TSUKUBA_UTIL.ExistSheetP("アッセイ結果") = True Then
+    If TSUKUBA_UTIL.ExistSheetP(REPORT_ASSAY_RESULT_SHEET_NAME) = True Then
       TSUKUBA_UTIL.ShowStatusMessage "報告書への転記処理: [アッセイ結果]"
       Dim rc As Variant
       Dim colwell As Integer
@@ -643,7 +646,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
       Dim coladditional As Integer
       Dim wellpos As String
       
-      For Each rw In Sheets("アッセイ結果").UsedRange.Rows
+      For Each rw In Sheets(REPORT_ASSAY_RESULT_SHEET_NAME).UsedRange.Rows
         If rw.row = 1 Then
           colplate = 0: colwell = 0: colhit = 0: colasyname = 0: colasyconc = 0: colactivity = 0
           For Each cl In rw.Columns
@@ -656,7 +659,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
             If 1 < InStr(" 備考", cl.Value) And coladditional = 0 Then coladditional = cl.Column
           Next
         Else
-          With Workbooks(repwb).Sheets("アッセイ結果")
+          With Workbooks(repwb).Sheets(REPORT_ASSAY_RESULT_SHEET_NAME)
             plt = .Cells(rw.row, colplate).Value
             wellpos = .Cells(rw.row, colwell).Value
             additional = T1.SYSTEM("today") & "追記"

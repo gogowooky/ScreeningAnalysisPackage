@@ -59,60 +59,59 @@ Rem ****************************************************************************
 Rem 固定参照値
 Rem ****************************************************************************************************************************************************************
 
-Rem
-Rem SYSTEM値
-Rem
-
-Private Const SYSTEM_VERSION = "ver. 1.0"
-Private Const SYSTEM_LASTUPDATE = "2015/03/20 12:40"
-Private Const SYSTEM_TITLE = "Screening Analysis Package for Excel"
-Private Const SYSTEM_AFFILIATION = "Drug Discovery Initiative (DDI)"
-Private Const SYSTEM_AFFILIATION2 = "The University of Tokyo"
-Private Const SYSTEM_AFFILIATION3 = "DDI"
-Private Const SYSTEM_ADDRESS = "Yakugaku #504B, 7-3-1 Hongo, Bunkyo-ku, Tokyo, 113-0033, JAPAN"
-Private Const SYSTEM_PHONE = "+81-3-5841-1960"
-Private Const SYSTEM_FAX = "+81-3-5841-1959"
-Private Const SYSTEM_HOMEPAGE = "http://www.ddi.u-tokyo.ac.jp/wp/application/"
-Private Const SYSTEM_MAILADDRESS = "ddiinfo@mol.f.u-tokyo.ac.jp"
-Private Const SYSTEM_AUTHOR = "Shinichiro Egashira"
-Private Const SYSTEM_COPYRIGHT = "Copyright (c) 2015 " & SYSTEM_AUTHOR
-
-Rem
-Rem 固定シート名
-Rem
-
-Const ASSAY_SUMMARY_SHEET_NAME = "Plates"
-Const REPORT_QC_RESULT_SHEET_NAME = "QC結果"
-Const REPORT_ASSAY_RESULT_SHEET_NAME = "アッセイ結果"
-   
-Rem
-Rem Template内の名前付き領域の名前
-Rem
-
-Rem CSV出力時に必ず出力される値のための名前付き領域の名前
-' PLATE_VALUE
+' Template内の名前付き領域の名前
 Public Const PLATE_TYPE = "PLATE_TYPE"
 Public Const PLATE_READER = "PLATE_READER"
 Public Const PLATE_FORMAT = "PLATE_FORMAT"
-
-Const ASSAY_NAME = "ASSAY_NAME"
-Const ASSAY_DATE = "ASSAY_DATE"
-Const ASSAY_TIME = "ASSAY_TIME"
-
-' WELL_VALUE
+'Const ASSAY_NAME = "ASSAY_NAME"
+'Const ASSAY_DATE = "ASSAY_DATE"
+'Const ASSAY_TIME = "ASSAY_TIME"
 Const PLATE_WELL_POSITION = "WELL_POS"
 Const PLATE_WELL_ROLE = "WELL_ROLE"
 Const PLATE_COMPOUND_CONC = "CPD_CONC"
-
-' ROLE_VALUE
 Public Const LABEL_TABLE = "TABLE"
 
+Rem ********************************************************************************
+Rem [名前] T1.SYSTEM( ... )
+Rem
+Rem [用途] Excel解析パッケージの情報を得る。
+Rem ********************************************************************************
+Public Function SYSTEM(Optional param As String = "")
+	Application.Volatile
+	Select Case param
+		Case "title":          SYSTEM = "Screening Analysis Package for Excel"
+		Case "version":        SYSTEM = "ver. 1.0.1"
+		Case "update":         SYSTEM = "2015/04/03 12:21"
+		Case "affiliation":    SYSTEM = "Drug Discovery Initiative (DDI)"
+		Case "affiliation2":   SYSTEM = "The University of Tokyo"
+		Case "affiliation3":   SYSTEM = "DDI"
+		Case "homepage":       SYSTEM = "http://www.ddi.u-tokyo.ac.jp/wp/application/"
+		Case "address":        SYSTEM = "Yakugaku #504B, 7-3-1 Hongo, Bunkyo-ku, Tokyo, 113-0033, JAPAN"
+		Case "phone":          SYSTEM = "+81-3-5841-1960"
+		Case "fax":            SYSTEM = "+81-3-5841-1959"
+		Case "author":         SYSTEM = "Shinichiro Egashira"
+		Case "copyright":      SYSTEM = "Copyright (c) 2015 " & SYSTEM("author")
+		Case "mail":           SYSTEM = "ddiinfo@mol.f.u-tokyo.ac.jp"
+		Case "original":       SYSTEM = "https://github.com/gogowooky/ScreeningAnalysisPackage"		
+		Case "support_reader":     SYSTEM = T1M.SYSTEM_SUPPORT_PLATE_READER
+		Case "support_plate_type": SYSTEM = T1M.SYSTEM_SUPPORT_PLATE_TYPE
+		Case "today":          SYSTEM = DATE_ID(Date)
+		Case "now":            SYSTEM = TIME_ID(Now)
+		Case "excelver":       SYSTEM = Application.Version
+		Case "pc":             SYSTEM = Array("Mac","Windows")(-CInt(CBool(InStr(Application.OperatingSystem,"Windows"))))
+		Case "filename":       SYSTEM = Application.Caller.Parent.Parent.Name
+		Case "path":           SYSTEM = Application.Caller.Parent.Parent.path
+		Case "filepath":       SYSTEM = Application.Caller.Parent.Parent.path & Application.PathSeparator & Application.Caller.Parent.Parent.Name
+		Case "parentdir":      SYSTEM = Mid( SYSTEM("path"), InStrRev( SYSTEM("path"), Application.PathSeparator) + 1)
+		Case Else:             SYSTEM = SYSTEM("title") & " " & SYSTEM("version")
+	End Select
+End Function
 
 Rem EXPORT ON
 
-Rem ****************************************************************************************************************************************************************
+Rem ********************************************************************************
 Rem 汎用関数
-Rem ****************************************************************************************************************************************************************
+Rem ********************************************************************************
 
 Rem
 Rem [名前] T1.FORMAT_DATE
@@ -500,51 +499,6 @@ End Function
 
 Rem EXPORT OFF
 
-Rem ****************************************************************************************************************************************************************
-Rem VBAパッケージ情報
-Rem ****************************************************************************************************************************************************************
-
-Rem ********************************************************************************
-Rem [名前] T1.SYSTEM( ... )
-Rem
-Rem [用途] Excel解析パッケージの情報を得る。
-Rem ********************************************************************************
-Public Function SYSTEM(Optional param As String = "")
-   Application.Volatile
-   Select Case param
-      Case "title":          SYSTEM = SYSTEM_TITLE
-      Case "version":        SYSTEM = SYSTEM_VERSION
-      Case "update":         SYSTEM = SYSTEM_LASTUPDATE
-      Case "affiliation":    SYSTEM = SYSTEM_AFFILIATION
-      Case "affiliation2":   SYSTEM = SYSTEM_AFFILIATION2
-      Case "affiliation3":   SYSTEM = SYSTEM_AFFILIATION3
-      Case "homepage":       SYSTEM = SYSTEM_HOMEPAGE
-      Case "address":        SYSTEM = SYSTEM_ADDRESS
-      Case "phone":          SYSTEM = SYSTEM_PHONE
-      Case "fax":            SYSTEM = SYSTEM_FAX
-      Case "author":         SYSTEM = SYSTEM_AUTHOR
-      Case "copyright":      SYSTEM = SYSTEM_COPYRIGHT
-      Case "mail":           SYSTEM = SYSTEM_MAILADDRESS
-      Case "support_reader":     SYSTEM = T1M.SYSTEM_SUPPORT_PLATE_READER
-      Case "support_plate_type": SYSTEM = T1M.SYSTEM_SUPPORT_PLATE_TYPE
-      Case "today":          SYSTEM = T1.DATE_ID(Date)
-      Case "now":            SYSTEM = T1.TIME_ID(Now)
-      Case "excelver":       SYSTEM = Application.Version
-      Case "pc":
-         If 0 < InStr(Application.OperatingSystem, "Windows") Then
-            SYSTEM = "Windows"
-         Else
-            SYSTEM = "Mac"
-         End If
-      Case "filename":       SYSTEM = Application.Caller.Parent.Parent.Name
-      Case "path":           SYSTEM = Application.Caller.Parent.Parent.path
-      Case "filepath":       SYSTEM = Application.Caller.Parent.Parent.path & Application.PathSeparator & Application.Caller.Parent.Parent.Name
-      Case "parentdir":
-         seppos = InStrRev(Application.Caller.Parent.Parent.path, Application.PathSeparator)
-         SYSTEM = Mid(Application.Caller.Parent.Parent.path, seppos + 1)
-      Case Else:             SYSTEM = SYSTEM_TITLE & " " & SYSTEM_VERSION
-   End Select
-End Function
 
 
 Rem ********************************************************************************
@@ -763,7 +717,7 @@ Public Function ASSAY(func)
   
   Select Case func
     Case "plates":
-      For Each cl In Sheets("Plates").UsedRange.Columns(2).Rows
+      For Each cl In Sheets(T1M.ASSAY_SUMMARY_SHEET_NAME).UsedRange.Columns(2).Rows
         If 1 < cl.row And cl.Value <> "" Then csv = csv & cl.Value & ","
       Next
       ASSAY = Left(csv, Len(csv) - 1)
@@ -908,7 +862,7 @@ Public Function PLATE(Optional platename As String = "", Optional func As String
          
 		Case "rawdatasheet": PLATE = "(raw)" & platename
 		Case "rawdatafile":
-			With Sheets(ASSAY_SUMMARY_SHEET_NAME)
+			With Sheets(T1M.ASSAY_SUMMARY_SHEET_NAME)
 				For Each rw In .UsedRange.Rows
 					If rw.Cells(1, 2).Value = platename Then
 						PLATE = rw.Cells(1, 1).Value: Exit Function

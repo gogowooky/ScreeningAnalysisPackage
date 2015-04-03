@@ -17,7 +17,7 @@ Rem
 Rem  LoadCompoundTable
 Rem
 
-Const sheetname = "アッセイ結果"
+Const sheetname = T1M.REPORT_ASSAY_RESULT_SHEET_NAME
 Const PLATE_TITLE = "プレートID,Plate,plate ID,Plate_ID"
 Const WELL_TITLE = "WELL,well"
 Const WELLROLE_TITLE = "WELL_ROLE,well_role,ROLE"
