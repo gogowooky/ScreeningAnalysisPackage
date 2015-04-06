@@ -82,11 +82,11 @@ Public Sub Initialize(ByVal sht As String)
   
   Dim rw As Integer: Dim cl As Integer: Dim rol As String: Dim cnc As String
   Dim pos As Variant
-  For Each pos In Sheets(sht).Range("WELL_POS")
-    rw = pos.row - Sheets(sht).Range("WELL_POS").row + 1
-    cl = pos.Column - Sheets(sht).Range("WELL_POS").Column + 1
+  For Each pos In Sheets(sht).Range(T1M.LABEL_PLATE_WELL_POSITION)
+    rw = pos.row - Sheets(sht).Range(T1M.LABEL_PLATE_WELL_POSITION).row + 1
+    cl = pos.Column - Sheets(sht).Range(T1M.LABEL_PLATE_WELL_POSITION).Column + 1
     rol = Sheets(sht).Range("WELL_ROLE").Cells(rw, cl)
-    cnc = CStr(Sheets(sht).Range("CPD_CONC").Cells(rw, cl))
+    cnc = CStr(Sheets(sht).Range(LABEL_PLATE_COMPOUND_CONC).Cells(rw, cl))
 
     set_wells_adrss rol, pos ' Role
     If cnc <> "" Then set_wells_adrss rol & "@" & cnc, pos ' Role@Conc
@@ -142,7 +142,7 @@ Public Property Get Name()
 End Property
 
 Public Property Get PlateType() As String
-  PlateType = CStr(Sheets(shtname).Range(T1.PLATE_TYPE).Value)
+  PlateType = CStr(Sheets(shtname).Range(T1M.LABEL_PLATE_TYPE).Value)
 End Property
 
 Public Property Get PlateWidth() As Integer

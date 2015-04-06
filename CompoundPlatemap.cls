@@ -17,16 +17,10 @@ Rem
 Rem  LoadCompoundTable
 Rem
 
-Const sheetname = T1M.REPORT_ASSAY_RESULT_SHEET_NAME
-Const PLATE_TITLE = "プレートID,Plate,plate ID,Plate_ID"
-Const WELL_TITLE = "WELL,well"
-Const WELLROLE_TITLE = "WELL_ROLE,well_role,ROLE"
-Const COMPOUND_TITLE = "化合物サンプルID,Compound_Name"
-
 Private cpds As Collection
 
 Rem
-Rem
+Rem 関数
 Rem
 
 Public Function GetCpdID(platename As String, wellpos As String) As Variant
@@ -34,11 +28,11 @@ Public Function GetCpdID(platename As String, wellpos As String) As Variant
 End Function
 
 Public Function GetCpdConc(platename As String, wellpos As String) As Variant
-  GetCpdConc = Sheets(sheetname).Cells(GetCpds(platename, wellpos)(1), 5)
+  GetCpdConc = Sheets(T1M.SHEETNAME_REPORT_ASSAY_RESULT).Cells(GetCpds(platename, wellpos)(1), 5)
 End Function
 
 Public Function GetCpdVol(platename As String, wellpos As String) As Variant
-  GetCpdVol = Sheets(sheetname).Cells(GetCpds(platename, wellpos)(1), 6)
+  GetCpdVol = Sheets(T1M.SHEETNAME_REPORT_ASSAY_RESULT).Cells(GetCpds(platename, wellpos)(1), 6)
 End Function
 
 Private Function GetCpds(platename As String, wellpos As String) As Variant
@@ -50,14 +44,31 @@ Private Function GetCpds(platename As String, wellpos As String) As Variant
 End Function
 
 Rem
+Rem サブルーチン
 Rem
-Rem
+
+Public Sub LoadCompoundTable()
+  If cpds Is Nothing Then
+    ' あとから報告書ファイルを読み込む
+    Dim wb As String: wb = ActiveWorkbook.Name
+    Dim ws As String: ws = ActiveSheet.Name
+    Dim repf As String: repf = TSUKUBA_UTIL.WinMacSelectFile(ActiveWorkbook.path)
+    Workbooks.Open repf
+    Dim rep As String: rep = ActiveWorkbook.Name
+    Workbooks(rep).Worksheets(T1M.SHEETNAME_REPORT_ASSAY_RESULT).Select
+    Workbooks(rep).Worksheets(T1M.SHEETNAME_REPORT_ASSAY_RESULT).Copy After:=Workbooks(wb).Worksheets("Template")
+    Workbooks(rep).Close
+    Workbooks(wb).Worksheets(ws).Activate
+    LoadTable
+  End If
+End Sub
+
 
 Private Sub LoadTable()
   ' platename, wellpos, cpd# だけでなく、
   ' platename, wellrole, cpd# のテーブルも読み込めるように変更した
   On Error Resume Next
-  If TSUKUBA_UTIL.ExistSheetP(sheetname) Then
+  If TSUKUBA_UTIL.ExistSheetP(T1M.SHEETNAME_REPORT_ASSAY_RESULT) Then
     Set cpds = New Collection
     Dim first As Boolean: first = True
     Dim pltcol As Integer: pltcol = 0
@@ -67,13 +78,13 @@ Private Sub LoadTable()
     Dim rw As Variant: Dim cl As Variant
     Dim wells As String: Dim wel As Variant
     
-    For Each rw In Sheets(sheetname).UsedRange.Rows
+    For Each rw In Sheets(T1M.SHEETNAME_REPORT_ASSAY_RESULT).UsedRange.Rows
       If first Then
         For Each cl In rw.Columns
-          If 0 < InStr(PLATE_TITLE, cl.Value) Then pltcol = cl.Column
-          If 0 < InStr(WELL_TITLE, cl.Value) Then welcol = cl.Column
-          If 0 < InStr(WELLROLE_TITLE, cl.Value) Then welrolecol = cl.Column
-          If 0 < InStr(COMPOUND_TITLE, cl.Value) Then cpdcol = cl.Column
+          If 0 < InStr(T1M.PLATE_TITLE, cl.Value) Then pltcol = cl.Column
+          If 0 < InStr(T1M.WELL_TITLE, cl.Value) Then welcol = cl.Column
+          If 0 < InStr(T1M.WELLROLE_TITLE, cl.Value) Then welrolecol = cl.Column
+          If 0 < InStr(T1M.COMPOUND_TITLE, cl.Value) Then cpdcol = cl.Column
           If 0 < pltcol * welcol * cpdcol Or 0 < pltcol * welrolecol * cpdcol Then Exit For
         Next
         first = False
@@ -102,21 +113,6 @@ Private Sub Class_Initialize()
 End Sub
 
 
-Public Sub LoadCompoundTable()
-  If cpds Is Nothing Then
-    ' あとから報告書ファイルを読み込む
-    Dim wb As String: wb = ActiveWorkbook.Name
-    Dim ws As String: ws = ActiveSheet.Name
-    Dim repf As String: repf = TSUKUBA_UTIL.WinMacSelectFile(ActiveWorkbook.path)
-    Workbooks.Open repf
-    Dim rep As String: rep = ActiveWorkbook.Name
-    Workbooks(rep).Worksheets(sheetname).Select
-    Workbooks(rep).Worksheets(sheetname).Copy After:=Workbooks(wb).Worksheets("Template")
-    Workbooks(rep).Close
-    Workbooks(wb).Worksheets(ws).Activate
-    LoadTable
-  End If
-End Sub
 
 
 

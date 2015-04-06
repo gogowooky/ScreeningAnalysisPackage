@@ -58,7 +58,7 @@ Public Sub UpdateAssayResult(Optional plt As String = "")
 	Dim wel As Variant
 	Dim wellpos As String
 	For Each labelname In T1.CSV2ARY(T1M.GetWellLabels())
-		For Each wel In Range("WELL_POS")
+		For Each wel In Range(T1M.LABEL_PLATE_WELL_POSITION)
 			wellpos = wel.Value
 			Select Case labelname
 				Case "WELL_POS":        val = wellpos
@@ -76,9 +76,9 @@ Public Sub UpdateAssayResult(Optional plt As String = "")
 		Next
 	Next
 	
-	If TSUKUBA_UTIL.ExistNameP(platename, "TABLE") Then
+	If TSUKUBA_UTIL.ExistNameP(platename, LABEL_TABLE) Then
 		Dim rownum As Integer
-		Dim rng As Range: Set rng = Range("TABLE")
+		Dim rng As Range: Set rng = Range(LABEL_TABLE)
 		Dim rng2 As Range
 		Dim cl As Variant
 		Dim rw As Variant
@@ -111,7 +111,7 @@ Rem
 Public Function GetRoleRange(sht As String, lbl As String, role As String, Optional conc As String = "") As Range
 	On Error Resume Next
 	init_pltalgns
-	Dim wpos As Range: Set wpos = Sheets(sht).Range("WELL_POS")
+	Dim wpos As Range: Set wpos = Sheets(sht).Range(T1M.LABEL_PLATE_WELL_POSITION)
 	Dim lbel As Range: Set lbel = Sheets(sht).Range(lbl)
 	Dim adr As String: adr = pltalgns.item(sht).GetRoleAddress(role, conc)
 	Set GetRoleRange = Sheets(sht).Range(adr).Offset(lbel.row - wpos.row, lbel.Column - wpos.Column)
@@ -120,7 +120,7 @@ End Function
 Public Function GetRoleAddress(sht As String, lbl As String, role As String, Optional conc As String = "") As String
 	On Error Resume Next
 	init_pltalgns
-	Dim wpos As Range: Set wpos = Sheets(sht).Range("WELL_POS")
+	Dim wpos As Range: Set wpos = Sheets(sht).Range(T1M.LABEL_PLATE_WELL_POSITION)
 	Dim lbel As Range: Set lbel = Sheets(sht).Range(lbl)
 	Dim adr As String: adr = pltalgns.item(sht).GetRoleAddress(role, conc)
 	GetRoleAddress = Sheets(sht).Range(adr).Offset(lbel.row - wpos.row, lbel.Column - wpos.Column).Address

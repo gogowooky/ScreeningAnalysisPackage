@@ -14,31 +14,35 @@ Rem ****************************************************************************
 Public Function EnumrateValues(rng As Variant) As String
   Dim csv As String
   Dim item As String
-  Dim r As Variant
-  For Each r In rng
-    item = CStr(r.Value) & ","
+  Dim cel As Variant
+
+  For Each cel In rng
+    item = CStr(cel.Value) & ","
     If 1 < Len(item) And InStr(csv, item) = 0 Then csv = csv & item
   Next
-  EnumrateValues = Left(csv, Len(csv) - 1)
+	EnumrateValues = Left(csv, Len(csv) - 1)
 End Function
 
 
 ' ExistNameP
-Public Function ExistNameP(sht As String, nam As String) As Boolean
-  Dim lblnam As Variant
-  For Each lblnam In Sheets(sht).names
-    ExistNameP = 0 < InStr(lblnam.Name, "!" & nam)
+Public Function ExistNameP(shtname As String, lblname As String) As Boolean
+  Dim nam As Variant
+
+  For Each nam In Sheets(shtname).names
+    ExistNameP = 0 < InStr(nam.Name, "!" & lblnam)
     If ExistNameP Then Exit Function
   Next
 End Function
 
+
 ' ExistSheetP
-Public Function ExistSheetP(sht As String) As Boolean
-  Dim ws As Variant
-  For Each ws In ActiveWorkbook.Worksheets
-    ExistSheetP = ws.Name = sht
+Public Function ExistSheetP(shtname As String) As Boolean
+  Dim sht As Variant
+
+  For Each sht In ActiveWorkbook.Worksheets
+    ExistSheetP = sht.Name = shtname
     If ExistSheetP Then Exit Function
-  Next ws
+  Next
 End Function
 
 
@@ -55,10 +59,12 @@ Public Function WinMacSelectFile(Optional path As String = "") As String
   End If
 End Function
 
+
 ' GetFileExt
 Public Function GetFileExt(path As String) As String
  GetFileExt = Mid(path, InStrRev(path, ".") + 1)
 End Function
+
 
 ' WinMacDir:  Window/Mac‚Å‹¤’Ê‚ÉŽg‚¦‚éDirŠÖ”
 Public Function WinMacDir(Optional path As String = "", Optional ext As String = "") As String
@@ -154,6 +160,7 @@ Public Sub DupulicateHiddenSheetAndShow(sht As String, altname As String)
    'Sheets(altname).Calculate
 End Sub
 
+' Selection—Ìˆæ‚Ì‘Š‘ÎŽw’è‚ðâ‘ÎŽw’è‚É•ÏŠ·‚·‚é
 Public Sub ConvertSelectionFomulaFromRelatioveToAbsolute()
   Dim sl As Variant
   If debug_convert_relative_formula_to_absolute Then

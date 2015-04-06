@@ -33,13 +33,30 @@ Const END_SECTION_TINT2_COLOR = -0.2
 Rem ******************************************************************************************************
 Rem システム設定値
 Rem ******************************************************************************************************
-Public Const SYSTEM_SUPPORT_PLATE_READER = "FDSS,PHERASTER,EZREADER,ENSPIRE,HTFC,FREE"
-Public Const SYSTEM_SUPPORT_PLATE_TYPE = "24,96,384,1536"
-Public Const SYSTEM_SUPPORT_PLATE_FORMAT = "PRIMARY,CONFIRMATION,DOSE_RESPONSE,FREE"
+Public Const SYSTEM_SUPPORT_PLATE_READER          = "FDSS,PHERASTER,EZREADER,ENSPIRE,HTFC,FREE"
+Public Const SYSTEM_SUPPORT_PLATE_TYPE            = "24,96,384,1536"
+Public Const SYSTEM_SUPPORT_PLATE_FORMAT          = "PRIMARY,CONFIRMATION,DOSE_RESPONSE,FREE"
 Public Const SYSTEM_SUPPORT_REALTIME_PLATE_READER = "FDSS,FLIPR"
-Public Const ASSAY_SUMMARY_SHEET_NAME = "Plates"
-Public Const REPORT_QC_RESULT_SHEET_NAME = "QC結果"
-Public Const REPORT_ASSAY_RESULT_SHEET_NAME = "アッセイ結果"
+Public Const SHEETNAME_ASSAY_SUMMARY              = "Plates"
+Public Const SHEETNAME_REPORT_QC_RESULT           = "QC結果"
+Public Const SHEETNAME_REPORT_ASSAY_RESULT        = "アッセイ結果"
+
+Public Const LABEL_PLATE_TYPE          = "PLATE_TYPE"
+Public Const LABEL_PLATE_READER        = "PLATE_READER"
+Public Const LABEL_PLATE_FORMAT        = "PLATE_FORMAT"
+Public Const LABEL_PLATE_WELL_POSITION = "WELL_POS"
+Public Const LABEL_PLATE_WELL_ROLE     = "WELL_ROLE"
+Public Const LABEL_PLATE_COMPOUND_CONC = "CPD_CONC"
+Public Const LABEL_TABLE               = "TABLE"
+
+Public Const PLATE_TITLE    = "プレートID,Plate,plate ID,Plate_ID"
+Public Const WELL_TITLE     = "WELL,well"
+Public Const WELLROLE_TITLE = "WELL_ROLE,well_role,ROLE"
+Public Const COMPOUND_TITLE = "化合物サンプルID,Compound_Name"
+
+Const PLATESHEET_TITLE_FOR_RAWDATA_COLUMN = "Raw Data Filename"
+Const PLATESHEET_TITLE_FOR_PLATEID_COLUMN = "PlateID"
+Const PLATESHEET_EXTENSION_FOR_FILE_LISTING = "TXT,SCV,CSV,RST"
 
 
 Rem ******************************************************************************************************
@@ -69,55 +86,74 @@ Public Sub Action_WorkBook_Initialize()
 	
   Application.CommandBars("Worksheet Menu Bar").Controls(T1.SYSTEM()).Delete  ' いったんメニュー削除
 	
-  With Application.CommandBars("Worksheet Menu Bar").Controls.Add(Type:=msoControlPopup): .Caption = T1.SYSTEM()
-    With .Controls.Add(Type:=msoControlPopup): .Caption = "1. スクリーニングデータの処理"
+  With Application.CommandBars("Worksheet Menu Bar").Controls.Add(Type:=msoControlPopup)
+		.Caption = T1.SYSTEM()
+    With .Controls.Add(Type:=msoControlPopup)
+			.Caption = "1. スクリーニングデータの処理"
       .Enabled = 0 < InStr(T1M.GetAnalysisState(), "Template@")
-      With .Controls.Add: .Caption = "1-1.データファイルをリストアップし、プレート名を対応付ける"
+      With .Controls.Add
+				.Caption = "1-1.データファイルをリストアップし、プレート名を対応付ける"
         .OnAction = "Action_MainMenu_Binding_RawData_To_PlateName"
       End With
-      With .Controls.Add: .Caption = "1-2.アッセイデータの自動解析処理を開始する"
+      With .Controls.Add
+				.Caption = "1-2.アッセイデータの自動解析処理を開始する"
         .OnAction = "Action_MainMenu_Data_Analysis"
       End With
-      With .Controls.Add: .Caption = "解析結果を消去する"
+      With .Controls.Add
+				.Caption = "解析結果を消去する"
         .OnAction = "Action_MainMenu_Clear_All_Analyzed_Data"
       End With
     End With
-    With .Controls.Add(Type:=msoControlPopup): .Caption = "2. 解析データの統合"
+    With .Controls.Add(Type:=msoControlPopup)
+			.Caption = "2. 解析データの統合"
       .Enabled = 0 < InStr(T1M.GetAnalysisState(), "Template@")
-      With .Controls.Add: .Caption = "2-a. 全解析結果をPDFに出力する"
-        .OnAction = "Action_MainMenu_Export_PDF"
+      With .Controls.Add
+				.Caption = "2-a. 全解析結果をPDFに出力する"
+        .OnAction = "Action_ContextMenu_Export_PDF"
       End With
-      With .Controls.Add: .Caption = "2-b. 全シートの解析データをCSVにExportする"
+      With .Controls.Add
+				.Caption = "2-b. 全シートの解析データをCSVにExportする"
         .OnAction = "Action_MainMenu_Convert_All_Sheets_To_CSV"
       End With
-      With .Controls.Add: .Caption = "2-c. 解析データを" & T1.SYSTEM("affiliation3") & "報告書に転記する"
+      With .Controls.Add
+				.Caption = "2-c. 解析データを" & T1.SYSTEM("affiliation3") & "報告書に転記する"
         .OnAction = "Action_MainMenu_Transfer_Data_To_ReportSheet"
       End With
-      With .Controls.Add: .Caption = "2-d. 同一ディレクトリ内の全csvファイルをマージする"
+      With .Controls.Add
+				.Caption = "2-d. 同一ディレクトリ内の全csvファイルをマージする"
         .OnAction = "Action_MainMenu_Merge_All_CSV_Files"
       End With
     End With
-    With .Controls.Add(Type:=msoControlPopup): .Caption = "その他"
-      With .Controls.Add: .Caption = "関数ヘルプ"
+    With .Controls.Add(Type:=msoControlPopup)
+			.Caption = "その他"
+      With .Controls.Add
+				.Caption = "関数ヘルプ"
         .OnAction = "Action_Menu_Show_Help"
       End With
-      With .Controls.Add: .Caption = "Packageのバージョン、その他情報"
+      With .Controls.Add
+				.Caption = "Packageのバージョン、その他情報"
         .OnAction = "Action_Menu_Show_Information"
       End With
-      With .Controls.Add(Type:=msoControlPopup): .Caption = "メンテナンス"
-        With .Controls.Add: .Caption = "他ブックに関数をExportする"
+      With .Controls.Add(Type:=msoControlPopup)
+				.Caption = "メンテナンス"
+        With .Controls.Add
+					.Caption = "他ブックに関数をExportする"
           .OnAction = "Action_MainMenu_Export_Extended_Functions"
         End With
-        With .Controls.Add: .Caption = "全シート計算オン"
+        With .Controls.Add
+					.Caption = "全シート計算オン"
           .OnAction = "Action_MainMenu_Maintenance_CalculateOn"
         End With
-        With .Controls.Add: .Caption = "全シート計算オフ"
+        With .Controls.Add
+					.Caption = "全シート計算オフ"
           .OnAction = "Action_MainMenu_Maintenance_CalculateOff"
         End With
-        With .Controls.Add: .Caption = "内部コレクション変数リセット"
+        With .Controls.Add
+					.Caption = "内部コレクション変数リセット"
           .OnAction = "Action_MainMenu_Maintenance_ResetCollection"
         End With
-        With .Controls.Add: .Caption = "全プレート再計算"
+        With .Controls.Add
+					.Caption = "全プレート再計算"
           .OnAction = "Action_MainMenu_Maintenance_UpdateAllPlate"
         End With
       End With
@@ -177,7 +213,6 @@ Private Sub Action_Menu_Show_Information()
   Version.Show
 End Sub
 
-
 ' 全プレートを再計算
 Private Sub Action_MainMenu_Maintenance_UpdateAllPlate()
   For Each plt In T1.CSV2ARY(T1.ASSAY("plates"))
@@ -232,59 +267,21 @@ Private Sub Action_MainMenu_Export_Extended_Functions()
 End Sub
 
 
-Rem ******************************************************************************************************
-Rem ワークシートイベント
-Rem ******************************************************************************************************
-
-' StatusBarのメッセージを消去
-Public Sub Action_WorkSheet_ClearStatusMessage()
-  Call TSUKUBA_UTIL.ShowStatusMessage("")
-End Sub
-
-' セクションを開閉する
-Public Function Action_WorkSheet_ToggleSection()
-	If ActiveCell.Interior.ThemeColor <> -4142 Then
-		If ActiveCell.Interior.ThemeColor = Cells(ActiveCell.row, 1).Interior.ThemeColor Then
-			If T1M.SECTION(ActiveCell, "hide?") Then
-				Rows(T1M.SECTION(ActiveCell, "inrows")).Hidden = False
-			Else
-				Rows(T1M.SECTION(ActiveCell, "inrows")).Hidden = True
-			End If
-		End If
-	End If
-End Function
-
-
-
-Rem ******************************************************************************************************
-Rem コンテキストメニューイベント
-Rem ******************************************************************************************************
-
-' 結果をPDFに出力する
-Private Sub Action_MainMenu_Export_PDF()
-  Worksheets(T1.CSV2ARY(T1.ASSAY("plates"))).Select
-  ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, filename:=Replace(ThisWorkbook.FullName, "xlsm", "pdf")
-End Sub
-
-
-
-
-Rem ******************************************************************************************************
-Rem "1. スクリーニングデータの処理"
-Rem ******************************************************************************************************
-
-' "1-1.データファイルをリストアップし、プレート名を対応付ける"
+'
+' 1.スクリーニングデータの処理 > 1-1. データファイルをリストアップし、プレート名を対応付ける
+'
 Private Sub Action_MainMenu_Binding_RawData_To_PlateName()
-  If TSUKUBA_UTIL.ExistSheetP(ASSAY_SUMMARY_SHEET_NAME) = False Then
-    Worksheets.Add: ActiveSheet.Name = ASSAY_SUMMARY_SHEET_NAME
+  If TSUKUBA_UTIL.ExistSheetP(SHEETNAME_ASSAY_SUMMARY) = False Then
+    Worksheets.Add
+		ActiveSheet.Name = SHEETNAME_ASSAY_SUMMARY
   End If
 	
-  With Worksheets(ASSAY_SUMMARY_SHEET_NAME)
+  With Worksheets(SHEETNAME_ASSAY_SUMMARY)
     .Select
-    .Range("A1").Value = "RawDataFilename"
-    .Range("B1").Value = "PlateID"
+    .Range("A1").Value = PLATESHEET_TITLE_FOR_RAWDATA_COLUMN
+    .Range("B1").Value = PLATESHEET_TITLE_FOR_PLATEID_COLUMN
 		
-    Dim fil As String: fil = TSUKUBA_UTIL.WinMacDir(ActiveWorkbook.path, "TXT,SCV,CSV,RST")
+    Dim fil As String: fil = TSUKUBA_UTIL.WinMacDir(ActiveWorkbook.path, PLATESHEET_EXTENSION_FOR_FILE_LISTING )
     Dim cnt As Integer: cnt = 1
     While fil <> ""
       .Cells(cnt + 1, 1).Value = fil
@@ -296,23 +293,63 @@ Private Sub Action_MainMenu_Binding_RawData_To_PlateName()
 End Sub
 
 
-' "1-2.アッセイデータの自動解析処理を開始する"
+
+'
+' 1.スクリーニングデータの処理 > 解析結果を消去する"
+'
+Private Sub Action_MainMenu_Clear_All_Analyzed_Data()
+  On Error GoTo Err_Action_MainMenu_Clear_All_Analyzed_Data
+  Application.DisplayAlerts = False
+  Application.ScreenUpdating = False
+
+  Dim i As Integer
+  Dim rawdatas As Variant:  ReDim rawdatas(1)
+  Dim templates As Variant: ReDim templates(1)
+	With Worksheets(SHEETNAME_ASSAY_SUMMARY).Range("B2")
+		i = 0
+		Do While .Offset(i, 0).Value <> ""
+			ReDim Preserve rawdatas(i)
+			ReDim Preserve templates(i)
+			rawdatas(i) = .Offset(i, 0).Value
+			templates(i) = "(raw)" + rawdatas(i)
+			i = i + 1
+		Loop
+	End With
+  Worksheets(templates).Select: ActiveWindow.SelectedSheets.Delete
+  Worksheets(rawdatas).Select:  ActiveWindow.SelectedSheets.Delete
+	
+  TSUKUBA_UTIL.ShowStatusMessage "全てのデータシート、データ処理シートを削除しました。"
+  Worksheets(SHEETNAME_ASSAY_SUMMARY).Activate
+  Application.DisplayAlerts = True
+  Application.ScreenUpdating = True
+	
+  Exit Sub
+
+Err_Action_MainMenu_Clear_All_Analyzed_Data:
+  TSUKUBA_UTIL.ShowStatusMessage "エラーです。　Platesシートを確認して、再度実行してください。"
+  MsgBox "エラーです。　Platesシートを確認して、再度実行してください。"
+End Sub
+
+
+
+'
+' 1.スクリーニングデータの処理 > 1-2.アッセイデータの自動解析処理を開始する
+'
 Private Sub Action_MainMenu_Data_Analysis()
   On Error GoTo Err_Action_MainMenu_Data_Analysis
-  
   Application.DisplayAlerts = False
   TSUKUBA_UTIL.ShowStatusMessage "データファイルの読み込みと数値処理を開始します。"
   
   With ThisWorkbook
-    .Worksheets(ASSAY_SUMMARY_SHEET_NAME).Select
+    .Worksheets(SHEETNAME_ASSAY_SUMMARY).Select
 		
     Dim filenm As String
     Dim platenm As String
     Dim i As Integer: i = 0
-    While .Worksheets(ASSAY_SUMMARY_SHEET_NAME).Range("A2").Offset(i, 0).Value <> ""
+    While .Worksheets(SHEETNAME_ASSAY_SUMMARY).Range("A2").Offset(i, 0).Value <> ""
       ' ファイル名とプレート名取得
-      filenm = .Worksheets(ASSAY_SUMMARY_SHEET_NAME).Range("A2").Offset(i, 0).Value
-      platenm = .Worksheets(ASSAY_SUMMARY_SHEET_NAME).Range("B2").Offset(i, 0).Value
+      filenm = .Worksheets(SHEETNAME_ASSAY_SUMMARY).Range("A2").Offset(i, 0).Value
+      platenm = .Worksheets(SHEETNAME_ASSAY_SUMMARY).Range("B2").Offset(i, 0).Value
 
       ' 計算テンプレートをコピーして、データシート名を書き変える
       Application.DisplayAlerts = False
@@ -337,7 +374,7 @@ Private Sub Action_MainMenu_Data_Analysis()
     ' 再計算する
     Dim j As Integer
     For j = 0 To i - 1
-      platenm = .Worksheets(ASSAY_SUMMARY_SHEET_NAME).Range("B2").Offset(j, 0).Value
+      platenm = .Worksheets(SHEETNAME_ASSAY_SUMMARY).Range("B2").Offset(j, 0).Value
       TSUKUBA_UTIL.ShowStatusMessage "データ再計算中 [" & platenm & "]"
       
       .Worksheets(platenm).EnableCalculation = True
@@ -350,7 +387,7 @@ Private Sub Action_MainMenu_Data_Analysis()
   End With
   
   ' 解析値をListup
-  With ThisWorkbook.Worksheets(ASSAY_SUMMARY_SHEET_NAME)
+  With ThisWorkbook.Worksheets(SHEETNAME_ASSAY_SUMMARY)
     Dim item_cnt As Integer: item_cnt = 0
     Dim named_data As Variant
 				
@@ -392,8 +429,8 @@ Private Sub Action_MainMenu_Data_Analysis()
 	
   TSUKUBA_UTIL.ShowStatusMessage "Excel表示を更新中"
 	
-  ThisWorkbook.Worksheets(ASSAY_SUMMARY_SHEET_NAME).Activate
-  ThisWorkbook.Worksheets(ASSAY_SUMMARY_SHEET_NAME).Calculate
+  ThisWorkbook.Worksheets(SHEETNAME_ASSAY_SUMMARY).Activate
+  ThisWorkbook.Worksheets(SHEETNAME_ASSAY_SUMMARY).Calculate
 
   TSUKUBA_UTIL.ShowStatusMessage "データファイルの読み込みと数値処理を終了しました。"
 	
@@ -408,45 +445,65 @@ End Sub
 
 
 
-' "解析結果を消去する"
-Private Sub Action_MainMenu_Clear_All_Analyzed_Data()
-  On Error GoTo Err_Action_MainMenu_Clear_All_Analyzed_Data
-  Application.DisplayAlerts = False
-  Application.ScreenUpdating = False
 
-  Worksheets(ASSAY_SUMMARY_SHEET_NAME).Activate
+Rem ******************************************************************************************************
+Rem ワークシートイベント
+Rem ******************************************************************************************************
 
-  Dim i As Integer
-  Dim rawdatas As Variant
-  Dim templates As Variant
-  ReDim rawdatas(1)
-  ReDim templates(1)
-
-  With Worksheets(ASSAY_SUMMARY_SHEET_NAME).Range("B2")
-    i = 0
-    Do While .Offset(i, 0).Value <> ""
-      ReDim Preserve rawdatas(i)
-      ReDim Preserve templates(i)
-      rawdatas(i) = .Offset(i, 0).Value
-      templates(i) = "(raw)" + rawdatas(i)
-      i = i + 1
-    Loop
-  End With
-
-  Worksheets(templates).Select: ActiveWindow.SelectedSheets.Delete
-  Worksheets(rawdatas).Select:  ActiveWindow.SelectedSheets.Delete
-	
-  TSUKUBA_UTIL.ShowStatusMessage "全てのデータシート、データ処理シートを削除しました。"
-  
-  Application.DisplayAlerts = True
-  Application.ScreenUpdating = True
-	
-  Exit Sub
-
-Err_Action_MainMenu_Clear_All_Analyzed_Data:
-  TSUKUBA_UTIL.ShowStatusMessage "エラーです。　Platesシートを確認して、再度実行してください。"
-  MsgBox "エラーです。　Platesシートを確認して、再度実行してください。"
+' StatusBarのメッセージを消去
+Public Sub Action_WorkSheet_ClearStatusMessage()
+  Call TSUKUBA_UTIL.ShowStatusMessage("")
 End Sub
+
+' セクションを開閉する
+Public Function Action_WorkSheet_ToggleSection()
+	If ActiveCell.Interior.ThemeColor <> -4142 Then
+		If ActiveCell.Interior.ThemeColor = Cells(ActiveCell.row, 1).Interior.ThemeColor Then
+			If T1M.SECTION(ActiveCell, "hide?") Then
+				Rows(T1M.SECTION(ActiveCell, "inrows")).Hidden = False
+			Else
+				Rows(T1M.SECTION(ActiveCell, "inrows")).Hidden = True
+			End If
+		End If
+	End If
+End Function
+
+
+Rem ******************************************************************************************************
+Rem コンテキストメニューイベント
+Rem ******************************************************************************************************
+
+' 結果をPDFに出力する
+Private Sub Action_ContextMenu_Export_PDF()
+  Worksheets(T1.CSV2ARY(T1.ASSAY("plates"))).Select
+  ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, filename:=Replace(ThisWorkbook.FullName, "xlsm", "pdf")
+End Sub
+
+
+' はずれ値を除外する。
+Public Sub Action_ContextMenu_ExcludeData(flag As String)
+  Dim lb As String: lb = GetLabelOnCurPos()
+  Dim rol As Range: Set rol = ActiveCell.Offset(Range("WELL_ROLE").row - Range(lb).row, Range("WELL_ROLE").Column - Range(lb).Column)
+  Dim strk As Boolean
+  
+  Select Case flag
+    Case "include": rol.Value = Replace(rol.Value, "-", ""): strk = False
+    Case "exclude": rol.Value = rol.Value & "-": strk = True
+  End Select
+  
+  TSUKUBA_UTIL.DeleteNonEffectiveNames
+  RESOURCE.RestAssayResult
+  
+  Dim lbl As Variant
+	For Each lbl In T1.CSV2ARY(T1M.LabelNames("exist_well"))
+		rol.Offset(Range(lbl).row - Range("WELL_ROLE").row, Range(lbl).Column - Range("WELL_ROLE").Column).Font.Strikethrough = strk
+	Next
+End Sub
+
+
+
+
+
 
 
 Rem ******************************************************************************************************
@@ -464,7 +521,7 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
   Dim wel_filename As String
   
   Dim curpath As String: curpath = ActiveWorkbook.path & Application.PathSeparator
-  If TSUKUBA_UTIL.ExistNameP("Template", "TABLE") Then
+  If TSUKUBA_UTIL.ExistNameP("Template", LABEL_TABLE) Then
     cpd_filename = curpath & "cpd.csv"
     Kill cpd_filename
     Open cpd_filename For Output As #1
@@ -502,10 +559,10 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
     RESOURCE.UpdateAssayResult CStr(plt)
 
     ' cpdテーブルの出力
-    If TSUKUBA_UTIL.ExistNameP("Template", "TABLE") Then
+    If TSUKUBA_UTIL.ExistNameP("Template", LABEL_TABLE) Then
       TSUKUBA_UTIL.ShowStatusMessage "CSVエクスポート処理(cpd) [" & plt & "]"
       Dim cpdlbls As Variant: cpdlbls = T1.CSV2ARY(T1M.GetCpdLabels())
-      For rw = 1 To Range("TABLE").Rows.COUNT - 1
+      For rw = 1 To Range(LABEL_TABLE).Rows.COUNT - 1
         csv = ""
         For Each lbl In cpdlbls
           csv = csv & RESOURCE.GetAssayResult(CStr(plt), CStr(lbl), CInt(rw)) & ","
@@ -530,7 +587,7 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
     Next
     Dim wl As Variant
     Dim lbls As Variant: lbls = T1.CSV2ARY(T1M.GetWellLabels())
-    For Each wl In Range("WELL_POS")
+    For Each wl In Range(LABEL_PLATE_WELL_POSITION)
       csv = ""
       For Each lbl In lbls
         csv = csv & RESOURCE.GetAssayResult(CStr(plt), CStr(wl.Value), CStr(lbl)) & ","
@@ -542,7 +599,7 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
   
 	Application.ScreenUpdating = True
   Dim altname As String
-  If TSUKUBA_UTIL.ExistNameP("Template", "TABLE") Then
+  If TSUKUBA_UTIL.ExistNameP("Template", LABEL_TABLE) Then
     Close #1
     altname = curpath & Format(Now(), "YYMMDD") & "-cpd-" & CStr(cpd_entry) & ".csv"
     Kill altname
@@ -602,7 +659,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
     Dim repwb As String: repwb = ActiveWorkbook.Name
     Dim colplate As Integer
     
-    If TSUKUBA_UTIL.ExistSheetP(REPORT_QC_RESULT_SHEET_NAME) = True Then
+    If TSUKUBA_UTIL.ExistSheetP(SHEETNAME_REPORT_QC_RESULT) = True Then
       TSUKUBA_UTIL.ShowStatusMessage "報告書への転記処理: [QC結果]"
       Dim colsb As Integer
       Dim colcvpbk As Integer
@@ -611,7 +668,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
       Dim cl As Variant
       Dim rw As Variant
       
-      For Each rw In Sheets(REPORT_QC_RESULT_SHEET_NAME).UsedRange.Rows
+      For Each rw In Sheets(SHEETNAME_REPORT_QC_RESULT).UsedRange.Rows
         If rw.row = 1 Then
           For Each cl In rw.Columns
             If 1 < InStr(" Plate", cl.Value) Then colplate = cl.Column
@@ -621,7 +678,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
             If 1 < InStr(" Z'", cl.Value) Then colzprime = cl.Column
           Next
         Else
-          With Workbooks(repwb).Sheets(REPORT_QC_RESULT_SHEET_NAME)
+          With Workbooks(repwb).Sheets(SHEETNAME_REPORT_QC_RESULT)
             plt = .Cells(rw.row, colplate).Value
             val = RESOURCE.GetAssayResult(plt, "", "QC_ZPRIME")
             If val <> "" Then
@@ -635,7 +692,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
       Next
     End If
     
-    If TSUKUBA_UTIL.ExistSheetP(REPORT_ASSAY_RESULT_SHEET_NAME) = True Then
+    If TSUKUBA_UTIL.ExistSheetP(SHEETNAME_REPORT_ASSAY_RESULT) = True Then
       TSUKUBA_UTIL.ShowStatusMessage "報告書への転記処理: [アッセイ結果]"
       Dim rc As Variant
       Dim colwell As Integer
@@ -646,7 +703,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
       Dim coladditional As Integer
       Dim wellpos As String
       
-      For Each rw In Sheets(REPORT_ASSAY_RESULT_SHEET_NAME).UsedRange.Rows
+      For Each rw In Sheets(SHEETNAME_REPORT_ASSAY_RESULT).UsedRange.Rows
         If rw.row = 1 Then
           colplate = 0: colwell = 0: colhit = 0: colasyname = 0: colasyconc = 0: colactivity = 0
           For Each cl In rw.Columns
@@ -659,7 +716,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
             If 1 < InStr(" 備考", cl.Value) And coladditional = 0 Then coladditional = cl.Column
           Next
         Else
-          With Workbooks(repwb).Sheets(REPORT_ASSAY_RESULT_SHEET_NAME)
+          With Workbooks(repwb).Sheets(SHEETNAME_REPORT_ASSAY_RESULT)
             plt = .Cells(rw.row, colplate).Value
             wellpos = .Cells(rw.row, colwell).Value
             additional = T1.SYSTEM("today") & "追記"
@@ -669,7 +726,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
               .Cells(rw.row, colactivity).Value = val
               val = RESOURCE.GetAssayResult(plt, wellpos, "CPD_HIT"): If val <> "" Then .Cells(rw.row, colhit).Value = val
               val = RESOURCE.GetAssayResult(plt, "", "TEST_ASSAY"): If val <> "" Then .Cells(rw.row, colasyname).Value = val
-              val = RESOURCE.GetAssayResult(plt, wellpos, "CPD_CONC"): If val <> "" Then .Cells(rw.row, colasyconc).Value = val
+              val = RESOURCE.GetAssayResult(plt, wellpos, LABEL_PLATE_COMPOUND_CONC): If val <> "" Then .Cells(rw.row, colasyconc).Value = val
 							
               If Trim(.Cells(rw.row, coladditional).Value) <> "" Then
                 additional = additional & ", " & Trim(.Cells(rw.row, coladditional).Value)
@@ -795,7 +852,7 @@ Private Function GetWellData(platename As String, wellpos As String, labelname A
     Case "WELL_COLUMN":     GetWellData = RESOURCE.ConvertWellpos(wellpos, "COLUMN")
     Case "WELL_ROWNUM":     GetWellData = RESOURCE.ConvertWellpos(wellpos, "ROWNUM")
     Case "WELL_ROLE":       GetWellData = T1.well(wellpos, "role")
-    Case "CPD_CONC":        GetWellData = T1.well(wellpos, "conc")
+    Case LABEL_PLATE_COMPOUND_CONC:        GetWellData = T1.well(wellpos, "conc")
     Case Else:              GetWellData = T1.well(wellpos, labelname, "val")
 			' RAW_DATA, WELL_ROLE, CPD_CONC, CPD_RESULT, ユーザー定義
   End Select
@@ -804,7 +861,7 @@ End Function
 Public Function GetCpdLabels() As Variant
   Dim cl As Variant
   Dim csv As String
-  For Each cl In Sheets("Template").Range("TABLE").Rows(1).Columns
+  For Each cl In Sheets("Template").Range(LABEL_TABLE).Rows(1).Columns
     If cl.Value <> "" Then csv = csv & cl.Value & ","
   Next
   GetCpdLabels = Left(csv, Len(csv) - 1)
@@ -813,10 +870,10 @@ End Function
 Private Function GetCpdData(platename As String, recordpos As Double, labelname As String)
   Dim col As Integer
 	Dim cl As Variant
-  For Each cl In Sheets(platename).Range("TABLE").Rows(1).Columns
+  For Each cl In Sheets(platename).Range(LABEL_TABLE).Rows(1).Columns
     If cl.Value = labelname Then col = cl.Column: Exit For
   Next
-  GetCpdData = Sheets(platename).Cells(Range("TABLE").row + recordpos, col).Value
+  GetCpdData = Sheets(platename).Cells(Range(LABEL_TABLE).row + recordpos, col).Value
   ' ユーザー定義
 End Function
 
@@ -907,19 +964,19 @@ Private Sub Action_MainMenu_DataImportation_For_Template_Initialization()
 	
 	With Sheets("Template")
 		.Range("5:10000").Delete
-		.Range(T1.PLATE_TYPE).Value = "384"
-		.Range(T1.PLATE_READER).Value = "PHERASTER"
-		.Range(T1.PLATE_FORMAT).Value = "PRIMARY"
+		.Range(LABEL_PLATE_TYPE).Value = "384"
+		.Range(LABEL_PLATE_READER).Value = "PHERASTER"
+		.Range(T1M.LABEL_PLATE_FORMAT).Value = "PRIMARY"
 		
 		.Activate
 		TSUKUBA_UTIL.DeleteNonEffectiveNames "Template"
 		
 		' TemplateにPullDown付加
-		With .Range("PLATE_TYPE").Validation: .Delete: .Add Type:=xlValidateList, Formula1:=SYSTEM_SUPPORT_PLATE_TYPE
+		With .Range(LABEL_PLATE_TYPE).Validation: .Delete: .Add Type:=xlValidateList, Formula1:=SYSTEM_SUPPORT_PLATE_TYPE
 		End With
-		With .Range("PLATE_FORMAT").Validation: .Delete: .Add Type:=xlValidateList, Formula1:=SYSTEM_SUPPORT_PLATE_FORMAT
+		With .Range(LABEL_PLATE_FORMAT).Validation: .Delete: .Add Type:=xlValidateList, Formula1:=SYSTEM_SUPPORT_PLATE_FORMAT
 		End With
-		With .Range("PLATE_READER").Validation: .Delete: .Add Type:=xlValidateList, Formula1:=SYSTEM_SUPPORT_PLATE_READER
+		With .Range(LABEL_PLATE_READER).Validation: .Delete: .Add Type:=xlValidateList, Formula1:=SYSTEM_SUPPORT_PLATE_READER
 		End With
 		
 		.EnableCalculation = True
@@ -949,7 +1006,7 @@ Public Function LabelNames(label_type As String)
 	Const required_well = "WELL_POS,WELL_ROLE,CPD_CONC,RAW_DATA,CPD_RESULT,CPD_HIT"
 	Const reserved_plate = "PLATE_NAME,PLATE_DATAFILE,PLATE_EXCELFILE,ANALYZE_DATE,SYSTEM_VERSION"
 	Const reserved_well = "CPD_ID,WELL_POS_0,WELL_ROW,WELL_COL,WELL_ROWNUM"
-	Const reserved_table = "TABLE"
+	Const reserved_table = LABEL_TABLE
 	Dim lbl As String: lbl = ActiveSheet.Name
 	
 	Select Case label_type
@@ -1214,7 +1271,7 @@ Public Function action_worksheet_showpopupmenu_temporarytemplate()
     ' セクション :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     With .Controls.Add(Before:=1, Type:=msoControlPopup): .Caption = "セクション設定"
       With .Controls.Add(Type:=msoControlPopup): .Caption = "新規"
-        If 0 < InStr(SYSTEM_SUPPORT_REALTIME_PLATE_READER, Range(PLATE_READER)) Then
+        If 0 < InStr(SYSTEM_SUPPORT_REALTIME_PLATE_READER, Range(LABEL_PLATE_READER)) Then
           With .Controls.Add(): .Caption = "データ表示(時間指定)": .OnAction = "'T1M.Action_ContextMenu_InsertSection ""data2""'"
           End With
           With .Controls.Add(): .Caption = "データ表示(時間範囲指定)": .OnAction = "'T1M.Action_ContextMenu_InsertSection ""data4""'"
@@ -1261,26 +1318,26 @@ Public Function action_worksheet_showpopupmenu_temporarytemplate()
 		
     ' プレート :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     With .Controls.Add(Type:=msoControlPopup, Before:=1): .Caption = "プレート設定"
-      With .Controls.Add(Type:=msoControlPopup): .Caption = "プレートタイプ: " & Range(PLATE_TYPE)
+      With .Controls.Add(Type:=msoControlPopup): .Caption = "プレートタイプ: " & Range(LABEL_PLATE_TYPE)
         For Each mn In T1.CSV2ARY(SYSTEM_SUPPORT_PLATE_TYPE)
           With .Controls.Add(): .Caption = CStr(mn): .OnAction = "'T1M.Action_ContextMenu_UpdatePlateProperty """ & mn & """'"
-            If CStr(mn) = Range(PLATE_TYPE) Then .State = True
-            If T1.FIND_ROW(Range("TSUKUBA_TEMPLATE!A:A"), "WELL_ROLE", CStr(mn), Range(PLATE_FORMAT)) = 0 Then .Enabled = False
+            If CStr(mn) = Range(LABEL_PLATE_TYPE) Then .State = True
+            If T1.FIND_ROW(Range("TSUKUBA_TEMPLATE!A:A"), "WELL_ROLE", CStr(mn), Range(LABEL_PLATE_FORMAT)) = 0 Then .Enabled = False
           End With
         Next
       End With
-      With .Controls.Add(Type:=msoControlPopup): .Caption = "プレートフォーマット: " & Range(PLATE_FORMAT)
+      With .Controls.Add(Type:=msoControlPopup): .Caption = "プレートフォーマット: " & Range(LABEL_PLATE_FORMAT)
         For Each mn In T1.CSV2ARY(SYSTEM_SUPPORT_PLATE_FORMAT)
           With .Controls.Add(): .Caption = CStr(mn): .OnAction = "'T1M.Action_ContextMenu_UpdatePlateProperty """ & mn & """'"
-            If CStr(mn) = Range(PLATE_FORMAT) Then .State = True
-            If T1.FIND_ROW(Range("TSUKUBA_TEMPLATE!A:A"), "WELL_ROLE", Range(PLATE_TYPE), CStr(mn)) = 0 Then .Enabled = False
+            If CStr(mn) = Range(LABEL_PLATE_FORMAT) Then .State = True
+            If T1.FIND_ROW(Range("TSUKUBA_TEMPLATE!A:A"), "WELL_ROLE", Range(LABEL_PLATE_TYPE), CStr(mn)) = 0 Then .Enabled = False
           End With
         Next
       End With
-      With .Controls.Add(Type:=msoControlPopup): .Caption = "プレートリーダー: " & Range(PLATE_READER)
+      With .Controls.Add(Type:=msoControlPopup): .Caption = "プレートリーダー: " & Range(LABEL_PLATE_READER)
         For Each mn In T1.CSV2ARY(SYSTEM_SUPPORT_PLATE_READER)
           With .Controls.Add(): .Caption = CStr(mn): .OnAction = "'T1M.Action_ContextMenu_UpdatePlateProperty """ & mn & """'"
-            If CStr(mn) = Range(PLATE_READER) Then .State = True
+            If CStr(mn) = Range(LABEL_PLATE_READER) Then .State = True
           End With
         Next
       End With
@@ -1477,9 +1534,9 @@ Public Sub Action_ContextMenu_InsertSection(param As String)
 	Dim rw, cl As Integer: rw = ActiveCell.row: cl = ActiveCell.Column
 	
 	If ActiveSheet.Name <> "Template" Then MsgBox "Templateでない！": Exit Sub
-	Dim typ As String: typ = Range(PLATE_TYPE)
-	Dim fmt As String: fmt = Range(PLATE_FORMAT)
-	Dim red As String: red = Range(PLATE_READER)
+	Dim typ As String: typ = Range(LABEL_PLATE_TYPE)
+	Dim fmt As String: fmt = Range(LABEL_PLATE_FORMAT)
+	Dim red As String: red = Range(LABEL_PLATE_READER)
 	Select Case param
 		Case "info":  T1M.InsertInfoSection typ, fmt
 		Case "data1": T1M.InsertDataSection typ, "1PARAM"
@@ -1502,9 +1559,9 @@ End Sub
 
 Public Function GetExtraSections() As String
   On Error Resume Next
-  Dim typ As String: typ = Range(PLATE_TYPE)
-  Dim fmt As String: fmt = Range(PLATE_FORMAT)
-  Dim red As String: red = Range(PLATE_READER)
+  Dim typ As String: typ = Range(LABEL_PLATE_TYPE)
+  Dim fmt As String: fmt = Range(LABEL_PLATE_FORMAT)
+  Dim red As String: red = Range(LABEL_PLATE_READER)
   Dim csv As String: csv = ""
   Dim sht As String
   sht = ActiveSheet.Name
@@ -1594,7 +1651,7 @@ Private Sub InsertGraphSection(typ As String, param As String)
         ActiveChart.Axes(xlCategory).MaximumScale = Application.WorksheetFunction.Ceiling(data_rng.COUNT, 10)
 				
         csv = ""
-        For Each r In Range("WELL_POS").Rows
+        For Each r In Range(LABEL_PLATE_WELL_POSITION).Rows
           csv = csv & ActiveSheet.Name & "!" & r.Address & ","
         Next
         ActiveChart.FullSeriesCollection(1).XValues = "=(" & Left(csv, Len(csv) - 1) & ")"
@@ -1812,7 +1869,7 @@ Private Sub InsertInfoSection(typ As String, fmt As String)
   rw = T1.FIND_ROW(ActiveSheet.Columns(1), "WELL_ROLE"): r = Rows(rw + 1).Hidden
   If 0 < rw Then: Rows(T1M.SECTION(ActiveSheet.Rows(rw), "rows")).Delete
   TSUKUBA_UTIL.DeleteNonEffectiveNames "Template"
-  rw = T1.FIND_ROW(ActiveSheet.Columns(1), "CPD_CONC"): c = Rows(rw + 1).Hidden
+  rw = T1.FIND_ROW(ActiveSheet.Columns(1), LABEL_PLATE_COMPOUND_CONC): c = Rows(rw + 1).Hidden
   If 0 < rw Then: Rows(T1M.SECTION(ActiveSheet.Rows(rw), "rows")).Delete
   TSUKUBA_UTIL.DeleteNonEffectiveNames "Template"
   
@@ -1834,12 +1891,12 @@ Private Sub InsertInfoSection(typ As String, fmt As String)
     If Not r Then ShowCurrentSection
   End If
   
-  If CopySection("CPD_CONC", typ, fmt) Then
+  If CopySection(LABEL_PLATE_COMPOUND_CONC, typ, fmt) Then
     rw = T1.FIND_ROW(ActiveSheet.Columns(1), "WELL_ROLE")
     rw = T1M.SECTION(Rows(rw), "end") + 1
     Rows(rw).Insert Shift:=xlDown
     Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = Split(Cells(rw, 1).Value, ":")(0)
-    Cells(rw + 3, 3).Select: Action_ContextMenu_CreateWellLabel "CPD_CONC"
+    Cells(rw + 3, 3).Select: Action_ContextMenu_CreateWellLabel LABEL_PLATE_COMPOUND_CONC
     If Not c Then ShowCurrentSection
   End If
   
@@ -1849,18 +1906,18 @@ End Sub
 
 Private Sub InsertTableSection(typ As String, fmt As String)
   T1M.Action_ContextMenu_InsertSection "END"
-  rw = T1.FIND_ROW(ActiveSheet.Columns(1), "TABLE")
+  rw = T1.FIND_ROW(ActiveSheet.Columns(1), LABEL_TABLE)
   If 0 < rw Then
     Rows(T1M.SECTION(ActiveSheet.Rows(rw), "rows")).Delete
     TSUKUBA_UTIL.DeleteNonEffectiveNames "Template"
   End If
-  If T1M.CopySection("TABLE", typ, fmt) Then
+  If T1M.CopySection(LABEL_TABLE, typ, fmt) Then
     rw = T1.FIND_ROW(ActiveSheet.Columns(1), "END")
     Rows(rw).Insert Shift:=xlDown
     Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = Split(Cells(rw, 1).Value, ":")(0)
     Cells(rw + 2, 2).Select: Action_ContextMenu_CreateTableLabel T1.TABLE("name")
     T1M.ShowCurrentSection
-  ElseIf T1M.CopySection("TABLE", "0", "FREE") Then
+  ElseIf T1M.CopySection(LABEL_TABLE, "0", "FREE") Then
     rw = T1.FIND_ROW(ActiveSheet.Columns(1), "END")
     Rows(rw).Insert Shift:=xlDown
     Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = Split(Cells(rw, 1).Value, ":")(0)
@@ -1882,13 +1939,13 @@ Private Sub InsertEndSection()
 End Sub
 Private Sub Action_ContextMenu_UpdatePlateProperty(mnu As String)
 	If 0 < InStr(SYSTEM_SUPPORT_PLATE_TYPE, mnu) Then 'プレートタイプ変更
-		ActiveSheet.Range(PLATE_TYPE) = mnu
+		ActiveSheet.Range(LABEL_PLATE_TYPE) = mnu
 		Action_ContextMenu_InsertSection "info"
 	ElseIf 0 < InStr(SYSTEM_SUPPORT_PLATE_FORMAT, mnu) Then 'プレートフォーマット変更
-		ActiveSheet.Range(PLATE_FORMAT) = mnu
+		ActiveSheet.Range(LABEL_PLATE_FORMAT) = mnu
 		Action_ContextMenu_InsertSection "info"
 	ElseIf 0 < InStr(SYSTEM_SUPPORT_PLATE_READER, mnu) Then 'プレートリーダー変更
-		ActiveSheet.Range(PLATE_READER) = mnu
+		ActiveSheet.Range(LABEL_PLATE_READER) = mnu
 	End If
 End Sub
 
@@ -2001,9 +2058,9 @@ Private Sub Action_ContextMenu_SaveAsTemplate()
   ThisWorkbook.Save
   
   Dim sht As Variant
-  If 0 < InStr(SYSTEM_SUPPORT_PLATE_TYPE, Range(PLATE_TYPE)) And _
-     0 < InStr(SYSTEM_SUPPORT_PLATE_FORMAT, Range(PLATE_FORMAT)) And _
-     0 < InStr(SYSTEM_SUPPORT_PLATE_READER, Range(PLATE_READER)) Then
+  If 0 < InStr(SYSTEM_SUPPORT_PLATE_TYPE, Range(LABEL_PLATE_TYPE)) And _
+     0 < InStr(SYSTEM_SUPPORT_PLATE_FORMAT, Range(LABEL_PLATE_FORMAT)) And _
+     0 < InStr(SYSTEM_SUPPORT_PLATE_READER, Range(LABEL_PLATE_READER)) Then
     For Each sht In ThisWorkbook.Worksheets
       If 0 < InStr(sht.Name, "TSUKUBA_TEMPLATE") Then
         sht.Visible = xlSheetVisible
@@ -2011,7 +2068,7 @@ Private Sub Action_ContextMenu_SaveAsTemplate()
       End If
     Next sht
 		
-    ThisWorkbook.SaveAs filename:=ThisWorkbook.path & Application.PathSeparator & Format(Date, "yymmdd") & "_" & Range(PLATE_FORMAT) & "_" & Range(PLATE_TYPE) & "_" & Range(PLATE_READER) & ".xlsm"
+    ThisWorkbook.SaveAs filename:=ThisWorkbook.path & Application.PathSeparator & Format(Date, "yymmdd") & "_" & Range(LABEL_PLATE_FORMAT) & "_" & Range(LABEL_PLATE_TYPE) & "_" & Range(LABEL_PLATE_READER) & ".xlsm"
 		
     T1M.Action_WorkBook_Initialize
   Else
@@ -2166,26 +2223,6 @@ Public Function ExcludedWellP() As Boolean
   ExcludedWellP = ActiveCell.Font.Strikethrough
 End Function
 
-Public Sub Action_ContextMenu_ExcludeData(flag As String)
-  Dim lb As String: lb = GetLabelOnCurPos()
-  Dim rol As Range:
-  Set rol = ActiveCell.Offset(Range("WELL_ROLE").row - Range(lb).row, Range("WELL_ROLE").Column - Range(lb).Column)
-  Dim strk As Boolean
-  
-  Select Case flag
-    Case "include": rol.Value = Replace(rol.Value, "-", ""): strk = False
-    Case "exclude": rol.Value = rol.Value & "-": strk = True
-  End Select
-  
-  TSUKUBA_UTIL.DeleteNonEffectiveNames
-  RESOURCE.RestAssayResult
-  
-  Dim lbl As Variant
-	For Each lbl In T1.CSV2ARY(T1M.LabelNames("exist_well"))
-		rol.Offset(Range(lbl).row - Range("WELL_ROLE").row, Range(lbl).Column - Range("WELL_ROLE").Column).Font.Strikethrough = strk
-	Next
-
-End Sub
 
 
 

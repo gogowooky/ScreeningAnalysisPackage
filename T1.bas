@@ -50,27 +50,12 @@ Rem LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM
 Rem OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 Rem SOFTWARE.
 Rem
+Rem
 Rem ******************************************************************************************************
 Rem ******************************************************************************************************
 
 Rem EXPORT OFF
    
-Rem ****************************************************************************************************************************************************************
-Rem 固定参照値
-Rem ****************************************************************************************************************************************************************
-
-' Template内の名前付き領域の名前
-Public Const PLATE_TYPE = "PLATE_TYPE"
-Public Const PLATE_READER = "PLATE_READER"
-Public Const PLATE_FORMAT = "PLATE_FORMAT"
-'Const ASSAY_NAME = "ASSAY_NAME"
-'Const ASSAY_DATE = "ASSAY_DATE"
-'Const ASSAY_TIME = "ASSAY_TIME"
-Const PLATE_WELL_POSITION = "WELL_POS"
-Const PLATE_WELL_ROLE = "WELL_ROLE"
-Const PLATE_COMPOUND_CONC = "CPD_CONC"
-Public Const LABEL_TABLE = "TABLE"
-
 Rem ********************************************************************************
 Rem [名前] T1.SYSTEM( ... )
 Rem
@@ -552,12 +537,12 @@ Public Function well(wellpos As String, labelname As String, Optional func As St
 	If func = "" Then
 		Select Case labelname                     ' WELL( wellpos/rc, labelname )
 			Case "cpdid": well = RESOURCE.GetCpdID(Application.Caller.Parent.Name, T1.RC2WELL(rw, cl, "pos"))
-			Case "role":  well = Range(PLATE_WELL_ROLE).Cells(rw, cl).Value
-			Case "conc":  well = Range(PLATE_COMPOUND_CONC).Cells(rw, cl).Value
+			Case "role":  well = Range(T1M.LABEL_PLATE_WELL_ROLE).Cells(rw, cl).Value
+			Case "conc":  well = Range(T1M.LABEL_PLATE_COMPOUND_CONC).Cells(rw, cl).Value
 			Case "roleconc":
-				cnc = Range(PLATE_COMPOUND_CONC).Cells(rw, cl).Value
-				well = Range(PLATE_WELL_ROLE).Cells(rw, cl).Value
-				If cnc = "0" Or cnc = "" Then well = well & "@" & Range(PLATE_COMPOUND_CONC).Cells(rw, cl).Value
+				cnc = Range(T1M.LABEL_PLATE_COMPOUND_CONC).Cells(rw, cl).Value
+				well = Range(T1M.LABEL_PLATE_WELL_ROLE).Cells(rw, cl).Value
+				If cnc = "0" Or cnc = "" Then well = well & "@" & Range(T1M.LABEL_PLATE_COMPOUND_CONC).Cells(rw, cl).Value
 			Case Else:    well = T1.RC2WELL(rw, cl, labelname) ' rc, RC, pos, pos0, pos00
 		End Select
 
@@ -660,7 +645,7 @@ Public Function LABEL(labelname As String, Optional func As String = "", _
       For Each nam In Application.Caller.Parent.names
          If (func = "plate" And nam.RefersToRange.COUNT = 1) Or _
             (func = "well" And nam.RefersToRange.COUNT = T1.PLATE("", "type")) Or _
-            (func = "table" And nam.Name = ("Template!" & LABEL_TABLE)) Or _
+            (func = "table" And nam.Name = ("Template!" & T1M.LABEL_TABLE)) Or _
             (func = "all") Then
             pos = InStrRev(nam.Name, "!")
             csv = csv & Mid(nam.Name, pos + 1) & ","
@@ -717,7 +702,7 @@ Public Function ASSAY(func)
   
   Select Case func
     Case "plates":
-      For Each cl In Sheets(T1M.ASSAY_SUMMARY_SHEET_NAME).UsedRange.Columns(2).Rows
+      For Each cl In Sheets(T1M.SHEETNAME_ASSAY_SUMMARY).UsedRange.Columns(2).Rows
         If 1 < cl.row And cl.Value <> "" Then csv = csv & cl.Value & ","
       Next
       ASSAY = Left(csv, Len(csv) - 1)
@@ -759,8 +744,8 @@ Public Function role(rolename As String, labelname As String, Optional func As S
   With Application.Caller.Parent
     If rolename = "" Then
       Select Case labelname
-        Case "roles": role = TSUKUBA_UTIL.EnumrateValues(.Range(PLATE_WELL_ROLE))
-        Case "concs": role = TSUKUBA_UTIL.EnumrateValues(.Range(PLATE_COMPOUND_CONC))
+        Case "roles": role = TSUKUBA_UTIL.EnumrateValues(.Range(T1M.LABEL_PLATE_WELL_ROLE))
+        Case "concs": role = TSUKUBA_UTIL.EnumrateValues(.Range(T1M.LABEL_PLATE_COMPOUND_CONC))
       End Select
     Else
       If func = "" Then
@@ -843,16 +828,16 @@ Public Function PLATE(Optional platename As String = "", Optional func As String
 	Dim rw As Variant
    
 	Select Case func
-		Case "type":         PLATE = Range(sht & PLATE_TYPE).Value
-		Case "reader":       PLATE = Range(sht & PLATE_READER).Value
-		Case "format":       PLATE = Range(sht & PLATE_FORMAT).Value
+		Case "type":         PLATE = Range(sht & T1M.LABEL_PLATE_TYPE).Value
+		Case "reader":       PLATE = Range(sht & T1M.LABEL_PLATE_READER).Value
+		Case "format":       PLATE = Range(sht & T1M.LABEL_PLATE_FORMAT).Value
 		Case "name":         PLATE = platename
 		Case "labels", "platelabels", "welllabels", "tablelabel":
 			Dim csv As String: csv = ""
 			For Each nam In Sheets(platename).names
 				If (func = "platelabels" And nam.RefersToRange.COUNT = 1) Or _
 					 (func = "welllabels" And nam.RefersToRange.COUNT = T1.PLATE(platename, "type")) Or _
-					 (func = "tablelabel" And nam.Name = (platename & "!" & LABEL_TABLE)) Or _
+					 (func = "tablelabel" And nam.Name = (platename & "!" & T1M.LABEL_TABLE)) Or _
 					 (func = "labels") Then
 					pos = InStrRev(nam.Name, "!")
 					csv = csv & Mid(nam.Name, pos + 1) & ","
@@ -862,7 +847,7 @@ Public Function PLATE(Optional platename As String = "", Optional func As String
          
 		Case "rawdatasheet": PLATE = "(raw)" & platename
 		Case "rawdatafile":
-			With Sheets(T1M.ASSAY_SUMMARY_SHEET_NAME)
+			With Sheets(T1M.SHEETNAME_ASSAY_SUMMARY)
 				For Each rw In .UsedRange.Rows
 					If rw.Cells(1, 2).Value = platename Then
 						PLATE = rw.Cells(1, 1).Value: Exit Function
@@ -904,18 +889,18 @@ Public Function TABLE(func As String, Optional param As Integer = 0)
 	Dim cl As Variant
    
 	Select Case func
-		Case "name": TABLE = LABEL_TABLE
+		Case "name": TABLE = T1M.LABEL_TABLE
 		Case "items":
 			Dim csv As String
-			For Each cl In Range("TABLE").Rows(1).Columns
+			For Each cl In Range(LABEL_TABLE).Rows(1).Columns
 				If cl.Value <> "" Then csv = csv & cl.Value & ","
 			Next
 			TABLE = Left(csv, Len(csv) - 1)
-		Case "records": TABLE = Range("TABLE").Rows.COUNT - 1
+		Case "records": TABLE = Range(LABEL_TABLE).Rows.COUNT - 1
 		Case Else:
-			For Each cl In Range("TABLE").Rows(1).Columns
+			For Each cl In Range(LABEL_TABLE).Rows(1).Columns
 				If cl.Value = func Then
-					TABLE = Range("TABLE").Cells(param + 1, cl.Column - 1).Value
+					TABLE = Range(LABEL_TABLE).Cells(param + 1, cl.Column - 1).Value
 					Exit Function
 				End If
 			Next
@@ -1269,15 +1254,13 @@ Private Function FDSS_INFO_sub(stname As String, row As String, key As String) A
 End Function
 
 Public Function FDSS_VALUE(wellpos As String, id As String, Optional param1 As Variant = Null, Optional param2 As Variant = Null, Optional param3 As Variant = Null) As Variant
-	On Error GoTo FDSS_VALUE_ERR
+	On Error Resume GoTo FDSS_VALUE_ERR
 	Application.Volatile
-   
-	Dim arr As Variant
-	Dim wellrow As Double
-	Dim wellcol As Double
-	arr = T1.well(wellpos, "rc")
-	wellrow = arr(0) - 1
-	wellcol = arr(1) - 1
+	FDSS_VALUE = CVErr(xlErrRef)
+	
+	Dim arr As Variant:    arr = T1.well(wellpos, "rc")
+	Dim wellrow As Double: wellrow = arr(0) - 1
+	Dim wellcol As Double: wellcol = arr(1) - 1
 
 	Dim timerow As Double
 	With Worksheets(T1.PLATE("", "rawdatasheet"))
@@ -1287,29 +1270,17 @@ Public Function FDSS_VALUE(wellpos As String, id As String, Optional param1 As V
 	End With
    
 	If IsNull(param2) Then
-		Dim tp As Double
-		tp = CDbl(param1) * 1000
-		FDSS_VALUE = T1.FDSS_VALUE_1tp(wellrow, wellcol, id, timerow, tp)
-
+		FDSS_VALUE = T1.FDSS_VALUE_1tp(wellrow, wellcol, id, timerow, CDbl(param1) * 1000 )
 	Else
-		Dim tp1 As Double
-		Dim tp2 As Double
-		Dim func As String
-		tp1 = CDbl(param1) * 1000
-		tp2 = CDbl(param2) * 1000
-		func = CStr(param3)
-		FDSS_VALUE = T1.FDSS_VALUE_2tp(wellrow, wellcol, id, timerow, tp1, tp2, func)
+		FDSS_VALUE = T1.FDSS_VALUE_2tp(wellrow, wellcol, id, timerow, CDbl(param1) * 1000, CDbl(param2) * 1000, CStr(param3) )
 	End If
-	Exit Function
-   
-FDSS_VALUE_ERR:
-	FDSS_VALUE = CVErr(xlErrRef)
 End Function
 
 
 Private Function FDSS_VALUE_1tp(wellrow As Double, wellcol As Double, reftype As String, timerow As Double, timepoint As Double) As Variant
 	On Error GoTo FDSS_VALUE_1tp_ERR
 	Application.Volatile
+	FDSS_VALUE_1tp = CVErr(xlErrRef)
 
 	Dim timecol As Double
 	Dim rownum As Double
@@ -1333,15 +1304,14 @@ Private Function FDSS_VALUE_1tp(wellrow As Double, wellcol As Double, reftype As
 		FDSS_VALUE_1tp = .Cells(timerow + 1 + typeoffset + (wellrow * 24 + wellcol) * rownum, timecol).Value
 	End With
 
-	Exit Function
-FDSS_VALUE_1tp_ERR:
-	FDSS_VALUE_1tp = CVErr(xlErrRef)
 End Function
 
 
 Private Function FDSS_VALUE_2tp(wellrow As Double, wellcol As Double, reftype As String, timerow As Double, timepoint As Double, timepoint2 As Double, func As String) As Variant
 	On Error GoTo FDSS_VALUE_2tp_ERR
+	FDSS_VALUE_2tp = CVErr(xlErrRef)
 	Application.Volatile
+
 	Dim tim As Long
 	Dim timecol As Double
 	Dim timecol1 As Double
@@ -1399,11 +1369,8 @@ Private Function FDSS_VALUE_2tp(wellrow As Double, wellcol As Double, reftype As
 				Case "rsq":        FDSS_VALUE_2tp = WorksheetFunction.RSq(DataRange, TimeRange)
 			End Select
 		End If
-		Exit Function
 	End With
 
-FDSS_VALUE_2tp_ERR:
-	FDSS_VALUE_2tp = CVErr(xlErrRef)
 End Function
 
 
