@@ -1,61 +1,3 @@
-Attribute VB_Name = "T1"
-Rem EXPORT ON
- 
-Rem ******************************************************************************************************
-Rem ******************************************************************************************************
-Rem
-Rem
-Rem ScreeningAnalysisPackage.xlsm
-Rem
-Rem Copyright (c) 2015  Shinichiro Egashira
-Rem
-Rem
-Rem
-Rem 以下に定める条件に従い、本ソフトウェアおよび関連文書のファイル（以下「ソフトウェア」）の複製を
-Rem 取得するすべての人に対し、ソフトウェアを無制限に扱うことを無償で許可します。
-Rem これには、ソフトウェアの複製を使用、複写、変更、結合、掲載、頒布、サブライセンス、および/または
-Rem 販売する権利、およびソフトウェアを提供する相手に同じことを許可する権利も無制限に含まれます。
-Rem
-Rem
-Rem 上記の著作権表示および本許諾表示を､ソフトウェアのすべての複製または重要な部分に記載するものとします｡
-Rem
-Rem ソフトウェアは「現状のまま」で、明示であるか暗黙であるかを問わず、何らの保証もなく提供されます。
-Rem ここでいう保証とは、商品性、特定の目的への適合性、および権利非侵害についての保証も含みますが、
-Rem それに限定されるものではありません。 作者または著作権者は、契約行為、不法行為、またはそれ以外であろうと、
-Rem ソフトウェアに起因または関連し、あるいはソフトウェアの使用またはその他の扱いによって生じる一切の
-Rem 請求、損害、その他の義務について何らの責任も負わないものとします。
-Rem
-Rem
-Rem
-Rem ScreeningAnalysisPackage.xlsm
-Rem
-Rem Copyright (c) 2015 Shinichiro Egashira
-Rem
-Rem
-Rem Permission is hereby granted, free of charge, to any person obtaining a copy
-Rem of this software and associated documentation files (the "Software"), to deal
-Rem in the Software without restriction, including without limitation the rights
-Rem to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-Rem copies of the Software, and to permit persons to whom the Software is
-Rem furnished to do so, subject to the following conditions:
-Rem
-Rem The above copyright notice and this permission notice shall be included in all
-Rem copies or substantial portions of the Software.
-Rem
-Rem THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-Rem IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-Rem FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-Rem AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-Rem LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-Rem OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-Rem SOFTWARE.
-Rem
-Rem
-Rem ******************************************************************************************************
-Rem ******************************************************************************************************
-
-Rem EXPORT OFF
-   
 Rem ********************************************************************************
 Rem [名前] T1.SYSTEM( ... )
 Rem
@@ -65,8 +7,8 @@ Public Function SYSTEM(Optional param As String = "")
 	Application.Volatile
 	Select Case param
 		Case "title":          SYSTEM = "Screening Analysis Package for Excel"
-		Case "version":        SYSTEM = "ver. 1.0.1"
-		Case "update":         SYSTEM = "2015/04/03 12:21"
+		Case "version":        SYSTEM = "ver. 1.0.2"
+		Case "update":         SYSTEM = "2015/04/07 18:40"
 		Case "affiliation":    SYSTEM = "Drug Discovery Initiative (DDI)"
 		Case "affiliation2":   SYSTEM = "The University of Tokyo"
 		Case "affiliation3":   SYSTEM = "DDI"
@@ -77,17 +19,17 @@ Public Function SYSTEM(Optional param As String = "")
 		Case "author":         SYSTEM = "Shinichiro Egashira"
 		Case "copyright":      SYSTEM = "Copyright (c) 2015 " & SYSTEM("author")
 		Case "mail":           SYSTEM = "ddiinfo@mol.f.u-tokyo.ac.jp"
-		Case "original":       SYSTEM = "https://github.com/gogowooky/ScreeningAnalysisPackage"		
+		Case "original":       SYSTEM = "https://github.com/gogowooky/ScreeningAnalysisPackage"
 		Case "support_reader":     SYSTEM = T1M.SYSTEM_SUPPORT_PLATE_READER
 		Case "support_plate_type": SYSTEM = T1M.SYSTEM_SUPPORT_PLATE_TYPE
 		Case "today":          SYSTEM = DATE_ID(Date)
 		Case "now":            SYSTEM = TIME_ID(Now)
 		Case "excelver":       SYSTEM = Application.Version
-		Case "pc":             SYSTEM = Array("Mac","Windows")(-CInt(CBool(InStr(Application.OperatingSystem,"Windows"))))
+		Case "pc":             SYSTEM = Array("Mac", "Windows")(-CInt(CBool(InStr(Application.OperatingSystem, "Windows"))))
 		Case "filename":       SYSTEM = Application.Caller.Parent.Parent.Name
 		Case "path":           SYSTEM = Application.Caller.Parent.Parent.path
 		Case "filepath":       SYSTEM = Application.Caller.Parent.Parent.path & Application.PathSeparator & Application.Caller.Parent.Parent.Name
-		Case "parentdir":      SYSTEM = Mid( SYSTEM("path"), InStrRev( SYSTEM("path"), Application.PathSeparator) + 1)
+		Case "parentdir":      SYSTEM = Mid(SYSTEM("path"), InStrRev(SYSTEM("path"), Application.PathSeparator) + 1)
 		Case Else:             SYSTEM = SYSTEM("title") & " " & SYSTEM("version")
 	End Select
 End Function
@@ -102,8 +44,8 @@ Rem
 Rem [名前] T1.FORMAT_DATE
 Rem [用途] 日付文字列(dat)を"yyyy/mm/dd"形式に変換する
 Rem
-Public Function DATE_ID( dat As Variant ) As String
-   DATE_ID = Strings.Format(DateValue(dat), "yyyy/mm/dd")
+Public Function DATE_ID(dat As Variant) As String
+	DATE_ID = Strings.Format(DateValue(dat), "yyyy/mm/dd")
 End Function
 
 Rem
@@ -242,7 +184,7 @@ Public Function RC2WELL(rw As Integer, cl As Integer, param As String) As Varian
   RC2WELL = RESOURCE.GetWellpos(rw, cl, param)
   Exit Function
 	
-ERR_RC2WELL: ' 汎用
+	ERR_RC2WELL: ' 汎用
   Dim r As Variant: r = Array("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF")
 	Dim clstr As String: clstr = CStr(cl)
 	Select Case param
@@ -301,7 +243,7 @@ Public Function PLATETOOL(Optional param As String = "pos") As String
 	For cl = 1 To Application.WorksheetFunction.MIN(49, Application.Caller.Column)
 		If InStr(1, Application.Caller.Offset(0, -cl).Formula, "=T1.PLATETOOL", 1) = 0 Then Exit For
 	Next
-   
+	
 	If rw = 1 Then
 		If cl = 1 Then
 			PLATETOOL = ""
@@ -339,7 +281,7 @@ Public Function SELECT_WELLS(rng As Range, comp As String, key As Variant) As St
   SELECT_WELLS = ""
   Dim csv As String: csv = ""
   Dim r As Variant
-	Dim flag As boolean
+	Dim flag As Boolean
 	For Each r In rng
 		Select Case comp
 			Case "like":   flag = 0 < InStr(r.Value, key)
@@ -520,7 +462,7 @@ Rem
 Public Function well(wellpos As String, labelname As String, Optional func As String = "", Optional ref1 As Variant = Null, Optional ref2 As Variant = Null)
   On Error Resume Next
 	Application.Volatile
-   
+	
   well = CVErr(xlErrRef)
 
 	Dim ary As Variant
@@ -532,7 +474,7 @@ Public Function well(wellpos As String, labelname As String, Optional func As St
 
 	Dim rw As Integer: rw = ary(0)
 	Dim cl As Integer: cl = ary(1)
-   
+	
 	' 機能計算
 	If func = "" Then
 		Select Case labelname                     ' WELL( wellpos/rc, labelname )
@@ -558,10 +500,10 @@ Public Function well(wellpos As String, labelname As String, Optional func As St
 					Case "pcnt": well = T1.well(wellpos, labelname, "pcnt", "MIN", "MAX")
 					Case "inhp": well = T1.well(wellpos, labelname, "inhp", "MIN", "MAX")
 				End Select
-            
+				
 			Case "Integer", "Double", "Range": ' WELL( wellpos/rc, labelname, func, 数値(ref1) )
 				Dim criteria As Double
-            
+				
 				If TypeName(ref1) = "Range" Then
 					criteria = ref1.Value
 				Else
@@ -573,7 +515,7 @@ Public Function well(wellpos As String, labelname As String, Optional func As St
 					Case "below?": If val0 < criteria Then well = "hit"
 					Case "equal?": If val0 = criteria Then well = "hit"
 				End Select
-            
+				
 			Case "String":
 				Select Case TypeName(ref2)
 					Case "Null":                 ' WELL( wellpos/rc, labelname, func, 文字(ref1) )
@@ -595,12 +537,12 @@ Public Function well(wellpos As String, labelname As String, Optional func As St
 							Case "inhp":   well = 100 - 100 * (val0 - val1) / (val2 - val1)
 						End Select
 				End Select
-         
+				
 			Case Else: well = TypeName(ref1)
-         
+				
 		End Select
 	End If
-   
+	
 End Function
 
 
@@ -633,57 +575,57 @@ Rem  LABEL( (labelname), "sn",     ("MIN", "MAX") ) : 特定labelのsn値を得る。 de
 Rem
 
 Public Function LABEL(labelname As String, Optional func As String = "", _
-                                           Optional role1 As String = "MIN", _
-                                           Optional role2 As String = "MAX") As Variant
+											Optional role1 As String = "MIN", _
+											Optional role2 As String = "MAX") As Variant
   LABEL = CVErr(xlErrRef)
-   On Error Resume Next
-   Application.Volatile
-   Dim nam As Variant
+	On Error Resume Next
+	Application.Volatile
+	Dim nam As Variant
 
-   If labelname = "" Then         ' LABEL( "", func )
-      Dim csv As String: csv = ""
-      For Each nam In Application.Caller.Parent.names
-         If (func = "plate" And nam.RefersToRange.COUNT = 1) Or _
-            (func = "well" And nam.RefersToRange.COUNT = T1.PLATE("", "type")) Or _
-            (func = "table" And nam.Name = ("Template!" & T1M.LABEL_TABLE)) Or _
-            (func = "all") Then
-            pos = InStrRev(nam.Name, "!")
-            csv = csv & Mid(nam.Name, pos + 1) & ","
-         End If
-      Next
-      LABEL = Left(csv, Len(csv) - 1)
+	If labelname = "" Then         ' LABEL( "", func )
+		Dim csv As String: csv = ""
+		For Each nam In Application.Caller.Parent.names
+			If (func = "plate" And nam.RefersToRange.COUNT = 1) Or _
+				 (func = "well" And nam.RefersToRange.COUNT = T1.PLATE("", "type")) Or _
+				 (func = "table" And nam.Name = ("Template!" & T1M.LABEL_TABLE)) Or _
+				 (func = "all") Then
+				pos = InStrRev(nam.Name, "!")
+				csv = csv & Mid(nam.Name, pos + 1) & ","
+			End If
+		Next
+		LABEL = Left(csv, Len(csv) - 1)
 
-   Else
-      Select Case func
-         Case "exist?":
-            LABEL = False
-            For Each nam In Application.Caller.Parent.names
-               If nam.Name = T1.PLATE() & "!" & labelname Then LABEL = True: Exit Function
-            Next
-         Case "val", "":  LABEL = Range(labelname).Value
-         Case "adr":      LABEL = Range(labelname).Address
-         Case "count":    LABEL = Range(labelname).COUNT
-         Case "rows":     LABEL = Range(labelname).Rows
-         Case "columns":  LABEL = Range(labelname).Columns
-         Case "type":
-            Select Case Range(labelname).COUNT
-            Case 1:                    LABEL = "plate"
-            Case T1.PLATE("", "type"): LABEL = "well"
-            Case Else:                 LABEL = "table"
-            End Select
-         Case "zprime", "sb", "tc", "sn":
-            avr1 = T1.role(role1, labelname, "avr")
-            avr2 = T1.role(role2, labelname, "avr")
-            sd1 = T1.role(role1, labelname, "sd")
-            sd2 = T1.role(role2, labelname, "sd")
-            Select Case func
-               Case "zprime":   LABEL = 1 - 3 * (sd1 + sd2) / Abs(avr1 - avr2)
-               Case "sb", "tc": LABEL = avr2 / avr1
-               Case "sn":       LABEL = avr2 / sd1
-            End Select
-         Case Else:         Set LABEL = Range(labelname)
-      End Select
-   End If
+	Else
+		Select Case func
+			Case "exist?":
+				LABEL = False
+				For Each nam In Application.Caller.Parent.names
+					If nam.Name = T1.PLATE() & "!" & labelname Then LABEL = True: Exit Function
+				Next
+			Case "val", "":  LABEL = Range(labelname).Value
+			Case "adr":      LABEL = Range(labelname).Address
+			Case "count":    LABEL = Range(labelname).COUNT
+			Case "rows":     LABEL = Range(labelname).Rows
+			Case "columns":  LABEL = Range(labelname).Columns
+			Case "type":
+				Select Case Range(labelname).COUNT
+					Case 1:                    LABEL = "plate"
+					Case T1.PLATE("", "type"): LABEL = "well"
+					Case Else:                 LABEL = "table"
+				End Select
+			Case "zprime", "sb", "tc", "sn":
+				avr1 = T1.role(role1, labelname, "avr")
+				avr2 = T1.role(role2, labelname, "avr")
+				sd1 = T1.role(role1, labelname, "sd")
+				sd2 = T1.role(role2, labelname, "sd")
+				Select Case func
+					Case "zprime":   LABEL = 1 - 3 * (sd1 + sd2) / Abs(avr1 - avr2)
+					Case "sb", "tc": LABEL = avr2 / avr1
+					Case "sn":       LABEL = avr2 / sd1
+				End Select
+			Case Else:         Set LABEL = Range(labelname)
+		End Select
+	End If
 
 End Function
 
@@ -706,7 +648,7 @@ Public Function ASSAY(func)
         If 1 < cl.row And cl.Value <> "" Then csv = csv & cl.Value & ","
       Next
       ASSAY = Left(csv, Len(csv) - 1)
-  
+			
   End Select
 End Function
 
@@ -784,7 +726,7 @@ Public Function role(rolename As String, labelname As String, Optional func As S
       End If
     End If
   End With
-   
+	
 End Function
 
 
@@ -820,13 +762,13 @@ Public Function PLATE(Optional platename As String = "", Optional func As String
 	PLATE = ""
 	On Error Resume Next
 	Application.Volatile
-   
+	
 	Dim sht As String
 	If platename = "" Then platename = Application.Caller.Parent.Name
 	sht = "'" & platename & "'!"
 	Dim nam As Variant
 	Dim rw As Variant
-   
+	
 	Select Case func
 		Case "type":         PLATE = Range(sht & T1M.LABEL_PLATE_TYPE).Value
 		Case "reader":       PLATE = Range(sht & T1M.LABEL_PLATE_READER).Value
@@ -844,7 +786,7 @@ Public Function PLATE(Optional platename As String = "", Optional func As String
 				End If
 			Next
 			PLATE = Left(csv, Len(csv) - 1)
-         
+			
 		Case "rawdatasheet": PLATE = "(raw)" & platename
 		Case "rawdatafile":
 			With Sheets(T1M.SHEETNAME_ASSAY_SUMMARY)
@@ -887,7 +829,7 @@ Public Function TABLE(func As String, Optional param As Integer = 0)
 	On Error Resume Next
 	Application.Volatile
 	Dim cl As Variant
-   
+	
 	Select Case func
 		Case "name": TABLE = T1M.LABEL_TABLE
 		Case "items":
@@ -972,13 +914,13 @@ End Function
 Public Function FREE_VALUE(wellpos As String, id As String) As Variant
 	Application.Volatile
 	On Error GoTo FREE_VALUE_ERR
-   
+	
 	wellpos = T1.well(wellpos, "pos0")
 	Select Case id
 		Case "pos": FREE_VALUE = wellpos
 		Case Else: FREE_VALUE = ""
 	End Select
-   
+	
 FREE_VALUE_ERR:
 	FREE_VALUE = CVErr(xlErrRef)
 End Function
@@ -1036,32 +978,32 @@ Rem ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 Rem ENSPIRE
 Rem ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 Public Function ENSPIRE_INFO(param As String) As String
-   On Error GoTo ENSPIRE_INFO_ERR
-   Application.Volatile
+	On Error GoTo ENSPIRE_INFO_ERR
+	Application.Volatile
 
-   With Sheets(T1.PLATE("", "rawdatasheet"))
-      Dim dateTime As String
-      Dim pos As Integer
-        Dim i As Integer
-      dateTime = .Cells(32, 5).Value
-      pos = InStr(dateTime, " ")
-      Select Case param
-         Case "date":     ENSPIRE_INFO = T1.DATE_ID(Left(CStr(dateTime), pos))
-         Case "time":     ENSPIRE_INFO = T1.TIME_ID(Mid(CStr(dateTime), pos + 1, 100))
-         Case "assay":    ENSPIRE_INFO = Replace(.Cells(36, 5).Value, "Testname: ", "")
-         Case "testname": ENSPIRE_INFO = Replace(.Cells(36, 5).Value, "Testname: ", "")
-         Case Else
-            For i = 1 To 300
-               If 0 < InStr(.Cells(i, 1).Value, nam) Then
-                  ENSPIRE_INFO = .Cells(i, 5)
-               End If
-            Next i
-      End Select
-      Exit Function
-   End With
-   
+	With Sheets(T1.PLATE("", "rawdatasheet"))
+		Dim dateTime As String
+		Dim pos As Integer
+		Dim i As Integer
+		dateTime = .Cells(32, 5).Value
+		pos = InStr(dateTime, " ")
+		Select Case param
+			Case "date":     ENSPIRE_INFO = T1.DATE_ID(Left(CStr(dateTime), pos))
+			Case "time":     ENSPIRE_INFO = T1.TIME_ID(Mid(CStr(dateTime), pos + 1, 100))
+			Case "assay":    ENSPIRE_INFO = Replace(.Cells(36, 5).Value, "Testname: ", "")
+			Case "testname": ENSPIRE_INFO = Replace(.Cells(36, 5).Value, "Testname: ", "")
+			Case Else
+				For i = 1 To 300
+					If 0 < InStr(.Cells(i, 1).Value, nam) Then
+						ENSPIRE_INFO = .Cells(i, 5)
+					End If
+				Next i
+		End Select
+		Exit Function
+	End With
+	
 ENSPIRE_INFO_ERR:
-   ENSPIRE_INFO = CVErr(xlErrRef)
+	ENSPIRE_INFO = CVErr(xlErrRef)
 End Function
 
 Public Function ENSPIRE_VALUE(wellpos As String, id As String, Optional param1 As Variant = Null, Optional param2 As Variant = Null, Optional param3 As Variant = Null) As Variant
@@ -1117,7 +1059,7 @@ Public Function HTFC_INFO(param As String) As String
 			Case "plateorder": HTFC_INFO = Replace(.Range("F1").Value, "Plate Order: ", "")
 		End Select
 	End With
-   
+	
 	Exit Function
 HTFC_INFO_ERR:
 	HTFC_INFO = CVErr(xlErrRef)
@@ -1168,7 +1110,7 @@ Public Function PHERASTER_INFO(param As String) As String
 			Case "assay":    PHERASTER_INFO = Replace(.Cells(1, 1).Value, "Testname: ", "")
 			Case "testname": PHERASTER_INFO = Replace(.Cells(1, 1).Value, "Testname: ", "")
 		End Select
-      
+		
 	End With
 
 	Exit Function
@@ -1268,11 +1210,11 @@ Public Function FDSS_VALUE(wellpos As String, id As String, Optional param1 As V
 			If InStr(.Cells(timerow, 2).Value, "No.") Then Exit For
 		Next timerow
 	End With
-   
+	
 	If IsNull(param2) Then
-		FDSS_VALUE = T1.FDSS_VALUE_1tp(wellrow, wellcol, id, timerow, CDbl(param1) * 1000 )
+		FDSS_VALUE = T1.FDSS_VALUE_1tp(wellrow, wellcol, id, timerow, CDbl(param1) * 1000)
 	Else
-		FDSS_VALUE = T1.FDSS_VALUE_2tp(wellrow, wellcol, id, timerow, CDbl(param1) * 1000, CDbl(param2) * 1000, CStr(param3) )
+		FDSS_VALUE = T1.FDSS_VALUE_2tp(wellrow, wellcol, id, timerow, CDbl(param1) * 1000, CDbl(param2) * 1000, CStr(param3))
 	End If
 End Function
 
@@ -1337,7 +1279,7 @@ Private Function FDSS_VALUE_2tp(wellrow As Double, wellcol As Double, reftype As
 		For rownum = 1 To 10
 			If .Cells(timerow + 1, 4).Value = .Cells(timerow + rownum + 1, 4).Value Then Exit For
 		Next rownum
-      
+		
 		If reftype = "" Then
 			typeoffset = 0
 		Else
