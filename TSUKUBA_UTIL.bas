@@ -29,7 +29,7 @@ Public Function ExistNameP(shtname As String, lblname As String) As Boolean
   Dim nam As Variant
 
   For Each nam In Sheets(shtname).names
-    ExistNameP = 0 < InStr(nam.Name, "!" & lblnam)
+    ExistNameP = 0 < InStr(nam.Name, "!" & lblname)
     If ExistNameP Then Exit Function
   Next
 End Function
