@@ -29,7 +29,7 @@ Private Sub Workbook_BeforeSave(ByVal SaveAsUI As Boolean, Cancel As Boolean)
 End Sub
 
 
-' ŠJ”­Š®—¹‚µ‚½‚ç‚±‚ê‚æ‚è‰º‚ğíœ‚·‚éB
+' Release”Å‚Å‚Í‚±‚ê‚æ‚è‰º‚ğíœ‚·‚éB
 
 Private Sub Workbook_Open()
   Application.MacroOptions Macro:="ThisWorkbook.reload_module", ShortcutKey:="r"
