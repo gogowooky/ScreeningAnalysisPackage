@@ -10,7 +10,8 @@ Rem
 Rem 関数
 Rem
 Rem ******************************************************************************************************
-' EnumlateValues
+
+' EnumlateValues: 範囲内の要素をCSVで返す
 Public Function EnumrateValues(rng As Variant) As String
   Dim csv As String
   Dim item As String
@@ -20,7 +21,7 @@ Public Function EnumrateValues(rng As Variant) As String
     item = CStr(cel.Value) & ","
     If 1 < Len(item) And InStr(csv, item) = 0 Then csv = csv & item
   Next
-	EnumrateValues = Left(csv, Len(csv) - 1)
+        EnumrateValues = Left(csv, Len(csv) - 1)
 End Function
 
 
@@ -62,7 +63,7 @@ End Function
 
 ' GetFileExt
 Public Function GetFileExt(path As String) As String
-	GetFileExt = Mid(path, InStrRev(path, ".") + 1)
+        GetFileExt = Mid(path, InStrRev(path, ".") + 1)
 End Function
 
 
@@ -94,7 +95,7 @@ Public Function WinMacDir(Optional path As String = "", Optional ext As String =
     wmdir_filecount = wmdir_filelist.COUNT
     wmdir_filepos = 1
   End If
-	
+        
   Dim filename As String
   Do
     If wmdir_filecount < wmdir_filepos Then
@@ -128,36 +129,35 @@ End Sub
 
 ' ステータスラインにメッセージ表示
 Public Sub ShowStatusMessage(mes As String)
-	Application.StatusBar = mes
-	DoEvents
+        Application.StatusBar = mes
+        DoEvents
 End Sub
 
 
 ' ブラウザでurlを開く
 Public Sub OpenUrl(url As String)
-	If T1.SYSTEM("pc") = "Mac" Then
-		MacScript ("tell application ""Safari""" & vbNewLine _
-							 & "activate" & vbNewLine _
-							 & "open location """ & url & """" & vbNewLine _
-							 & "end tell" & vbNewLine)
-	Else
-		Shell "Explorer.exe " & url, vbNormalFocus
-	End If
+        If T1.SYSTEM("pc") = "Mac" Then
+                MacScript ("tell application ""Safari""" & vbNewLine _
+                                                         & "activate" & vbNewLine _
+                                                         & "open location """ & url & """" & vbNewLine _
+                                                         & "end tell" & vbNewLine)
+        Else
+                Shell "Explorer.exe " & url, vbNormalFocus
+        End If
 End Sub
-
 
 
 ' 隠しシートをコピーして表示
 Public Sub DupulicateHiddenSheetAndShow(sht As String, altname As String)
-	
-	If TSUKUBA_UTIL.ExistSheetP(altname) = True Then Sheets(altname).Delete
-	
-	Sheets(sht).Visible = -1 ' xlSheetVisible
-	Sheets(sht).Copy After:=ActiveSheet
-	ActiveSheet.Name = altname
-	Sheets(sht).Visible = 2 ' xlVeryHidden
-	
-	'Sheets(altname).Calculate
+        
+        If TSUKUBA_UTIL.ExistSheetP(altname) = True Then Sheets(altname).Delete
+        
+        Sheets(sht).Visible = -1 ' xlSheetVisible
+        Sheets(sht).Copy After:=ActiveSheet
+        ActiveSheet.Name = altname
+        Sheets(sht).Visible = 2 ' xlVeryHidden
+        
+        'Sheets(altname).Calculate
 End Sub
 
 ' Selection領域の相対指定を絶対指定に変換する
