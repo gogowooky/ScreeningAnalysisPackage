@@ -1,7 +1,6 @@
-Screening Analysis Package
-====
+# Screening Analysis Package
 
-Plate Reader等 HTS機器から出力されたデータファイルを自動で処理する。
+Plate Reader等 HTS機器から出力されたデータファイルを自動で処理します。
 
 ## Description
 
@@ -29,14 +28,12 @@ Microsoft Excel for Mac 2011
 Copyright (c) 2015 Shin-ichiro Egashira
 
 This software is released under the MIT License.
-
 [MIT Lisence](https://github.com/tcnksm/tool/blob/master/LICENCE)
-
-[MIT Lisence (Japanese Translation)] http://sourceforge.jp/projects/opensource/wiki/licenses%2FMIT_license
+[MIT Lisence Japanese](http://sourceforge.jp/projects/opensource/wiki/licenses%2FMIT_license)
 
 ## Author
 
-[gogowooky](https://github.com/gogowooky)
+江頭 慎一郎 [HP](https://github.com/gogowooky) [Mail](mailto:gogowooky@gmail.com)
 
 ## Link
 
