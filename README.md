@@ -10,8 +10,8 @@ Plate Reader等 HTS機器から出力されたデータファイルを自動で�
 
 ## Requirement
 
-Microsoft Excel 2010 (Windows)
-Microsoft Excel for Mac 2011
+Microsoft Excel 2010 (Windows) または Microsoft Excel for Mac 2011 以降の Excel
+
 
 ## Usage
 
@@ -28,8 +28,8 @@ Microsoft Excel for Mac 2011
 Copyright (c) 2015 Shin-ichiro Egashira
 
 This software is released under the MIT License.
-[MIT Lisence](https://github.com/tcnksm/tool/blob/master/LICENCE)
-[MIT Lisence Japanese](http://sourceforge.jp/projects/opensource/wiki/licenses%2FMIT_license)
+[MIT Lisence](https://github.com/tcnksm/tool/blob/master/LICENCE) 
+([japanese](http://sourceforge.jp/projects/opensource/wiki/licenses%2FMIT_license))
 
 ## Author
 
@@ -37,4 +37,3 @@ This software is released under the MIT License.
 
 ## Link
 
-[創薬機構](http://www.ddi.u-tokyo.ac.jp/)

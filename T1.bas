@@ -140,6 +140,34 @@ Public Function V2LOOKUP(col1key As String, col2key As String, rng As Range, col
 End Function
 
 Rem
+Rem [名前] T1.STRTRIM
+Rem [用途] MID関数とほぼ同じだが、第３パラメータも文字位置で負数も許容。
+Rem
+Public Function STRTRIM(str As String, pos1 As Integer, pos2 As Integer) As String
+  Dim p1 As Integer
+  Dim p2 As Integer
+  
+  If pos1 < 0 Then
+    p1 = (pos1 + Len(str)) Mod Len(str) + 1
+  Else
+    p1 = (pos1 - 1) Mod Len(str) + 1
+  End If
+  
+  If pos2 < 0 Then
+    p2 = (pos2 + Len(str)) Mod Len(str) + 1
+  Else
+    p2 = (pos2 - 1) Mod Len(str) + 1
+  End If
+  
+  If p1 < p2 Then
+    STRTRIM = Mid(str, p1, p2 - p1 + 1)
+  Else
+    STRTRIM = Mid(str, p2, p1 - p2 + 1)
+  End If
+End Function
+
+
+Rem
 Rem [名前] T1.VLOOKUP2
 Rem [用途] VLOOKUP関数とほぼ同じだが、カラム選択に負の値を用いることが出来る。
 Rem
@@ -537,7 +565,7 @@ Public Function well(wellpos As String, labelname As String, Optional func As St
                                 Select Case TypeName(ref2)
                                         Case "Null":                 ' WELL( wellpos/rc, labelname, func, 文字(ref1) )
                                                 Dim role As String
-                                                role = Str(ref1)
+                                                role = str(ref1)
                                                 Select Case func
                                                         Case "rank":   well = T1.RANK(val0, Range(T1.role(role, labelname, "adr")))
                                                         Case "zvalue": well = val0 / T1.role(role, labelname, "sd")
