@@ -950,6 +950,7 @@ Public Function PLATEREADER_INFO(param As String) As String
                 Case "ENSPIRE":    PLATEREADER_INFO = T1.ENSPIRE_INFO(param)
                 Case "EZREADER":   PLATEREADER_INFO = T1.EZREADER_INFO(param)
                 Case "HTFC":       PLATEREADER_INFO = T1.HTFC_INFO(param)
+                Case "ECHO":       PLATEREADER_INFO = T1.ECHO_INFO(param)
                 Case "FREE":       PLATEREADER_INFO = T1.FREE_INFO(param)
         End Select
 End Function
@@ -970,9 +971,60 @@ Public Function PLATEREADER_VALUE(wellpos As String, id As String, Optional para
                 Case "ENSPIRE":    PLATEREADER_VALUE = T1.ENSPIRE_VALUE(wellpos, id, param1, param2, param3)
                 Case "EZREADER":   PLATEREADER_VALUE = T1.EZREADER_VALUE(wellpos, id, param1, param2, param3)
                 Case "HTFC":       PLATEREADER_VALUE = T1.HTFC_VALUE(wellpos, id, param1, param2, param3)
+                Case "ECHO":       PLATEREADER_VALUE = T1.ECHO_VALUE(wellpos, id)
                 Case "FREE":       PLATEREADER_VALUE = T1.FREE_VALUE(wellpos, id)
         End Select
 End Function
+
+Rem ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Rem ECHO
+Rem ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Public Function ECHO_INFO(param As String) As String
+        On Error GoTo ECHO_INFO_ERR
+        Application.Volatile
+        
+        With Sheets(T1.PLATE("", "rawdatasheet"))
+                Dim dat As Variant
+                dat = Split(.Range("B2").Value, " ")
+                Select Case param
+                        Case "date":   ECHO_INFO = T1.DATE_ID(dat(0))
+                        Case "time":   ECHO_INFO = T1.TIME_ID(dat(1))
+                        Case "assay":  ECHO_INFO = .Range("B3").Value
+                        Case "runid":   ECHO_INFO = .Range("B1").Value
+                        Case "protocol": ECHO_INFO = .Range("B5").Value
+                End Select
+                Exit Function
+        End With
+
+ECHO_INFO_ERR:
+        ECHO_INFO = CVErr(xlErrRef)
+End Function
+
+Public Function ECHO_VALUE(wellpos As String, id As String) As Variant
+  Application.Volatile
+  On Error GoTo ECHO_VALUE_ERR
+  
+  Dim i As Integer: Dim j As Integer
+
+        wellpos = T1.well(wellpos, "pos")
+
+        With Sheets(T1.PLATE("", "rawdatasheet"))
+                For i = 1 To .UsedRange.Columns.COUNT
+                        If 0 < InStr(.Cells(9, i).Value, id) Then
+                                For j = 1 To .UsedRange.Rows.COUNT
+                                        If 0 < InStr(.Cells(j, 4).Value, wellpos) Then
+                                                ECHO_VALUE = .Cells(j, i).Value
+                                                Exit Function
+                                        End If
+                                Next j
+                        End If
+                Next i
+        End With
+        
+ECHO_VALUE_ERR:
+        ECHO_VALUE = CVErr(xlErrRef)
+End Function
+
 
 Rem ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 Rem FREE
