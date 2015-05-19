@@ -156,6 +156,11 @@ Public Sub Action_WorkBook_Initialize()
                                         .Caption = "全プレート再計算"
           .OnAction = "Action_MainMenu_Maintenance_UpdateAllPlate"
         End With
+        With .Controls.Add
+                                        .Caption = "モジュール再読み込み"
+          .OnAction = "Action_MainMenu_Maintenance_ReloadModule"
+        End With
+      
       End With
     End With
   End With
@@ -274,6 +279,43 @@ Private Sub Action_MainMenu_Maintenance_CalculateOn()
   For Each ws In ActiveWorkbook.Worksheets: ws.EnableCalculation = True
   Next
 End Sub
+
+' モジュールを再読み込み
+Public Sub Action_MainMenu_Maintenance_ReloadModule()
+  On Error Resume Next
+  Dim modules As Variant
+  modules = Array("RESOURCE.bas", "T1.bas", "T1M.bas", "TSUKUBA_UTIL.bas", _
+                  "AssayResults.cls", "CompoundPlatemap.cls", "PlateAlignment.cls", "PlateAlignments.cls", "Well2RowCol.cls")
+  
+  
+  If 0 < InStr(Application.OperatingSystem, "Windows") Then
+    Dim mdl As Variant
+    With ThisWorkbook.VBProject
+            
+      Dim cpnt As Object
+      For Each cpnt In .VBComponents
+        If cpnt.Type = 1 Or cpnt.Type = 2 Then .VBComponents.Remove cpnt
+      Next
+      
+      For Each mdl In modules
+        .VBComponents.Remove .VBComponents(Left(mdl, Len(mdl) - 4))
+        .VBComponents.Import ActiveWorkbook.path & "\\" & mdl
+      Next
+    
+      For Each mdl In modules
+        .VBComponents(Left(mdl, Len(mdl) - 4) & "1").Name = Left(mdl, Len(mdl) - 4)
+      Next
+    End With
+  Else
+    MsgBox "この機能はWindowsのみになります"
+  End If
+End Sub
+
+
+
+
+
+
 
 ' 他ブックに関数をExportする
 Private Sub Action_MainMenu_Export_Extended_Functions()
@@ -2189,12 +2231,6 @@ End Function
 Public Function ExcludedWellP() As Boolean
   ExcludedWellP = ActiveCell.Font.Strikethrough
 End Function
-
-
-
-
-
-
 
 
 
