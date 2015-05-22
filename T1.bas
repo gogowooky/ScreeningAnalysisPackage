@@ -132,12 +132,14 @@ Public Function V2LOOKUP(col1key As String, col2key As String, rng As Range, col
   Dim itm As Variant
         For Each itm In Application.Intersect(rng.Parent.UsedRange, rng).Rows
                 If itm.Cells(1, 1).Value = col1key And itm.Cells(1, 2).Value = col2key Then
-                        V2LOOKUP = rng.Parent.Cells(rng.row + itm.row - 1, rng.Column + colnum).Value
+                        V2LOOKUP = itm.Cells(1, colnum + 1).Value
+                        'V2LOOKUP = rng.Parent.Cells(rng.row + itm.row - 1, rng.Column + colnum).Value
                         Exit Function
                 End If
         Next
         V2LOOKUP = CVErr(xlErrNA)
 End Function
+
 
 Rem
 Rem [–¼‘O] T1.STRTRIM
