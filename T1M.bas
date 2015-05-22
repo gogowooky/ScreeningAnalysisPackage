@@ -515,7 +515,8 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
   wel_filename = curpath & "well.csv"
   Kill wel_filename
   Open wel_filename For Output As #3
-  Print #3, GetWellLabels() & "," & T1.CSV_SUB(T1M.GetPlateLabels(), "PLATE_NAME")
+  'Print #3, GetWellLabels() & "," & T1.CSV_SUB(T1M.GetPlateLabels(), "PLATE_NAME")
+  Print #3, GetWellLabels() & "," & T1M.GetPlateLabels()
   
   Dim csv As String
   Dim pltcsv As String
@@ -526,7 +527,7 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
   Dim rw As Integer
   Dim lbl As Variant
   
-        Application.ScreenUpdating = True
+  Application.ScreenUpdating = True
         
   RESOURCE.RestAssayResult
   For Each plt In T1.CSV2ARY(T1.ASSAY("plates")) ' :::: Plateをまわす
@@ -563,7 +564,8 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
     ' wellテーブルの出力
     TSUKUBA_UTIL.ShowStatusMessage "CSVエクスポート処理(well) [" & plt & "]"
     pltcsv = ""
-    For Each lbl In T1.CSV2ARY(T1.CSV_SUB(T1M.GetPlateLabels(), "PLATE_NAME"))
+    ' For Each lbl In T1.CSV2ARY(T1.CSV_SUB(T1M.GetPlateLabels(), "PLATE_NAME"))
+    For Each lbl In T1.CSV2ARY(T1M.GetPlateLabels())
       pltcsv = pltcsv & RESOURCE.GetAssayResult(CStr(plt), "", CStr(lbl)) & ","
     Next
     Dim wl As Variant
@@ -791,7 +793,7 @@ Public Function GetPlateLabels() As Variant
   Dim fixed_csv As String:   fixed_csv = "PLATE_NAME,PLATE_DATAFILE,PLATE_EXCELFILE,ANALYZE_DATE,SYSTEM_VERSION"
   Dim default_csv As String: default_csv = "TEST_ASSAY,TEST_DATE,TEST_TIME,QC_ZPRIME,QC_SB,QC_CVPBK,QC_CVPCTRL,PLATE_TYPE,PLATE_FORMAT,PLATE_READER"
   Dim exist_csv As String:   exist_csv = T1M.LabelNames("exist_plate")
-  GetPlateLabels = T1.CSV_OR(fixed_csv, T1.CSV_AND(default_csv, exist_csv))
+  GetPlateLabels = T1.CSV_OR(fixed_csv, T1.CSV_OR(default_csv, exist_csv))
   sht.Activate
   Application.ScreenUpdating = True
 End Function
@@ -2322,6 +2324,8 @@ Rem   MsgBox Workbooks("コピー01342_Lab report_生理化学_紺谷先生_江上様.xlsx").S
 Rem
 Rem - InStr("sdsd", "") は 1
 Rem
+
+
 
 
 

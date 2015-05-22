@@ -991,6 +991,7 @@ Public Function ECHO_INFO(param As String) As String
                         Case "time":   ECHO_INFO = T1.TIME_ID(dat(1))
                         Case "assay":  ECHO_INFO = .Range("B3").Value
                         Case "runid":   ECHO_INFO = .Range("B1").Value
+                        Case "user":   ECHO_INFO = .Range("B6").Value
                         Case "protocol": ECHO_INFO = .Range("B5").Value
                 End Select
                 Exit Function
