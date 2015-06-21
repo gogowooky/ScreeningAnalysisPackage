@@ -65,6 +65,8 @@ Rem ****************************************************************************
 Rem Procedure
 Rem ********************************************************************************
 Public Sub Initialize(ByVal sht As String)
+  On Error Resume Next ' 2015-06-21
+  
   If adrss Is Nothing Then
     Set adrss = New Collection: Set wells = New Collection: Set labls = New Collection
   End If
