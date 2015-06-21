@@ -299,7 +299,7 @@ Public Sub Action_MainMenu_Maintenance_ReloadModule()
       
       For Each mdl In modules
         .VBComponents.Remove .VBComponents(Left(mdl, Len(mdl) - 4))
-        .VBComponents.Import ActiveWorkbook.path & "\\" & mdl
+        .VBComponents.Import ActiveWorkbook.path & "\" & mdl
       Next
     
       For Each mdl In modules
