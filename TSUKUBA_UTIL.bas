@@ -71,6 +71,7 @@ End Function
 Public Function WinMacDir(Optional path As String = "", Optional ext As String = "") As String
   Dim fil As String
   If path <> "" Then
+    Set wmdir_filelist = Nothing
     Set wmdir_filelist = New Collection
     wmdir_fileext = UCase(ext)
     If T1.SYSTEM("pc") = "Windows" Then

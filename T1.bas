@@ -23,8 +23,8 @@ Public Function SYSTEM(Optional param As String = "")
         Application.Volatile
         Select Case param
                 Case "title":          SYSTEM = "Screening Analysis Package for Excel"
-                Case "version":        SYSTEM = "ver. 1.0.7"
-                Case "update":         SYSTEM = "2015/05/22 11:01"
+                Case "version":        SYSTEM = "ver. 1.1.0"
+                Case "update":         SYSTEM = "2015/06/21 18:39"
                 Case "affiliation":    SYSTEM = "Drug Discovery Initiative (DDI)"
                 Case "affiliation2":   SYSTEM = "The University of Tokyo"
                 Case "affiliation3":   SYSTEM = "DDI"
@@ -670,7 +670,7 @@ Public Function LABEL(labelname As String, Optional func As String = "", _
                                         Case "sb", "tc": LABEL = avr2 / avr1
                                         Case "sn":       LABEL = avr2 / sd1
                                 End Select
-                        Case Else:         Set LABEL = Range(labelname)
+                        Case Else:         LABEL = Range(labelname)
                 End Select
         End If
 
@@ -1443,6 +1443,8 @@ Private Function FDSS_VALUE_2tp(wellrow As Double, wellcol As Double, reftype As
                                 Case "intercept":  FDSS_VALUE_2tp = WorksheetFunction.Intercept(DataRange, TimeRange)
                                 Case "rsq":        FDSS_VALUE_2tp = WorksheetFunction.RSq(DataRange, TimeRange)
                         End Select
+                        Set DataRange = Nothing
+                        Set TimeRange = Nothing
                 End If
         End With
 

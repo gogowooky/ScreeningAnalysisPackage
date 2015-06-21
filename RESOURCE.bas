@@ -91,6 +91,8 @@ Public Sub UpdateAssayResult(Optional plt As String = "")
                                 Next
                         End If
                 Next
+                Set rng = Nothing
+                Set rng2 = Nothing
         End If
 End Sub
 
@@ -115,6 +117,8 @@ Public Function GetRoleRange(sht As String, lbl As String, role As String, Optio
         Dim lbel As Range: Set lbel = Sheets(sht).Range(lbl)
         Dim adr As String: adr = pltalgns.item(sht).GetRoleAddress(role, conc)
         Set GetRoleRange = Sheets(sht).Range(adr).Offset(lbel.row - wpos.row, lbel.Column - wpos.Column)
+        Set wpos = Nothing
+        Set lbel = Nothing
 End Function
 
 Public Function GetRoleAddress(sht As String, lbl As String, role As String, Optional conc As String = "") As String
@@ -124,6 +128,8 @@ Public Function GetRoleAddress(sht As String, lbl As String, role As String, Opt
         Dim lbel As Range: Set lbel = Sheets(sht).Range(lbl)
         Dim adr As String: adr = pltalgns.item(sht).GetRoleAddress(role, conc)
         GetRoleAddress = Sheets(sht).Range(adr).Offset(lbel.row - wpos.row, lbel.Column - wpos.Column).Address
+        Set wpos = Nothing
+        Set lbel = Nothing
 End Function
 
 Public Function GetRoleWell(sht As String, role As String, Optional conc As String = "")
@@ -140,11 +146,11 @@ Public Sub InitRoleInfo(sht As String)
         If Not pltalgns Is Nothing Then pltalgns.Remove sht
 End Sub
 
-Private Sub init_pltalgns()
-   ' If pltalgns Is Nothing Then Set pltalgns = New PlateAlignments
-   Set pltalgns = New PlateAlignments
-End Sub
 
+
+Private Sub init_pltalgns()
+        If pltalgns Is Nothing Then Set pltalgns = New PlateAlignments
+End Sub
 
 
 
@@ -180,6 +186,7 @@ Private Sub init_cpdmap()
 End Sub
 
 Public Sub LoadCompoundTable()
+        ResetCpdTable
         Set cpdmap = New CompoundPlatemap
         cpdmap.LoadCompoundTable
 End Sub
