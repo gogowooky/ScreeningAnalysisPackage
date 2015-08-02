@@ -65,8 +65,6 @@ Rem ****************************************************************************
 Rem Procedure
 Rem ********************************************************************************
 Public Sub Initialize(ByVal sht As String)
-  On Error Resume Next ' 2015-06-21
-  
   If adrss Is Nothing Then
     Set adrss = New Collection: Set wells = New Collection: Set labls = New Collection
   End If
@@ -75,12 +73,14 @@ Public Sub Initialize(ByVal sht As String)
   
   Dim lbl As String
   Dim nam As Variant
+  On Error GoTo PAInit
   For Each nam In Sheets(sht).names
     If CStr(nam.RefersToRange.COUNT) = Me.PlateType Then
       lbl = Replace(nam.Name, sht & "!", "")
       labls.Add Array(nam.RefersToRange.row, nam.RefersToRange.Column, lbl), lbl
     End If
   Next
+PAInit:
   
   Dim rw As Integer: Dim cl As Integer: Dim rol As String: Dim cnc As String
   Dim pos As Variant
