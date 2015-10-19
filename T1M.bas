@@ -773,7 +773,7 @@ Private Sub action_mainmenu_merge_csv_files(key As String)
     csvf = TSUKUBA_UTIL.WinMacDir()
   Loop
   Close #1
-  Name outf As curpath & Format(Now(), "YYMMDD") & "-" & UCase(key) & "-" & CStr(entry) & "csv"
+  Name outf As curpath & Format(Now(), "YYMMDD") & "-" & UCase(key) & "-" & CStr(entry) & ".csv"
         
 End Sub
 
