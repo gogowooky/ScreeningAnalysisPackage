@@ -515,7 +515,8 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
   wel_filename = curpath & "well.csv"
   Kill wel_filename
   Open wel_filename For Output As #3
-  Print #3, GetWellLabels() & "," & T1.CSV_SUB(T1M.GetPlateLabels(), "PLATE_NAME")
+  ' Print #3, GetWellLabels() & "," & T1.CSV_SUB(T1M.GetPlateLabels(), "PLATE_NAME") ' v1.1.2
+  Print #3, GetWellLabels() & "," & T1M.GetPlateLabels()
   
   Dim csv As String
   Dim pltcsv As String
@@ -563,7 +564,8 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
     ' wellテーブルの出力
     TSUKUBA_UTIL.ShowStatusMessage "CSVエクスポート処理(well) [" & plt & "]"
     pltcsv = ""
-    For Each lbl In T1.CSV2ARY(T1.CSV_SUB(T1M.GetPlateLabels(), "PLATE_NAME"))
+    'For Each lbl In T1.CSV2ARY(T1.CSV_SUB(T1M.GetPlateLabels(), "PLATE_NAME")) ' v1.1.2
+     For Each lbl In T1.CSV2ARY(T1M.GetPlateLabels())
       pltcsv = pltcsv & RESOURCE.GetAssayResult(CStr(plt), "", CStr(lbl)) & ","
     Next
     Dim wl As Variant
