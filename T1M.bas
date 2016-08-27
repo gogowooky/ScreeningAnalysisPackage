@@ -58,6 +58,8 @@ Const PLATESHEET_TITLE_FOR_RAWDATA_COLUMN = "Raw Data Filename"
 Const PLATESHEET_TITLE_FOR_PLATEID_COLUMN = "PlateID"
 Const PLATESHEET_EXTENSION_FOR_FILE_LISTING = "TXT,SCV,CSV,RST"
 
+Private MenuLang As Integer ' 0: 日本語, 1:英語
+
 
 Rem ******************************************************************************************************
 Rem ワークブックイベント
@@ -73,97 +75,111 @@ Public Sub Action_WorkBook_AfterSave()
   T1M.Action_MainMenu_Maintenance_CalculateOn
 End Sub
 
-' ファイルオープン時
+' ファイルクローズ時
 Public Sub Action_WorkBook_Finalize()
   On Error Resume Next
   Application.CommandBars("Worksheet Menu Bar").Controls(T1.SYSTEM()).Delete  ' メニュー削除
 End Sub
 
-' ファイルクローズ時
-Public Sub Action_WorkBook_Initialize()
+
+' メニューをリセットする
+Private Sub ResetMenu()
   On Error Resume Next
-  Application.Calculation = xlCalculationManual
-        
+
   Application.CommandBars("Worksheet Menu Bar").Controls(T1.SYSTEM()).Delete  ' いったんメニュー削除
         
   With Application.CommandBars("Worksheet Menu Bar").Controls.Add(Type:=msoControlPopup)
-                .Caption = T1.SYSTEM()
+    .Caption = T1.SYSTEM()
     With .Controls.Add(Type:=msoControlPopup)
-                        .Caption = "1. スクリーニングデータの処理"
+      .Caption = "1. " & Split("スクリーニングデータの処理,Process screening data", ",")(MenuLang)
       .Enabled = 0 < InStr(T1M.GetAnalysisState(), "Template@")
       With .Controls.Add
-                                .Caption = "1-1.データファイルをリストアップし、プレート名を対応付ける"
+        .Caption = "1-1. " & Split("データファイルをリストアップし、プレート名を対応付ける,List data files and associate them to plates", ",")(MenuLang)
         .OnAction = "Action_MainMenu_Binding_RawData_To_PlateName"
       End With
       With .Controls.Add
-                                .Caption = "1-2.アッセイデータの自動解析処理を開始する"
+        .Caption = "1-2. " & Split("アッセイデータの自動解析処理を開始する,Start data processing", ",")(MenuLang)
         .OnAction = "Action_MainMenu_Data_Analysis"
       End With
       With .Controls.Add
-                                .Caption = "解析結果を消去する"
+        .Caption = Split("解析結果を消去する,Remove processed data", ",")(MenuLang)
         .OnAction = "Action_MainMenu_Clear_All_Analyzed_Data"
       End With
     End With
     With .Controls.Add(Type:=msoControlPopup)
-                        .Caption = "2. 解析データの統合"
+      .Caption = "2. " & Split("解析データの統合,Integrate analyzed data", ",")(MenuLang)
       .Enabled = 0 < InStr(T1M.GetAnalysisState(), "Template@")
       With .Controls.Add
-                                .Caption = "2-a. 全解析結果をPDFに出力する"
+      .Caption = "2-a. " & Split("全解析結果をPDFに出力する,Export all data to pdf", ",")(MenmuLang)
         .OnAction = "Action_ContextMenu_Export_PDF"
       End With
       With .Controls.Add
-                                .Caption = "2-b. 解析データを" & T1.SYSTEM("affiliation3") & "報告書に転記する"
+        .Caption = "2-b. " & Split("解析データを報告書に転記する,Transfer data to report", ",")(MenuLang)
         .OnAction = "Action_MainMenu_Transfer_Data_To_ReportSheet"
       End With
       With .Controls.Add
-                                .Caption = "2-c. 全シートの解析データをCSVにExportする"
+        .Caption = "2-c. " & Split("全シートの解析データをCSVにExportする,Export all data to csv", ",")(MenuLang)
         .OnAction = "Action_MainMenu_Convert_All_Sheets_To_CSV"
       End With
       With .Controls.Add
-                                .Caption = "2-d. 同一ディレクトリ内の全csvファイルをマージする"
+        .Caption = "2-d. " & Split("同一ディレクトリ内の全csvファイルをマージする,Merge all csv files within the directory", ",")(MenuLang)
         .OnAction = "Action_MainMenu_Merge_All_CSV_Files"
       End With
     End With
     With .Controls.Add(Type:=msoControlPopup)
-                        .Caption = "その他"
+      .Caption = Split("Misc,Misc", ",")(MenuLang)
       With .Controls.Add
-                                .Caption = "関数ヘルプ"
+        .Caption = Split("関数ヘルプ,Function Help", ",")(MenuLang)
         .OnAction = "Action_Menu_Show_Help"
       End With
       With .Controls.Add
-                                .Caption = "Packageのバージョン、その他情報"
+        .Caption = Split("Packageのバージョン、その他情報,Version info", ",")(MenuLang)
         .OnAction = "Action_Menu_Show_Information"
       End With
       With .Controls.Add(Type:=msoControlPopup)
-                                .Caption = "メンテナンス"
+        .Caption = Split("Maintenance,Maintenance", ",")(MenuLang)
         With .Controls.Add
-                                        .Caption = "他ブックに関数をExportする"
+          .Caption = Split("メニューを英語に,Change Menu to Japanese", ",")(MenuLang)
+          .OnAction = "Action_MainMenu_Change_MenuLang"
+        End With
+        With .Controls.Add
+          .Caption = Split("他ブックに関数をExportする,Export functions", ",")(MenuLang)
           .OnAction = "Action_MainMenu_Export_Extended_Functions"
         End With
         With .Controls.Add
-                                        .Caption = "全シート計算オン"
+          .Caption = Split("全シート計算オン,Turn autocalulate on", ",")(MenuLang)
           .OnAction = "Action_MainMenu_Maintenance_CalculateOn"
         End With
         With .Controls.Add
-                                        .Caption = "全シート計算オフ"
+          .Caption = Split("全シート計算オフ,Turn autocalculation off", ",")(MenuLang)
           .OnAction = "Action_MainMenu_Maintenance_CalculateOff"
         End With
         With .Controls.Add
-                                        .Caption = "内部コレクション変数リセット"
+          .Caption = Split("内部コレクション変数リセット,Reset inner variables", ",")(MenuLang)
           .OnAction = "Action_MainMenu_Maintenance_ResetCollection"
         End With
         With .Controls.Add
-                                        .Caption = "全プレート再計算"
+          .Caption = Split("全プレート再計算,Recalculate", ",")(MenuLang)
           .OnAction = "Action_MainMenu_Maintenance_UpdateAllPlate"
         End With
         With .Controls.Add
-                                        .Caption = "モジュール再読み込み"
+          .Caption = Split("モジュール再読み込み,Reload the screening macro modules", ",")(MenuLang)
           .OnAction = "Action_MainMenu_Maintenance_ReloadModule"
         End With
       
       End With
     End With
   End With
+End Sub
+
+' ファイルオープン時
+Public Sub Action_WorkBook_Initialize()
+  On Error Resume Next
+  Application.Calculation = xlCalculationManual
+  
+  MenuLang = 0 ' 日本語(0)
+  ResetMenu
+  
 End Sub
 
 
@@ -252,6 +268,16 @@ Private Sub Action_Menu_Show_Information()
   Version.Label11 = "GitHub Site:" & vbCrLf & T1.SYSTEM("original")
   Version.Left = Application.Left + (Application.Width - Version.Width) / 2
   Version.Show
+End Sub
+
+' メニュー言語を変更
+Private Sub Action_MainMenu_Change_MenuLang()
+  If MenuLang = 1 Then
+    MenuLang = 0
+  Else
+    MenuLang = 1
+  End If
+  ResetMenu
 End Sub
 
 ' 全プレートを再計算
