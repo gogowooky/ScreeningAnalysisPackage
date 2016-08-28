@@ -139,7 +139,7 @@ Private Sub ResetMenu()
       With .Controls.Add(Type:=msoControlPopup)
         .Caption = Split("Maintenance,Maintenance", ",")(MenuLang)
         With .Controls.Add
-          .Caption = Split("メニューを英語に,Change Menu to Japanese", ",")(MenuLang)
+          .Caption = Split("Change menu to English,Change menu to Japanese", ",")(MenuLang)
           .OnAction = "Action_MainMenu_Change_MenuLang"
         End With
         With .Controls.Add
@@ -165,6 +165,14 @@ Private Sub ResetMenu()
         With .Controls.Add
           .Caption = Split("モジュール再読み込み,Reload the screening macro modules", ",")(MenuLang)
           .OnAction = "Action_MainMenu_Maintenance_ReloadModule"
+        End With
+        With .Controls.Add
+          .Caption = Split("数式Templateを再適用,Reapply Template", ",")(MenuLang)
+          .OnAction = "Action_CopyTemplate_Paste"
+        End With
+        With .Controls.Add
+          .Caption = Split("関数を実値化,Put function to value", ",")(MenuLang)
+          .OnAction = "Action_Function_Value"
         End With
       
       End With
@@ -337,9 +345,29 @@ Public Sub Action_MainMenu_Maintenance_ReloadModule()
   End If
 End Sub
 
-
-
-
+' 数値化した解析シートを再数式化する
+Sub Action_CopyTemplate_Paste()
+  If TSUKUBA_UTIL.ExistValueP(T1.ASSAY("plates"), ActiveSheet.Name) Then
+    Application.ScreenUpdating = False
+    Worksheets("Template").UsedRange().Copy
+    ActiveSheet.UsedRange().PasteSpecial Paste:=xlPasteFormulas
+    ActiveSheet.Calculate
+    ActiveSheet.Range("A1").Select
+    Application.ScreenUpdating = True
+  End If
+End Sub
+          
+' 解析シートを数値化する
+Sub Action_Function_Value()
+  If TSUKUBA_UTIL.ExistValueP(T1.ASSAY("plates"), ActiveSheet.Name) Then
+    Application.ScreenUpdating = False
+    ActiveSheet.UsedRange().Copy
+    ActiveSheet.UsedRange().PasteSpecial Paste:=xlPasteValues
+    ActiveSheet.Calculate
+    ActiveSheet.Range("A1").Select
+    Application.ScreenUpdating = True
+  End If
+End Sub
 
 
 
@@ -382,13 +410,13 @@ Private Sub Action_MainMenu_Binding_RawData_To_PlateName()
         
   With Worksheets(SHEETNAME_ASSAY_SUMMARY)
     .Select
-    .Range("A1").Value = PLATESHEET_TITLE_FOR_RAWDATA_COLUMN
-    .Range("B1").Value = PLATESHEET_TITLE_FOR_PLATEID_COLUMN
+    .Range("A1").value = PLATESHEET_TITLE_FOR_RAWDATA_COLUMN
+    .Range("B1").value = PLATESHEET_TITLE_FOR_PLATEID_COLUMN
                 
     Dim fil As String: fil = TSUKUBA_UTIL.WinMacDir(ActiveWorkbook.path, PLATESHEET_EXTENSION_FOR_FILE_LISTING)
     Dim cnt As Integer: cnt = 1
     While fil <> ""
-      .Cells(cnt + 1, 1).Value = fil
+      .Cells(cnt + 1, 1).value = fil
       fil = TSUKUBA_UTIL.WinMacDir()
       cnt = cnt + 1
     Wend
@@ -411,10 +439,10 @@ Private Sub Action_MainMenu_Clear_All_Analyzed_Data()
   Dim templates As Variant: ReDim templates(1)
         With Worksheets(SHEETNAME_ASSAY_SUMMARY).Range("B2")
                 i = 0
-                Do While .Offset(i, 0).Value <> ""
+                Do While .Offset(i, 0).value <> ""
                         ReDim Preserve rawdatas(i)
                         ReDim Preserve templates(i)
-                        rawdatas(i) = .Offset(i, 0).Value
+                        rawdatas(i) = .Offset(i, 0).value
                         templates(i) = "(raw)" + rawdatas(i)
                         i = i + 1
                 Loop
@@ -472,6 +500,9 @@ Private Sub Action_MainMenu_Data_Analysis()
       .Worksheets(plates(i)).UsedRange.Calculate
       RESOURCE.UpdateAssayResult CStr(plates(i))
     Next i
+    
+    ' 数値化
+    Action_Function_Value
   End With
   
   ' 解析値をListup
@@ -479,14 +510,14 @@ Private Sub Action_MainMenu_Data_Analysis()
     .Activate
     Dim lbls As Variant: lbls = T1.CSV2ARY(T1.ASSAY("platelabel"))
     For i = 0 To UBound(lbls)
-      .Cells(1, 3 + i).Value = lbls(i)
+      .Cells(1, 3 + i).value = lbls(i)
       .Range(.Cells(2, 3 + i), .Cells(2 + UBound(plates), 3 + i)).Select
       With Selection.FormatConditions
         .AddColorScale ColorScaleType:=3
         .Items(1).ColorScaleCriteria(1).Type = xlConditionValueLowestValue
         .Items(1).ColorScaleCriteria(1).FormatColor.Color = 7039480
         .Items(1).ColorScaleCriteria(2).Type = xlConditionValuePercentile
-        .Item2(1).ColorScaleCriteria(2).Value = 50
+        .Item2(1).ColorScaleCriteria(2).value = 50
         .Items(1).ColorScaleCriteria(2).FormatColor.Color = 8711167
         .Items(1).ColorScaleCriteria(3).Type = xlConditionValueHighestValue
         .Items(1).ColorScaleCriteria(3).FormatColor.Color = 8109667
@@ -599,7 +630,7 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
     For Each wl In Range(LABEL_PLATE_WELL_POSITION)
       csv = ""
       For Each lbl In lbls
-        csv = csv & RESOURCE.GetAssayResult(CStr(plt), CStr(wl.Value), CStr(lbl)) & ","
+        csv = csv & RESOURCE.GetAssayResult(CStr(plt), CStr(wl.value), CStr(lbl)) & ","
       Next
       csv = csv & pltcsv
       Print #3, Left(csv, Len(csv) - 1): wel_entry = wel_entry + 1
@@ -681,21 +712,21 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
       For Each rw In Sheets(SHEETNAME_REPORT_QC_RESULT).UsedRange.Rows
         If rw.row = 1 Then
           For Each cl In rw.Columns
-            If 1 < InStr(" Plate", cl.Value) Then colplate = cl.Column
-            If 1 < InStr(" S/B", cl.Value) Then colsb = cl.Column
-            If 1 < InStr(" CV (%, Background)", cl.Value) Then colcvpbk = cl.Column
-            If 1 < InStr(" CV (%, Control)", cl.Value) Then colcvpctrl = cl.Column
-            If 1 < InStr(" Z'", cl.Value) Then colzprime = cl.Column
+            If 1 < InStr(" Plate", cl.value) Then colplate = cl.Column
+            If 1 < InStr(" S/B", cl.value) Then colsb = cl.Column
+            If 1 < InStr(" CV (%, Background)", cl.value) Then colcvpbk = cl.Column
+            If 1 < InStr(" CV (%, Control)", cl.value) Then colcvpctrl = cl.Column
+            If 1 < InStr(" Z'", cl.value) Then colzprime = cl.Column
           Next
         Else
           With Workbooks(repwb).Sheets(SHEETNAME_REPORT_QC_RESULT)
-            plt = .Cells(rw.row, colplate).Value
+            plt = .Cells(rw.row, colplate).value
             val = RESOURCE.GetAssayResult(plt, "", "QC_ZPRIME")
             If val <> "" Then
-              .Cells(rw.row, colzprime).Value = val
-              val = RESOURCE.GetAssayResult(plt, "", "QC_SB"): If val <> "" Then .Cells(rw.row, colsb).Value = val
-              val = RESOURCE.GetAssayResult(plt, "", "QC_CVPBK"): If val <> "" Then .Cells(rw.row, colcvpbk).Value = val
-              val = RESOURCE.GetAssayResult(plt, "", "QC_CVPCTRL"): If val <> "" Then .Cells(rw.row, colcvpctrl).Value = val
+              .Cells(rw.row, colzprime).value = val
+              val = RESOURCE.GetAssayResult(plt, "", "QC_SB"): If val <> "" Then .Cells(rw.row, colsb).value = val
+              val = RESOURCE.GetAssayResult(plt, "", "QC_CVPBK"): If val <> "" Then .Cells(rw.row, colcvpbk).value = val
+              val = RESOURCE.GetAssayResult(plt, "", "QC_CVPCTRL"): If val <> "" Then .Cells(rw.row, colcvpctrl).value = val
             End If
           End With
         End If
@@ -717,31 +748,31 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
         If rw.row = 1 Then
           colplate = 0: colwell = 0: colhit = 0: colasyname = 0: colasyconc = 0: colactivity = 0
           For Each cl In rw.Columns
-            If 1 < InStr(" プレートID,Plate_ID", cl.Value) And colplate = 0 Then colplate = cl.Column
-            If 1 < InStr(" WELL,well", cl.Value) And colwell = 0 Then colwell = cl.Column
-            If 1 < InStr(" ID開示／追加希望,req", cl.Value) And colhit = 0 Then colhit = cl.Column
-            If 1 < InStr(" アッセイ名（略称）", cl.Value) And colasyname = 0 Then colasyname = cl.Column
-            If 1 < InStr(" アッセイ濃度(μM)", cl.Value) And colasyconc = 0 Then colasyconc = cl.Column
-            If 1 < InStr(" 活性値,結果", cl.Value) And colactivity = 0 Then colactivity = cl.Column
-            If 1 < InStr(" 備考", cl.Value) And coladditional = 0 Then coladditional = cl.Column
+            If 1 < InStr(" プレートID,Plate_ID", cl.value) And colplate = 0 Then colplate = cl.Column
+            If 1 < InStr(" WELL,well", cl.value) And colwell = 0 Then colwell = cl.Column
+            If 1 < InStr(" ID開示／追加希望,req", cl.value) And colhit = 0 Then colhit = cl.Column
+            If 1 < InStr(" アッセイ名（略称）", cl.value) And colasyname = 0 Then colasyname = cl.Column
+            If 1 < InStr(" アッセイ濃度(μM)", cl.value) And colasyconc = 0 Then colasyconc = cl.Column
+            If 1 < InStr(" 活性値,結果", cl.value) And colactivity = 0 Then colactivity = cl.Column
+            If 1 < InStr(" 備考", cl.value) And coladditional = 0 Then coladditional = cl.Column
           Next
         Else
           With Workbooks(repwb).Sheets(SHEETNAME_REPORT_ASSAY_RESULT)
-            plt = .Cells(rw.row, colplate).Value
-            wellpos = .Cells(rw.row, colwell).Value
+            plt = .Cells(rw.row, colplate).value
+            wellpos = .Cells(rw.row, colwell).value
             additional = T1.SYSTEM("today") & "追記"
             
             val = RESOURCE.GetAssayResult(plt, wellpos, "CPD_RESULT")
             If val <> "" Then
-              .Cells(rw.row, colactivity).Value = val
-              val = RESOURCE.GetAssayResult(plt, wellpos, "CPD_HIT"): If val <> "" Then .Cells(rw.row, colhit).Value = val
-              val = RESOURCE.GetAssayResult(plt, "", "TEST_ASSAY"): If val <> "" Then .Cells(rw.row, colasyname).Value = val
-              val = RESOURCE.GetAssayResult(plt, wellpos, LABEL_PLATE_COMPOUND_CONC): If val <> "" Then .Cells(rw.row, colasyconc).Value = val
+              .Cells(rw.row, colactivity).value = val
+              val = RESOURCE.GetAssayResult(plt, wellpos, "CPD_HIT"): If val <> "" Then .Cells(rw.row, colhit).value = val
+              val = RESOURCE.GetAssayResult(plt, "", "TEST_ASSAY"): If val <> "" Then .Cells(rw.row, colasyname).value = val
+              val = RESOURCE.GetAssayResult(plt, wellpos, LABEL_PLATE_COMPOUND_CONC): If val <> "" Then .Cells(rw.row, colasyconc).value = val
                                                         
-              If Trim(.Cells(rw.row, coladditional).Value) <> "" Then
-                additional = additional & ", " & Trim(.Cells(rw.row, coladditional).Value)
+              If Trim(.Cells(rw.row, coladditional).value) <> "" Then
+                additional = additional & ", " & Trim(.Cells(rw.row, coladditional).value)
               End If
-              .Cells(rw.row, coladditional).Value = additional
+              .Cells(rw.row, coladditional).value = additional
             End If
           End With
         End If
@@ -874,7 +905,7 @@ Public Function GetCpdLabels() As Variant
   Dim cl As Variant
   Dim csv As String
   For Each cl In Sheets("Template").Range(LABEL_TABLE).Rows(1).Columns
-    If cl.Value <> "" Then csv = csv & cl.Value & ","
+    If cl.value <> "" Then csv = csv & cl.value & ","
   Next
   GetCpdLabels = Left(csv, Len(csv) - 1)
 End Function
@@ -883,9 +914,9 @@ Private Function GetCpdData(platename As String, recordpos As Double, labelname 
   Dim col As Integer
         Dim cl As Variant
   For Each cl In Sheets(platename).Range(LABEL_TABLE).Rows(1).Columns
-    If cl.Value = labelname Then col = cl.Column: Exit For
+    If cl.value = labelname Then col = cl.Column: Exit For
   Next
-  GetCpdData = Sheets(platename).Cells(Range(LABEL_TABLE).row + recordpos, col).Value
+  GetCpdData = Sheets(platename).Cells(Range(LABEL_TABLE).row + recordpos, col).value
   ' ユーザー定義
 End Function
 
@@ -930,8 +961,8 @@ Public Sub Action_ContextMenu_ExcludeData(flag As String)
   Dim strk As Boolean
   
   Select Case flag
-    Case "include": rol.Value = Replace(rol.Value, "-", ""): strk = False
-    Case "exclude": rol.Value = rol.Value & "-": strk = True
+    Case "include": rol.value = Replace(rol.value, "-", ""): strk = False
+    Case "exclude": rol.value = rol.value & "-": strk = True
   End Select
   
   TSUKUBA_UTIL.DeleteNonEffectiveNames
@@ -967,16 +998,13 @@ End Sub
 
 
 
-
-
-
 Rem ******************************************************************************************************
 Rem "テンプレートをデザインする"
 Rem ******************************************************************************************************
 
 ' "Template編集のため仮データを読み込む"
 Private Sub Action_MainMenu_DataImportation_For_Template_Initialization()
-        On Error Resume Next
+        'On Error Resume Next
         Application.Volatile
         Application.DisplayAlerts = False
         Application.ScreenUpdating = False
@@ -990,12 +1018,12 @@ Private Sub Action_MainMenu_DataImportation_For_Template_Initialization()
         ' "TSUKUBA"を含まないシートをすべて削除
         Dim sht As Variant
         For Each sht In Sheets
-                If InStr(sht.Name, "TSUKUBA") = 0 And sht.Name <> "Template" Then
+                If InStr(sht.Name, "TSUKUBA") = 0 And sht.Name <> "Template" Then ' Visibleなシート(Template)を残す必要あり
                         sht.Visible = -1 ' xlSheetVisible
                         sht.Delete
                 End If
         Next
-        TSUKUBA_UTIL.DupulicateHiddenSheetAndShow "TSUKUBA_TEMPLATE", "Template"
+        TSUKUBA_UTIL.DupulicateHiddenSheetAndShow "TSUKUBA_TEMPLATE", "Template" ' ここで旧Templateシートは削除
         
         ' データファイル読み込み
         Workbooks.Open filename:=OpenFileName
@@ -1004,9 +1032,9 @@ Private Sub Action_MainMenu_DataImportation_For_Template_Initialization()
         
         With Sheets("Template")
                 .Range("5:10000").Delete
-                .Range(LABEL_PLATE_TYPE).Value = "384"
-                .Range(LABEL_PLATE_READER).Value = "PHERASTER"
-                .Range(T1M.LABEL_PLATE_FORMAT).Value = "PRIMARY"
+                .Range(LABEL_PLATE_TYPE).value = "384"
+                .Range(LABEL_PLATE_READER).value = "PHERASTER"
+                .Range(T1M.LABEL_PLATE_FORMAT).value = "PRIMARY"
                 
                 .Activate
                 TSUKUBA_UTIL.DeleteNonEffectiveNames "Template"
@@ -1610,11 +1638,11 @@ Public Function GetExtraSections() As String
   Dim c As Range
   For Each c In Sheets("TSUKUBA_TEMPLATE").UsedRange.Columns(1).Rows
     If c.Interior.ThemeColor = EXTR_SECTION_THEME_COLOR Then
-      If InStr(c.Value, typ) And InStr(c.Value, fmt) Then
-        csv = csv & Mid(c.Value, InStr(c.Value, ">") + 1) & ","
+      If InStr(c.value, typ) And InStr(c.value, fmt) Then
+        csv = csv & Mid(c.value, InStr(c.value, ">") + 1) & ","
       End If
     End If
-    If 10000 < c.row Or c.Value = "END" Then Exit For
+    If 10000 < c.row Or c.value = "END" Then Exit For
   Next
   If csv <> "" Then csv = Left(csv, Len(csv) - 1)
   Sheets(sht).Activate
@@ -1642,7 +1670,7 @@ Private Sub InsertGraphSection(typ As String, param As String)
     If CopySection(sect, "GRAPH", "") Then ' グラフをコピー
       Rows(rw).Insert Shift:=xlDown
       Rows(T1M.SECTION(Rows(rw), "inrows")).Hidden = False
-      Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = LABEL
+      Cells(rw, 1).Font.Bold = True: Cells(rw, 1).value = LABEL
       
       Dim data_rng As Range
       Set data_rng = Range(LABEL)
@@ -1755,7 +1783,7 @@ Private Sub InsertGraphSection2(typ As String, param As String)
     If CopySection(sect, "GRAPH", "") Then ' グラフをコピー
       Rows(rw).Insert Shift:=xlDown
       Rows(T1M.SECTION(Rows(rw), "inrows")).Hidden = False
-      Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = LABEL
+      Cells(rw, 1).Font.Bold = True: Cells(rw, 1).value = LABEL
       
       Dim data_rng As Range
       Set data_rng = Range(LABEL)
@@ -1815,7 +1843,7 @@ Private Sub InsertExtraSection(typ As String, fmt As String, param As String)
                          c.Interior.ThemeColor = TBLE_SECTION_THEME_COLOR Then
                         rw = c.row
                 End If
-                If 10000 < c.row Or c.Value = "END" Then Exit For
+                If 10000 < c.row Or c.value = "END" Then Exit For
   Next
   
   If 0 < rw Then
@@ -1824,7 +1852,7 @@ Private Sub InsertExtraSection(typ As String, fmt As String, param As String)
     
     If CopySection(fmt, typ, param) Then
       Rows(rw).Insert Shift:=xlDown
-      Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = Split(Cells(rw, 1).Value, ":")(0)
+      Cells(rw, 1).Font.Bold = True: Cells(rw, 1).value = Split(Cells(rw, 1).value, ":")(0)
       Rows(T1M.SECTION(Rows(rw), "rows")).Select
       TSUKUBA_UTIL.ConvertSelectionFomulaFromRelatioveToAbsolute
       Selection.Replace What:=param, Replacement:=LABEL
@@ -1845,7 +1873,7 @@ Private Sub InsertAnalSection(typ As String, param As String)
                          c.Interior.ThemeColor = ANAL_SECTION_THEME_COLOR Then
                         rw = c.row
                 End If
-                If 10000 < c.row Or c.Value = "END" Then Exit For
+                If 10000 < c.row Or c.value = "END" Then Exit For
   Next
   
   If 0 < rw Then
@@ -1857,7 +1885,7 @@ Private Sub InsertAnalSection(typ As String, param As String)
     
     If CopySection(param, typ, "") Then ' プレートフォーマットをコピー
       Rows(rw).Insert Shift:=xlDown
-      Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = Split(Cells(rw, 1).Value, ":")(0)
+      Cells(rw, 1).Font.Bold = True: Cells(rw, 1).value = Split(Cells(rw, 1).value, ":")(0)
       Rows(T1M.SECTION(Rows(rw), "rows")).Select
       TSUKUBA_UTIL.ConvertSelectionFomulaFromRelatioveToAbsolute
       Selection.Replace What:=param, Replacement:=LABEL
@@ -1877,7 +1905,7 @@ Private Sub InsertDataSection(typ As String, param As String)
                          c.Interior.ThemeColor = INFO_SECTION_THEME_COLOR Then
                         rw = c.row
                 End If
-                If 10000 < c.row Or c.Value = "END" Then Exit For
+                If 10000 < c.row Or c.value = "END" Then Exit For
   Next
   
   If 0 < rw Then
@@ -1889,7 +1917,7 @@ Private Sub InsertDataSection(typ As String, param As String)
     
     If CopySection("RAW_DATA", typ, param) Then ' プレートフォーマットをコピー
       Rows(rw).Insert Shift:=xlDown
-      Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = Split(Cells(rw, 1).Value, ":")(0)
+      Cells(rw, 1).Font.Bold = True: Cells(rw, 1).value = Split(Cells(rw, 1).value, ":")(0)
       Rows(T1M.SECTION(Rows(rw), "rows")).Select
       TSUKUBA_UTIL.ConvertSelectionFomulaFromRelatioveToAbsolute
       Selection.Replace What:="RAW_DATA", Replacement:=LABEL
@@ -1923,7 +1951,7 @@ Private Sub InsertInfoSection(typ As String, fmt As String)
     rw = 1
     rw = T1M.SECTION(Rows(rw), "end") + 1
     Rows(rw).Insert Shift:=xlDown
-    Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = Split(Cells(rw, 1).Value, ":")(0)
+    Cells(rw, 1).Font.Bold = True: Cells(rw, 1).value = Split(Cells(rw, 1).value, ":")(0)
     Cells(rw + 3, 3).Select: Action_ContextMenu_CreateWellLabel "WELL_POS"
     If Not p Then ShowCurrentSection
   End If
@@ -1932,7 +1960,7 @@ Private Sub InsertInfoSection(typ As String, fmt As String)
     rw = T1.FIND_ROW(ActiveSheet.Columns(1), "WELL_POS")
     rw = T1M.SECTION(Rows(rw), "end") + 1
     Rows(rw).Insert Shift:=xlDown
-    Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = Split(Cells(rw, 1).Value, ":")(0)
+    Cells(rw, 1).Font.Bold = True: Cells(rw, 1).value = Split(Cells(rw, 1).value, ":")(0)
     Cells(rw + 3, 3).Select: Action_ContextMenu_CreateWellLabel "WELL_ROLE"
     If Not r Then ShowCurrentSection
   End If
@@ -1941,7 +1969,7 @@ Private Sub InsertInfoSection(typ As String, fmt As String)
     rw = T1.FIND_ROW(ActiveSheet.Columns(1), "WELL_ROLE")
     rw = T1M.SECTION(Rows(rw), "end") + 1
     Rows(rw).Insert Shift:=xlDown
-    Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = Split(Cells(rw, 1).Value, ":")(0)
+    Cells(rw, 1).Font.Bold = True: Cells(rw, 1).value = Split(Cells(rw, 1).value, ":")(0)
     Cells(rw + 3, 3).Select: Action_ContextMenu_CreateWellLabel LABEL_PLATE_COMPOUND_CONC
     If Not c Then ShowCurrentSection
   End If
@@ -1960,13 +1988,13 @@ Private Sub InsertTableSection(typ As String, fmt As String)
   If T1M.CopySection(LABEL_TABLE, typ, fmt) Then
     rw = T1.FIND_ROW(ActiveSheet.Columns(1), "END")
     Rows(rw).Insert Shift:=xlDown
-    Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = Split(Cells(rw, 1).Value, ":")(0)
+    Cells(rw, 1).Font.Bold = True: Cells(rw, 1).value = Split(Cells(rw, 1).value, ":")(0)
     Cells(rw + 2, 2).Select: Action_ContextMenu_CreateTableLabel T1.TABLE("name")
     T1M.ShowCurrentSection
   ElseIf T1M.CopySection(LABEL_TABLE, "0", "FREE") Then
     rw = T1.FIND_ROW(ActiveSheet.Columns(1), "END")
     Rows(rw).Insert Shift:=xlDown
-    Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = Split(Cells(rw, 1).Value, ":")(0)
+    Cells(rw, 1).Font.Bold = True: Cells(rw, 1).value = Split(Cells(rw, 1).value, ":")(0)
     Cells(rw + 2, 2).Select: Action_ContextMenu_CreateTableLabel T1.TABLE("name")
     T1M.ShowCurrentSection
   End If
@@ -1978,7 +2006,7 @@ Private Sub InsertEndSection()
     rw = ActiveSheet.UsedRange.Rows.COUNT
     Rows(rw + 1).Interior.ThemeColor = END_SECTION_THEME_COLOR
     Rows(rw + 1).Interior.TintAndShade = END_SECTION_TINT1_COLOR
-    Rows(rw + 1).Cells(1, 1).Value = "END"
+    Rows(rw + 1).Cells(1, 1).value = "END"
     Rows(rw + 1).Cells(1, 1).Font.Bold = True
     Rows(rw + 1).Cells(1, 1).Font.Color = RGB(255, 255, 255)
         End If
@@ -2063,7 +2091,7 @@ Public Function SECTION(rng As Range, func As String)
         
         Dim beg_row As Integer
         For beg_row = rng.row To WorksheetFunction.MIN(1, rng.row - 3000) Step -1
-                val = Cells(beg_row, 1).Value
+                val = Cells(beg_row, 1).value
                 If Not isEmpty(val) Then
                         ttl = Split(val, ":")(0) & ","
                         If InStr(names, ttl) Then Exit For
@@ -2072,7 +2100,7 @@ Public Function SECTION(rng As Range, func As String)
         
         Dim end_row As Integer
         For end_row = beg_row + 1 To beg_row + 3001
-                val = Cells(end_row, 1).Value
+                val = Cells(end_row, 1).value
                 If Not isEmpty(val) Then
                         ttl = Split(val, ":")(0) & ","
                         If InStr(names, ttl) Then Exit For
@@ -2084,8 +2112,8 @@ Public Function SECTION(rng As Range, func As String)
         Select Case func
                 Case "beginning": SECTION = beg_row
                 Case "end":       SECTION = end_row - 1
-                Case "current":   SECTION = Cells(beg_row, 1).Value
-                Case "next":      SECTION = Cells(end_row, 1).Value
+                Case "current":   SECTION = Cells(beg_row, 1).value
+                Case "next":      SECTION = Cells(end_row, 1).value
                 Case "inrows":    SECTION = CStr(beg_row + 1) & ":" & CStr(end_row - 2)
                 Case "rows":      SECTION = CStr(beg_row) & ":" & CStr(end_row - 1)
                 Case "color":     SECTION = Cells(beg_row, 1).Interior.ThemeColor
@@ -2131,11 +2159,11 @@ Private Sub Action_ContextMenu_CreateWellLabel(labelname As String)
         Dim sel As Range: Set sel = Selection
         Dim cnt As Integer: cnt = (sel.Rows.COUNT - 1) * (sel.Columns.COUNT - 1)
         
-        If CStr(cnt) = T1.PLATE("Template", "type") And sel.Cells(2, 1).Value = "A" And sel.Cells(1, 2).Value = "1" Then
+        If CStr(cnt) = T1.PLATE("Template", "type") And sel.Cells(2, 1).value = "A" And sel.Cells(1, 2).value = "1" Then
                 If labelname = "" Then
-                        labelname = sel.Cells(1, 1).Offset(-2, -1).Value
+                        labelname = sel.Cells(1, 1).Offset(-2, -1).value
                 Else
-                        sel.Cells(1, 1).Offset(-2, -1).Value = UCase(labelname)
+                        sel.Cells(1, 1).Offset(-2, -1).value = UCase(labelname)
                 End If
                 If labelname <> "" Then
                         sel.Resize(sel.Rows.COUNT - 1, sel.Columns.COUNT - 1).Offset(1, 1).Select
@@ -2156,8 +2184,8 @@ Private Sub Action_ContextMenu_CreateTableLabel(labelname As String)
         Selection.CurrentRegion.Select
         Dim sel As Range
         Set sel = Selection
-        If 1 < sel.COUNT And 2 < sel.Rows.COUNT And sel.Cells(2, 1).Value <> "A" Then
-                sel.Cells(1, 1).Offset(-2, -1).Value = labelname
+        If 1 < sel.COUNT And 2 < sel.Rows.COUNT And sel.Cells(2, 1).value <> "A" Then
+                sel.Cells(1, 1).Offset(-2, -1).value = labelname
                 sel.Name = "'" & ActiveSheet.Name & "'!" & labelname
         Else
                 cur.Select
@@ -2172,9 +2200,9 @@ End Sub
 
 Private Sub Action_ContextMenu_DeleteLabel(labelname As String)
         If CStr(Range(labelname).COUNT) = T1.PLATE("Template", "type") Then
-                ActiveSheet.Range(labelname).Cells(1, 1).Offset(-3, -2).Value = ""
+                ActiveSheet.Range(labelname).Cells(1, 1).Offset(-3, -2).value = ""
         ElseIf 10 < Range(labelname).COUNT Then
-                ActiveSheet.Range(labelname).Cells(1, 1).Offset(-2, -1).Value = ""
+                ActiveSheet.Range(labelname).Cells(1, 1).Offset(-2, -1).value = ""
         End If
         TSUKUBA_UTIL.ShowStatusMessage "名前 [" & Replace(labelname, "Template!", "") & "] を削除しました"
         ActiveWorkbook.Worksheets("Template").names(labelname).Delete
@@ -2185,7 +2213,7 @@ Private Sub Action_ContextMenu_ChangeLabelName(labelname As String)
         If nam = "" Then nam = labelname
         Dim cl  As Variant
         For Each cl In ActiveSheet.UsedRange
-                If InStr(CStr(cl.Value), labelname) Then cl.Value = Replace(cl.Value, labelname, nam)
+                If InStr(CStr(cl.value), labelname) Then cl.value = Replace(cl.value, labelname, nam)
                 If InStr(cl.Formula, labelname) Then cl.Formula = Replace(cl.Formula, labelname, nam)
         Next
         ActiveSheet.Range(labelname).Name = "'" & ActiveSheet.Name & "'!" & nam
@@ -2229,7 +2257,7 @@ Private Function ParameterName(ByVal adr As String)
         ElseIf VarType(adr) = vbString And Left(adr, 1) = """" Then
                 ParameterName = Mid(adr, 2, Len(adr) - 2)
         Else
-                ParameterName = ActiveSheet.Range(adr).Value
+                ParameterName = ActiveSheet.Range(adr).value
         End If
         ParameterName = UCase(ParameterName)
 End Function

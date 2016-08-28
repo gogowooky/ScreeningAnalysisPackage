@@ -10,6 +10,10 @@ Rem
 Rem 関数
 Rem
 Rem ******************************************************************************************************
+' EnumlateValues: 範囲内の要素をCSVで返す
+Public Function ExistValueP(csv As String, val As String) As Boolean
+  ExistValueP = 0 < InStr("," & csv & ",", "," & val & ",")
+End Function
 
 ' EnumlateValues: 範囲内の要素をCSVで返す
 Public Function EnumrateValues(rng As Variant) As String
@@ -18,7 +22,7 @@ Public Function EnumrateValues(rng As Variant) As String
   Dim cel As Variant
 
   For Each cel In rng
-    item = CStr(cel.Value) & ","
+    item = CStr(cel.value) & ","
     If 1 < Len(item) And InStr(csv, item) = 0 Then csv = csv & item
   Next
         EnumrateValues = Left(csv, Len(csv) - 1)
@@ -151,10 +155,12 @@ End Sub
 ' 隠しシートをコピーして表示
 Public Sub DupulicateHiddenSheetAndShow(sht As String, altname As String)
         
-        If TSUKUBA_UTIL.ExistSheetP(altname) = True Then Sheets(altname).Delete
         
         Sheets(sht).Visible = -1 ' xlSheetVisible
         Sheets(sht).Copy After:=ActiveSheet
+        
+        If TSUKUBA_UTIL.ExistSheetP(altname) = True Then Sheets(altname).Delete
+        
         ActiveSheet.Name = altname
         Sheets(sht).Visible = 2 ' xlVeryHidden
         

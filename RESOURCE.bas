@@ -49,7 +49,7 @@ Public Sub UpdateAssayResult(Optional plt As String = "")
                         Case "PLATE_EXCELFILE": val = ThisWorkbook.Name
                         Case "ANALYZE_DATE":    val = T1.SYSTEM("today")
                         Case "SYSTEM_VERSION":  val = T1.SYSTEM("")
-                        Case Else:              val = Range(CStr(labelname)).Value
+                        Case Else:              val = Range(CStr(labelname)).value
                                 ' TEST_ASSAY, TEST_DATE, TEST_TIME, QC_ZPRIME, QC_SB, QC_CVPBK, QC_CVPCTRL, ユーザー定義
                 End Select
                 RESOURCE.asyrslts.result(platename, "", CStr(labelname)) = val
@@ -59,7 +59,7 @@ Public Sub UpdateAssayResult(Optional plt As String = "")
         Dim wellpos As String
         For Each labelname In T1.CSV2ARY(T1M.GetWellLabels())
                 For Each wel In Range(T1M.LABEL_PLATE_WELL_POSITION)
-                        wellpos = wel.Value
+                        wellpos = wel.value
                         Select Case labelname
                                 Case "WELL_POS":        val = wellpos
                                 Case "CPD_ID":          val = RESOURCE.GetCpdID(platename, wellpos)
@@ -83,11 +83,11 @@ Public Sub UpdateAssayResult(Optional plt As String = "")
                 Dim cl As Variant
                 Dim rw As Variant
                 For Each cl In rng.Rows(1).Columns
-                        If cl.Value <> "" Then
+                        If cl.value <> "" Then
                                 Set rng2 = rng.Resize(rng.Rows.COUNT - 1, rng.Columns.COUNT).Offset(1, 0)
                                 For Each rw In rng2.Rows
-                                        val = rw.Cells(1, cl.Column - rng2.Column + 1).Value
-                                        RESOURCE.asyrslts.result(platename, cl.Value, CInt(rw.row - rng2.row + 1)) = Replace(val, ",", ";")
+                                        val = rw.Cells(1, cl.Column - rng2.Column + 1).value
+                                        RESOURCE.asyrslts.result(platename, cl.value, CInt(rw.row - rng2.row + 1)) = Replace(val, ",", ";")
                                 Next
                         End If
                 Next

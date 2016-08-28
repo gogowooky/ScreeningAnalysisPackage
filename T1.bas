@@ -131,8 +131,8 @@ Rem
 Public Function V2LOOKUP(col1key As String, col2key As String, rng As Range, colnum As Integer) As Variant
   Dim itm As Variant
         For Each itm In Application.Intersect(rng.Parent.UsedRange, rng).Rows
-                If itm.Cells(1, 1).Value = col1key And itm.Cells(1, 2).Value = col2key Then
-                        V2LOOKUP = itm.Cells(1, colnum + 1).Value
+                If itm.Cells(1, 1).value = col1key And itm.Cells(1, 2).value = col2key Then
+                        V2LOOKUP = itm.Cells(1, colnum + 1).value
                         'V2LOOKUP = rng.Parent.Cells(rng.row + itm.row - 1, rng.Column + colnum).Value
                         Exit Function
                 End If
@@ -176,8 +176,8 @@ Rem
 Public Function VLOOKUP2(colkey As String, rng As Range, colnum As Integer) As Variant
   Dim itm As Variant
         For Each itm In Application.Intersect(rng.Parent.UsedRange, rng).Rows
-                If itm.Cells(1, 1).Value = colkey Then
-                        VLOOKUP2 = rng.Parent.Cells(rng.row + itm.row - 1, rng.Column + colnum).Value
+                If itm.Cells(1, 1).value = colkey Then
+                        VLOOKUP2 = rng.Parent.Cells(rng.row + itm.row - 1, rng.Column + colnum).value
                         Exit Function
                 End If
         Next
@@ -192,10 +192,10 @@ Public Function VHLOOKUP(rowkey As String, colkey As String, rng As Range) As Va
   Dim rw As Variant
   Dim cl As Variant
         For Each rw In rng.Columns(1).Rows
-                If rw.Value = rowkey Then
+                If rw.value = rowkey Then
                         For Each cl In Application.Intersect(rng.Parent.UsedRange, rng).Rows(1).Columns
-                                If cl.Value = colkey Then
-                                        VHLOOKUP = rng.Cells(rw.row - rng.row + 1, cl.Column - rng.Column + 1).Value
+                                If cl.value = colkey Then
+                                        VHLOOKUP = rng.Cells(rw.row - rng.row + 1, cl.Column - rng.Column + 1).value
                                         Exit Function
                                 End If
                         Next
@@ -213,7 +213,7 @@ Public Function FIND_ROW(rng As Range, str1 As String, Optional str2 As String =
   Dim val As String: Dim rw As Variant
   FIND_ROW = 0
   For Each rw In rng.Rows
-    val = rw.Columns(1).Value
+    val = rw.Columns(1).value
     If 0 < InStr(val, str1) And 0 < InStr(val, str2) And 0 < InStr(val, str3) Then
                         FIND_ROW = rw.row
                         Exit Function
@@ -331,11 +331,11 @@ Public Function SELECT_WELLS(rng As Range, comp As String, key As Variant) As St
         Dim flag As Boolean
         For Each r In rng
                 Select Case comp
-                        Case "like":   flag = 0 < InStr(r.Value, key)
-                        Case "match":  flag = r.Value = key
-                        Case "above?": flag = r.Value > key
-                        Case "equal?": flag = r.Value = key
-                        Case "below?": flag = r.Value < key
+                        Case "like":   flag = 0 < InStr(r.value, key)
+                        Case "match":  flag = r.value = key
+                        Case "above?": flag = r.value > key
+                        Case "equal?": flag = r.value = key
+                        Case "below?": flag = r.value < key
                 End Select
                 If flag Then csv = csv & T1.RC2WELL(r.row - rng.row + 1, r.Column - rng.Column + 1, "pos") & ","
         Next
@@ -351,7 +351,7 @@ Public Function NTH_VALUE(rng As Range, num As Integer) As Variant
         For Each r In rng
                 num = num - 1
                 If num = 0 Then
-                        NTH_VALUE = r.Value
+                        NTH_VALUE = r.value
                         Exit Function
                 End If
         Next
@@ -457,12 +457,12 @@ Public Function RD_HALF(dose As Range, response As Range) As Variant
 
         RD_HALF = CVErr(xlErrNA)
         For i = 1 To length
-                y1 = response.item(i).Value
-                y2 = response.item(i + 1).Value
+                y1 = response.item(i).value
+                y2 = response.item(i + 1).value
                 If (y1 - 50) * (y2 - 50) < 0 Then
-                        RD_HALF = dose.item(i).Value + (dose.item(i + 1).Value - dose.item(i).Value) * _
-                                (50 - response.item(i).Value) / _
-                                (response.item(i + 1).Value - response.item(i).Value)
+                        RD_HALF = dose.item(i).value + (dose.item(i + 1).value - dose.item(i).value) * _
+                                (50 - response.item(i).value) / _
+                                (response.item(i + 1).value - response.item(i).value)
                 ElseIf y1 = 50 Then
                         RD_HALF = dose.item(i)
                 ElseIf y2 = 50 Then
@@ -526,18 +526,18 @@ Public Function well(wellpos As String, labelname As String, Optional func As St
         If func = "" Then
                 Select Case labelname                     ' WELL( wellpos/rc, labelname )
                         Case "cpdid": well = RESOURCE.GetCpdID(Application.Caller.Parent.Name, T1.RC2WELL(rw, cl, "pos"))
-                        Case "role":  well = Range(T1M.LABEL_PLATE_WELL_ROLE).Cells(rw, cl).Value
-                        Case "conc":  well = Range(T1M.LABEL_PLATE_COMPOUND_CONC).Cells(rw, cl).Value
+                        Case "role":  well = Range(T1M.LABEL_PLATE_WELL_ROLE).Cells(rw, cl).value
+                        Case "conc":  well = Range(T1M.LABEL_PLATE_COMPOUND_CONC).Cells(rw, cl).value
                         Case "roleconc":
-                                cnc = Range(T1M.LABEL_PLATE_COMPOUND_CONC).Cells(rw, cl).Value
-                                well = Range(T1M.LABEL_PLATE_WELL_ROLE).Cells(rw, cl).Value
-                                If cnc = "0" Or cnc = "" Then well = well & "@" & Range(T1M.LABEL_PLATE_COMPOUND_CONC).Cells(rw, cl).Value
+                                cnc = Range(T1M.LABEL_PLATE_COMPOUND_CONC).Cells(rw, cl).value
+                                well = Range(T1M.LABEL_PLATE_WELL_ROLE).Cells(rw, cl).value
+                                If cnc = "0" Or cnc = "" Then well = well & "@" & Range(T1M.LABEL_PLATE_COMPOUND_CONC).Cells(rw, cl).value
                         Case Else:    well = T1.RC2WELL(rw, cl, labelname) ' rc, RC, pos, pos0, pos00
                 End Select
 
         Else
                 Dim val0 As Variant
-                val0 = Range(labelname).Cells(rw, cl).Value
+                val0 = Range(labelname).Cells(rw, cl).value
 
                 Select Case TypeName(ref1)
                         Case "Null":                       ' WELL( wellpos/rc, labelname, func )
@@ -552,7 +552,7 @@ Public Function well(wellpos As String, labelname As String, Optional func As St
                                 Dim criteria As Double
                                 
                                 If TypeName(ref1) = "Range" Then
-                                        criteria = ref1.Value
+                                        criteria = ref1.value
                                 Else
                                         criteria = ref1
                                 End If
@@ -649,7 +649,7 @@ Public Function LABEL(labelname As String, Optional func As String = "", _
                                 For Each nam In Application.Caller.Parent.names
                                         If nam.Name = T1.PLATE() & "!" & labelname Then LABEL = True: Exit Function
                                 Next
-                        Case "val", "":  LABEL = Range(labelname).Value
+                        Case "val", "":  LABEL = Range(labelname).value
                         Case "adr":      LABEL = Range(labelname).Address
                         Case "count":    LABEL = Range(labelname).COUNT
                         Case "rows":     LABEL = Range(labelname).Rows
@@ -692,13 +692,13 @@ Public Function ASSAY(func)
   Select Case func
     Case "plates":
       For Each cl In Sheets(T1M.SHEETNAME_ASSAY_SUMMARY).UsedRange.Columns(2).Rows
-        If 1 < cl.row And cl.Value <> "" Then csv = csv & cl.Value & ","
+        If 1 < cl.row And cl.value <> "" Then csv = csv & cl.value & ","
       Next
       ASSAY = Left(csv, Len(csv) - 1)
                         
     Case "datafiles":
       For Each cl In Sheets(T1M.SHEETNAME_ASSAY_SUMMARY).UsedRange.Columns(1).Rows
-        If 1 < cl.row And cl.Value <> "" Then csv = csv & cl.Value & ","
+        If 1 < cl.row And cl.value <> "" Then csv = csv & cl.value & ","
       Next
       ASSAY = Left(csv, Len(csv) - 1)
                         
@@ -724,7 +724,7 @@ Public Function ASSAY(func)
                         
     Case "all": ASSAY = "---"
     Case "tablefield": ASSAY = "---"
-    Case Else: ASSAY = Sheets("Template").Range(func).Value
+    Case Else: ASSAY = Sheets("Template").Range(func).value
 
   End Select
 End Function
@@ -848,9 +848,9 @@ Public Function PLATE(Optional platename As String = "", Optional func As String
         Dim rw As Variant
         
         Select Case func
-                Case "type":         PLATE = Range(sht & T1M.LABEL_PLATE_TYPE).Value
-                Case "reader":       PLATE = Range(sht & T1M.LABEL_PLATE_READER).Value
-                Case "format":       PLATE = Range(sht & T1M.LABEL_PLATE_FORMAT).Value
+                Case "type":         PLATE = Range(sht & T1M.LABEL_PLATE_TYPE).value
+                Case "reader":       PLATE = Range(sht & T1M.LABEL_PLATE_READER).value
+                Case "format":       PLATE = Range(sht & T1M.LABEL_PLATE_FORMAT).value
                 Case "name":         PLATE = platename
                 Case "labels", "platelabels", "welllabels", "tablelabel":
                         Dim csv As String: csv = ""
@@ -869,18 +869,18 @@ Public Function PLATE(Optional platename As String = "", Optional func As String
                 Case "rawdatafile":
                         With Sheets(T1M.SHEETNAME_ASSAY_SUMMARY)
                                 For Each rw In .UsedRange.Rows
-                                        If rw.Cells(1, 2).Value = platename Then
-                                                PLATE = rw.Cells(1, 1).Value: Exit Function
+                                        If rw.Cells(1, 2).value = platename Then
+                                                PLATE = rw.Cells(1, 1).value: Exit Function
                                         End If
                                 Next
                         End With
                 Case Else:
                         Select Case TypeName(param)
-                                Case "Null":   PLATE = Sheets(platename).Range(func).Value
+                                Case "Null":   PLATE = Sheets(platename).Range(func).value
                                 Case "String":
                                         Select Case param
                                                 Case "adr": PLATE = Sheets(platename).Range(func).Address
-                                                Case Else: PLATE = Sheets(platename).Range(func).Cells(T1.well(CStr(param), "rc")(0), T1.well(CStr(param), "rc")(1)).Value
+                                                Case Else: PLATE = Sheets(platename).Range(func).Cells(T1.well(CStr(param), "rc")(0), T1.well(CStr(param), "rc")(1)).value
                                         End Select
                         End Select
         End Select
@@ -913,14 +913,14 @@ Public Function TABLE(func As String, Optional param As Integer = 0)
                 Case "items":
                         Dim csv As String
                         For Each cl In Range(LABEL_TABLE).Rows(1).Columns
-                                If cl.Value <> "" Then csv = csv & cl.Value & ","
+                                If cl.value <> "" Then csv = csv & cl.value & ","
                         Next
                         TABLE = Left(csv, Len(csv) - 1)
                 Case "records": TABLE = Range(LABEL_TABLE).Rows.COUNT - 1
                 Case Else:
                         For Each cl In Range(LABEL_TABLE).Rows(1).Columns
-                                If cl.Value = func Then
-                                        TABLE = Range(LABEL_TABLE).Cells(param + 1, cl.Column - 1).Value
+                                If cl.value = func Then
+                                        TABLE = Range(LABEL_TABLE).Cells(param + 1, cl.Column - 1).value
                                         Exit Function
                                 End If
                         Next
@@ -987,14 +987,14 @@ Public Function ECHO_INFO(param As String) As String
         
         With Sheets(T1.PLATE("", "rawdatasheet"))
                 Dim dat As Variant
-                dat = Split(.Range("B2").Value, " ")
+                dat = Split(.Range("B2").value, " ")
                 Select Case param
                         Case "date":   ECHO_INFO = T1.DATE_ID(dat(0))
                         Case "time":   ECHO_INFO = T1.TIME_ID(dat(1))
-                        Case "assay":  ECHO_INFO = .Range("B3").Value
-                        Case "runid":   ECHO_INFO = .Range("B1").Value
-                        Case "user":   ECHO_INFO = .Range("B6").Value
-                        Case "protocol": ECHO_INFO = .Range("B5").Value
+                        Case "assay":  ECHO_INFO = .Range("B3").value
+                        Case "runid":   ECHO_INFO = .Range("B1").value
+                        Case "user":   ECHO_INFO = .Range("B6").value
+                        Case "protocol": ECHO_INFO = .Range("B5").value
                 End Select
                 Exit Function
         End With
@@ -1013,10 +1013,10 @@ Public Function ECHO_VALUE(wellpos As String, id As String) As Variant
 
         With Sheets(T1.PLATE("", "rawdatasheet"))
                 For i = 1 To .UsedRange.Columns.COUNT
-                        If 0 < InStr(.Cells(9, i).Value, id) Then
+                        If 0 < InStr(.Cells(9, i).value, id) Then
                                 For j = 1 To .UsedRange.Rows.COUNT
-                                        If 0 < InStr(.Cells(j, 4).Value, wellpos) Then
-                                                ECHO_VALUE = .Cells(j, i).Value
+                                        If 0 < InStr(.Cells(j, 4).value, wellpos) Then
+                                                ECHO_VALUE = .Cells(j, i).value
                                                 Exit Function
                                         End If
                                 Next j
@@ -1036,7 +1036,7 @@ Public Function FREE_INFO(adr As String) As String
         On Error GoTo FREE_INFO_ERR
         Application.Volatile
 
-        FREE_INFO = Sheets(T1.PLATE("", "rawdatasheet")).Range(adr).Value
+        FREE_INFO = Sheets(T1.PLATE("", "rawdatasheet")).Range(adr).value
 
 FREE_INFO_ERR:
         FREE_INFO = CVErr(xlErrRef)
@@ -1066,13 +1066,13 @@ Public Function EZREADER_INFO(param As String) As String
 
         With Sheets(T1.PLATE("", "rawdatasheet"))
                 Dim dat As Variant
-                dat = Split(.Range("Q2").Value, " ")
+                dat = Split(.Range("Q2").value, " ")
                 Select Case param
                         Case "date":   EZREADER_INFO = T1.DATE_ID(dat(0))
                         Case "time":   EZREADER_INFO = T1.TIME_ID(dat(1))
-                        Case "assay":  EZREADER_INFO = .Range("T2").Value
-                        Case "chipid":   EZREADER_INFO = .Range("T2").Value
-                        Case "filepath": EZREADER_INFO = .Range("O2").Value
+                        Case "assay":  EZREADER_INFO = .Range("T2").value
+                        Case "chipid":   EZREADER_INFO = .Range("T2").value
+                        Case "filepath": EZREADER_INFO = .Range("O2").value
                 End Select
                 Exit Function
         End With
@@ -1090,10 +1090,10 @@ Public Function EZREADER_VALUE(wellpos As String, id As String, Optional param1 
 
         With Sheets(T1.PLATE("", "rawdatasheet"))
                 For i = 1 To .UsedRange.Columns.COUNT
-                        If 0 < InStr(.Cells(1, i).Value, id) Then
+                        If 0 < InStr(.Cells(1, i).value, id) Then
                                 For j = 1 To .UsedRange.Rows.COUNT
-                                        If 0 < InStr(.Cells(j, 2).Value, wellpos) Then
-                                                EZREADER_VALUE = .Cells(j, i).Value
+                                        If 0 < InStr(.Cells(j, 2).value, wellpos) Then
+                                                EZREADER_VALUE = .Cells(j, i).value
                                                 Exit Function
                                         End If
                                 Next j
@@ -1116,16 +1116,16 @@ Public Function ENSPIRE_INFO(param As String) As String
                 Dim dateTime As String
                 Dim pos As Integer
                 Dim i As Integer
-                dateTime = .Cells(32, 5).Value
+                dateTime = .Cells(32, 5).value
                 pos = InStr(dateTime, " ")
                 Select Case param
                         Case "date":     ENSPIRE_INFO = T1.DATE_ID(Left(CStr(dateTime), pos))
                         Case "time":     ENSPIRE_INFO = T1.TIME_ID(Mid(CStr(dateTime), pos + 1, 100))
-                        Case "assay":    ENSPIRE_INFO = Replace(.Cells(36, 5).Value, "Testname: ", "")
-                        Case "testname": ENSPIRE_INFO = Replace(.Cells(36, 5).Value, "Testname: ", "")
+                        Case "assay":    ENSPIRE_INFO = Replace(.Cells(36, 5).value, "Testname: ", "")
+                        Case "testname": ENSPIRE_INFO = Replace(.Cells(36, 5).value, "Testname: ", "")
                         Case Else
                                 For i = 1 To 300
-                                        If 0 < InStr(.Cells(i, 1).Value, nam) Then
+                                        If 0 < InStr(.Cells(i, 1).value, nam) Then
                                                 ENSPIRE_INFO = .Cells(i, 5)
                                         End If
                                 Next i
@@ -1150,10 +1150,10 @@ Public Function ENSPIRE_VALUE(wellpos As String, id As String, Optional param1 A
 
         With Sheets(T1.PLATE("", "rawdatasheet"))
                 For i = 1 To .UsedRange.Rows.COUNT
-                        If 0 < InStr(.Cells(i, 1).Value, id) Then
+                        If 0 < InStr(.Cells(i, 1).value, id) Then
                                 For j = 1 To 10
-                                        If 0 < Len(.Cells(i + j, 4).Value) Then
-                                                ENSPIRE_VALUE = .Cells(i + j + rw + 1, cl + 2).Value
+                                        If 0 < Len(.Cells(i + j, 4).value) Then
+                                                ENSPIRE_VALUE = .Cells(i + j + rw + 1, cl + 2).value
                                                 Exit Function
                                         End If
                                 Next j
@@ -1176,18 +1176,18 @@ Public Function HTFC_INFO(param As String) As String
         With Sheets(T1.PLATE("", "rawdatasheet"))
                 Select Case param
                         Case "date":       Dim dat As Variant
-                                dat = Split(Replace(.Range("G1").Value, "Export Date: ", ""), "/")
+                                dat = Split(Replace(.Range("G1").value, "Export Date: ", ""), "/")
                                 HTFC_INFO = T1.DATE_ID(dat(2) & "/" & dat(0) & "/" & dat(1))
-                        Case "time":       HTFC_INFO = T1.TIME_ID(Replace(.Range("H1").Value, "Export Time: ", ""))
-                        Case "assay":   HTFC_INFO = Replace(.Range("B1").Value, "Analysis: ", "")
+                        Case "time":       HTFC_INFO = T1.TIME_ID(Replace(.Range("H1").value, "Export Time: ", ""))
+                        Case "assay":   HTFC_INFO = Replace(.Range("B1").value, "Analysis: ", "")
 
-                        Case "experiment": HTFC_INFO = Replace(.Range("A1").Value, "Experiment: ", "")
-                        Case "name":       HTFC_INFO = Replace(.Range("A1").Value, "Experiment: ", "")
-                        Case "analysis":   HTFC_INFO = Replace(.Range("B1").Value, "Analysis: ", "")
-                        Case "user":       HTFC_INFO = Replace(.Range("C1").Value, "User: ", "")
-                        Case "plate":      HTFC_INFO = Replace(.Range("D1").Value, "Plate: ", "")
-                        Case "platetype":  HTFC_INFO = Replace(.Range("E1").Value, "Plate Type: ", "")
-                        Case "plateorder": HTFC_INFO = Replace(.Range("F1").Value, "Plate Order: ", "")
+                        Case "experiment": HTFC_INFO = Replace(.Range("A1").value, "Experiment: ", "")
+                        Case "name":       HTFC_INFO = Replace(.Range("A1").value, "Experiment: ", "")
+                        Case "analysis":   HTFC_INFO = Replace(.Range("B1").value, "Analysis: ", "")
+                        Case "user":       HTFC_INFO = Replace(.Range("C1").value, "User: ", "")
+                        Case "plate":      HTFC_INFO = Replace(.Range("D1").value, "Plate: ", "")
+                        Case "platetype":  HTFC_INFO = Replace(.Range("E1").value, "Plate Type: ", "")
+                        Case "plateorder": HTFC_INFO = Replace(.Range("F1").value, "Plate Order: ", "")
                 End Select
         End With
         
@@ -1211,8 +1211,8 @@ Public Function HTFC_VALUE(wellpos As String, id As String, Optional param1 As V
 
         With Sheets(T1.PLATE("", "rawdatasheet"))
                 For i = 1 To .UsedRange.Rows.COUNT
-                        If 0 < InStr(.Cells(i, 1).Value, id) Then
-                                HTFC_VALUE = .Cells(i + rw + 2, cl + 2).Value
+                        If 0 < InStr(.Cells(i, 1).value, id) Then
+                                HTFC_VALUE = .Cells(i + rw + 2, cl + 2).value
                                 Exit Function
                         End If
                 Next i
@@ -1233,13 +1233,13 @@ Public Function PHERASTER_INFO(param As String) As String
 
         With Sheets(T1.PLATE("", "rawdatasheet"))
                 Dim dateTime As Variant
-                dateTime = Split(.Cells(2, 1).Value, " ")
+                dateTime = Split(.Cells(2, 1).value, " ")
 
                 Select Case param
                         Case "date":     PHERASTER_INFO = T1.DATE_ID(CStr(dateTime(1)))
                         Case "time":     PHERASTER_INFO = T1.TIME_ID(CStr(dateTime(4)))
-                        Case "assay":    PHERASTER_INFO = Replace(.Cells(1, 1).Value, "Testname: ", "")
-                        Case "testname": PHERASTER_INFO = Replace(.Cells(1, 1).Value, "Testname: ", "")
+                        Case "assay":    PHERASTER_INFO = Replace(.Cells(1, 1).value, "Testname: ", "")
+                        Case "testname": PHERASTER_INFO = Replace(.Cells(1, 1).value, "Testname: ", "")
                 End Select
                 
         End With
@@ -1263,10 +1263,10 @@ Public Function PHERASTER_VALUE(wellpos As String, id As String, Optional param1
 
         With Sheets(T1.PLATE("", "rawdatasheet"))
                 For i = 1 To .UsedRange.Rows.COUNT
-                        If 0 < InStr(.Cells(i, 1).Value, id) Then
+                        If 0 < InStr(.Cells(i, 1).value, id) Then
                                 For j = 1 To 10
-                                        If 0 < Len(.Cells(i + j, 4).Value) Then
-                                                PHERASTER_VALUE = .Cells(i + j + rw, cl + 1).Value
+                                        If 0 < Len(.Cells(i + j, 4).value) Then
+                                                PHERASTER_VALUE = .Cells(i + j + rw, cl + 1).value
                                                 Exit Function
                                         End If
                                 Next j
@@ -1310,15 +1310,15 @@ Private Function FDSS_INFO_sub(stname As String, row As String, key As String) A
         With Sheets(stname)
                 If row = "B" Then
                         For i = 1 To .UsedRange.Rows.COUNT
-                                If 0 < InStr(.Cells(i, 2).Value, key) Then
-                                        FDSS_INFO_sub = .Cells(i, 3).Value
+                                If 0 < InStr(.Cells(i, 2).value, key) Then
+                                        FDSS_INFO_sub = .Cells(i, 3).value
                                         Exit Function
                                 End If
                         Next i
                 ElseIf row = "C" Then
                         For i = 1 To .UsedRange.Rows.COUNT
-                                If 0 < InStr(.Cells(i, 3).Value, key) Then
-                                        FDSS_INFO_sub = .Cells(i, 4).Value
+                                If 0 < InStr(.Cells(i, 3).value, key) Then
+                                        FDSS_INFO_sub = .Cells(i, 4).value
                                         Exit Function
                                 End If
                         Next i
@@ -1338,7 +1338,7 @@ Public Function FDSS_VALUE(wellpos As String, id As String, Optional param1 As V
         Dim timerow As Double
         With Worksheets(T1.PLATE("", "rawdatasheet"))
                 For timerow = 1 To 50
-                        If InStr(.Cells(timerow, 2).Value, "No.") Then Exit For
+                        If InStr(.Cells(timerow, 2).value, "No.") Then Exit For
                 Next timerow
         End With
         
@@ -1361,20 +1361,20 @@ Private Function FDSS_VALUE_1tp(wellrow As Double, wellcol As Double, reftype As
 
         With Worksheets(T1.PLATE("", "rawdatasheet"))
                 For timecol = 5 To .UsedRange.Columns.COUNT
-                        If timepoint <= .Cells(timerow, timecol).Value Then Exit For
+                        If timepoint <= .Cells(timerow, timecol).value Then Exit For
                 Next timecol
                 For rownum = 1 To 10
-                        If .Cells(timerow + 1, 4).Value = .Cells(timerow + rownum + 1, 4).Value Then Exit For
+                        If .Cells(timerow + 1, 4).value = .Cells(timerow + rownum + 1, 4).value Then Exit For
                 Next rownum
                 If reftype = "" Then
                         typeoffset = 0
                 Else
                         For typeoffset = 0 To 10
-                                If InStr(.Cells(timerow + 1 + typeoffset, 4).Value, reftype) Then Exit For
+                                If InStr(.Cells(timerow + 1 + typeoffset, 4).value, reftype) Then Exit For
                         Next typeoffset
                 End If
 
-                FDSS_VALUE_1tp = .Cells(timerow + 1 + typeoffset + (wellrow * 24 + wellcol) * rownum, timecol).Value
+                FDSS_VALUE_1tp = .Cells(timerow + 1 + typeoffset + (wellrow * 24 + wellcol) * rownum, timecol).value
         End With
 
 End Function
@@ -1396,10 +1396,10 @@ Private Function FDSS_VALUE_2tp(wellrow As Double, wellcol As Double, reftype As
 
         With Sheets(T1.PLATE("", "rawdatasheet"))
                 For timecol1 = 5 To .UsedRange.Columns.COUNT
-                        If timepoint <= .Cells(timerow, timecol1).Value Then Exit For
+                        If timepoint <= .Cells(timerow, timecol1).value Then Exit For
                 Next timecol1
                 For timecol2 = 5 To .UsedRange.Columns.COUNT
-                        If timepoint2 <= .Cells(timerow, timecol2).Value Then Exit For
+                        If timepoint2 <= .Cells(timerow, timecol2).value Then Exit For
                 Next timecol2
                 If timecol2 < timecol1 Then
                         timecol = timecol1
@@ -1408,21 +1408,21 @@ Private Function FDSS_VALUE_2tp(wellrow As Double, wellcol As Double, reftype As
                 End If
 
                 For rownum = 1 To 10
-                        If .Cells(timerow + 1, 4).Value = .Cells(timerow + rownum + 1, 4).Value Then Exit For
+                        If .Cells(timerow + 1, 4).value = .Cells(timerow + rownum + 1, 4).value Then Exit For
                 Next rownum
                 
                 If reftype = "" Then
                         typeoffset = 0
                 Else
                         For typeoffset = 0 To 10
-                                If InStr(.Cells(timerow + 1 + typeoffset, 4).Value, reftype) Then Exit For
+                                If InStr(.Cells(timerow + 1 + typeoffset, 4).value, reftype) Then Exit For
                         Next typeoffset
                 End If
 
                 datarow = timerow + 1 + typeoffset + (wellrow * 24 + wellcol) * rownum
 
                 If func = "diff" Then
-                        FDSS_VALUE_2tp = .Cells(datarow, timecol2).Value - .Cells(datarow, timecol1).Value
+                        FDSS_VALUE_2tp = .Cells(datarow, timecol2).value - .Cells(datarow, timecol1).value
                 Else
                         rawdatasht = "'(raw)" & Application.Caller.Parent.Name & "'!"
                         Dim DataRange As Range
