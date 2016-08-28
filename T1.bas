@@ -23,8 +23,8 @@ Public Function SYSTEM(Optional param As String = "")
         Application.Volatile
         Select Case param
                 Case "title":          SYSTEM = "Screening Analysis Package for Excel"
-                Case "version":        SYSTEM = "ver. 1.1.6"
-                Case "update":         SYSTEM = "2016/8/27 23:26"
+                Case "version":        SYSTEM = "ver. 1.2.0"
+                Case "update":         SYSTEM = "2016/8/28 18:30"
                 Case "affiliation":    SYSTEM = "Drug Discovery Initiative (DDI)"
                 Case "affiliation2":   SYSTEM = "The University of Tokyo"
                 Case "affiliation3":   SYSTEM = "DDI"
