@@ -5,8 +5,8 @@ Rem ****************************************************************************
 Public Const debug_full_context_menu_in_template = False ' release‚É‚ÍFalse
 Public Const debug_convert_relative_formula_to_absolute = False ' release‚É‚ÍTrue
 Public Const debug_force_to_popup_context_menu = "" ' release‚É‚Í""
-
-
+ 
+ 
 Rem ******************************************************************************************************
 Rem ƒZƒNƒVƒ‡ƒ“—p‚ÌF
 Rem ******************************************************************************************************
@@ -28,19 +28,19 @@ Const EXTR_SECTION_TINT2_COLOR = 0.2
 Const END_SECTION_THEME_COLOR = xlThemeColorDark1 ' ŠDF
 Const END_SECTION_TINT1_COLOR = -0.5
 Const END_SECTION_TINT2_COLOR = -0.2
-
-
+ 
+ 
 Rem ******************************************************************************************************
 Rem ƒVƒXƒeƒ€İ’è’l
 Rem ******************************************************************************************************
-Public Const SYSTEM_SUPPORT_PLATE_READER = "FDSS,PHERASTER,EZREADER,ENSPIRE,HTFC,ECHO,FREE"
+Public Const SYSTEM_SUPPORT_PLATE_READER = "FDSS,PHERASTER,EZREADER,ENSPIRE,HTFC,ECHO,TRISTAR,FREE"
 Public Const SYSTEM_SUPPORT_PLATE_TYPE = "24,96,384,1536"
 Public Const SYSTEM_SUPPORT_PLATE_FORMAT = "PRIMARY,CONFIRMATION,DOSE_RESPONSE,FREE"
 Public Const SYSTEM_SUPPORT_REALTIME_PLATE_READER = "FDSS,FLIPR"
 Public Const SHEETNAME_ASSAY_SUMMARY = "Plates"
 Public Const SHEETNAME_REPORT_QC_RESULT = "QCŒ‹‰Ê"
 Public Const SHEETNAME_REPORT_ASSAY_RESULT = "ƒAƒbƒZƒCŒ‹‰Ê"
-
+ 
 Public Const LABEL_PLATE_TYPE = "PLATE_TYPE"
 Public Const LABEL_PLATE_READER = "PLATE_READER"
 Public Const LABEL_PLATE_FORMAT = "PLATE_FORMAT"
@@ -48,46 +48,46 @@ Public Const LABEL_PLATE_WELL_POSITION = "WELL_POS"
 Public Const LABEL_PLATE_WELL_ROLE = "WELL_ROLE"
 Public Const LABEL_PLATE_COMPOUND_CONC = "CPD_CONC"
 Public Const LABEL_TABLE = "TABLE"
-
+ 
 Public Const PLATE_TITLE = "ƒvƒŒ[ƒgID,Plate,plate ID,Plate_ID"
 Public Const WELL_TITLE = "WELL,well"
 Public Const WELLROLE_TITLE = "WELL_ROLE,well_role,ROLE"
 Public Const COMPOUND_TITLE = "‰»‡•¨ƒTƒ“ƒvƒ‹ID,Compound_Name"
-
+ 
 Const PLATESHEET_TITLE_FOR_RAWDATA_COLUMN = "Raw Data Filename"
 Const PLATESHEET_TITLE_FOR_PLATEID_COLUMN = "PlateID"
 Const PLATESHEET_EXTENSION_FOR_FILE_LISTING = "TXT,SCV,CSV,RST"
-
+ 
 Private MenuLang As Integer ' 0: “ú–{Œê, 1:‰pŒê
-
-
+ 
+ 
 Rem ******************************************************************************************************
 Rem ƒ[ƒNƒuƒbƒNƒCƒxƒ“ƒg
 Rem ******************************************************************************************************
-
+ 
 ' •Û‘¶‘OÄŒvZƒIƒt
 Public Sub Action_WorkBook_BeforeSave()
   T1M.Action_MainMenu_Maintenance_CalculateOff
 End Sub
-
+ 
 ' •Û‘¶ŒãÄŒvZƒIƒ“
 Public Sub Action_WorkBook_AfterSave()
   T1M.Action_MainMenu_Maintenance_CalculateOn
 End Sub
-
+ 
 ' ƒtƒ@ƒCƒ‹ƒNƒ[ƒY
 Public Sub Action_WorkBook_Finalize()
   On Error Resume Next
   Application.CommandBars("Worksheet Menu Bar").Controls(T1.SYSTEM()).Delete  ' ƒƒjƒ…[íœ
 End Sub
-
-
+ 
+ 
 ' ƒƒjƒ…[‚ğƒŠƒZƒbƒg‚·‚é
 Private Sub ResetMenu()
   On Error Resume Next
-
+ 
   Application.CommandBars("Worksheet Menu Bar").Controls(T1.SYSTEM()).Delete  ' ‚¢‚Á‚½‚ñƒƒjƒ…[íœ
-        
+ 
   With Application.CommandBars("Worksheet Menu Bar").Controls.Add(Type:=msoControlPopup)
     .Caption = T1.SYSTEM()
     With .Controls.Add(Type:=msoControlPopup)
@@ -174,33 +174,33 @@ Private Sub ResetMenu()
           .Caption = Split("ŠÖ”‚ğ”’l‰»,Put function to value", ",")(MenuLang)
           .OnAction = "Action_Function_Value"
         End With
-      
+ 
       End With
     End With
   End With
 End Sub
-
+ 
 ' ƒtƒ@ƒCƒ‹ƒI[ƒvƒ“
 Public Sub Action_WorkBook_Initialize()
   On Error Resume Next
   Application.Calculation = xlCalculationManual
-  
+ 
   MenuLang = 0 ' “ú–{Œê(0)
   ResetMenu
-  
+ 
 End Sub
-
-
-
+ 
+ 
+ 
 Rem ******************************************************************************************************
 Rem ƒ[ƒNƒV[ƒgƒCƒxƒ“ƒg
 Rem ******************************************************************************************************
-
+ 
 ' StatusBar‚ÌƒƒbƒZ[ƒW‚ğÁ‹
 Public Sub Action_WorkSheet_ClearStatusMessage()
   Call TSUKUBA_UTIL.ShowStatusMessage("")
 End Sub
-
+ 
 ' ƒZƒNƒVƒ‡ƒ“‚ğŠJ•Â‚·‚é
 Public Function Action_WorkSheet_ToggleSection()
         If ActiveCell.Interior.ThemeColor <> -4142 Then
@@ -213,9 +213,9 @@ Public Function Action_WorkSheet_ToggleSection()
                 End If
         End If
 End Function
-
-
-
+ 
+ 
+ 
 Rem ******************************************************************************************************
 Rem ƒ_ƒCƒAƒƒOƒCƒxƒ“ƒg
 Rem ******************************************************************************************************
@@ -223,34 +223,34 @@ Rem ****************************************************************************
 Public Sub Action_Menu_OpenSite()
   TSUKUBA_UTIL.OpenUrl T1.SYSTEM("homepage")
 End Sub
-
+ 
 ' ƒAƒbƒZƒCŒnƒoƒŠƒf[ƒVƒ‡ƒ“•û–@‚É‚Â‚¢‚Ä
 Public Sub Action_Menu_OpenAssayValidation()
   TSUKUBA_UTIL.OpenUrl T1.SYSTEM("validation")
 End Sub
-
+ 
 ' ‰»‡•¨”z•z‚É‚Â‚¢‚Ä
 Public Sub Action_Menu_OpenCompoundDistribution()
   TSUKUBA_UTIL.OpenUrl T1.SYSTEM("cpddistrib")
 End Sub
-
+ 
 ' ¿–âƒ[ƒ‹‘—MƒtƒH[ƒ€‚ğŠJ‚­
 Public Sub Action_Menu_OpenMail()
   TSUKUBA_UTIL.OpenUrl T1.SYSTEM("mailto")
 End Sub
-
+ 
 ' ŠJ”­”ÅƒTƒCƒg‚ğŠJ‚­
 Public Sub Action_Menu_OpenGitHub()
   TSUKUBA_UTIL.OpenUrl T1.SYSTEM("original")
 End Sub
-
+ 
 ' MITƒ‰ƒCƒZƒ“ƒXƒTƒCƒg‚ğŠJ‚­
 Public Sub Action_Menu_OpenMITLisence()
   TSUKUBA_UTIL.OpenUrl "http://opensource.org/licenses/mit-license.php"
 End Sub
-
-
-
+ 
+ 
+ 
 Rem ******************************************************************************************************
 Rem ƒƒCƒ“ƒƒjƒ…[ƒCƒxƒ“ƒg
 Rem ******************************************************************************************************
@@ -262,7 +262,7 @@ Private Sub Action_Menu_Show_Help()
     TSUKUBA_UTIL.DupulicateHiddenSheetAndShow "TSUKUBA_HELP", "HELP"
   End If
 End Sub
-
+ 
 ' ƒo[ƒWƒ‡ƒ“A‚»‚Ì‘¼î•ñ‚Ìƒ_ƒCƒAƒƒO‚ğŠJ‚­
 Private Sub Action_Menu_Show_Information()
   Version.Caption = T1.SYSTEM()
@@ -277,7 +277,7 @@ Private Sub Action_Menu_Show_Information()
   Version.Left = Application.Left + (Application.Width - Version.Width) / 2
   Version.Show
 End Sub
-
+ 
 ' ƒƒjƒ…[Œ¾Œê‚ğ•ÏX
 Private Sub Action_MainMenu_Change_MenuLang()
   If MenuLang = 1 Then
@@ -287,7 +287,7 @@ Private Sub Action_MainMenu_Change_MenuLang()
   End If
   ResetMenu
 End Sub
-
+ 
 ' ‘SƒvƒŒ[ƒg‚ğÄŒvZ
 Private Sub Action_MainMenu_Maintenance_UpdateAllPlate()
   For Each plt In T1.CSV2ARY(T1.ASSAY("plates"))
@@ -295,47 +295,47 @@ Private Sub Action_MainMenu_Maintenance_UpdateAllPlate()
     T1M.Action_Worksheet_Update
   Next
 End Sub
-
+ 
 ' “à•”ƒRƒŒƒNƒVƒ‡ƒ“•Ï”‚ğƒŠƒZƒbƒg
 Private Sub Action_MainMenu_Maintenance_ResetCollection()
         RESOURCE.RestAssayResult
         RESOURCE.ResetCpdTable
 End Sub
-
+ 
 ' ‘SƒV[ƒg‚ğŒvZƒIƒt
 Private Sub Action_MainMenu_Maintenance_CalculateOff()
   For Each ws In ActiveWorkbook.Worksheets: ws.EnableCalculation = False
   Next
 End Sub
-
+ 
 ' ‘SƒV[ƒgŒvZƒIƒ“
 Private Sub Action_MainMenu_Maintenance_CalculateOn()
   For Each ws In ActiveWorkbook.Worksheets: ws.EnableCalculation = True
   Next
 End Sub
-
+ 
 ' ƒ‚ƒWƒ…[ƒ‹‚ğÄ“Ç‚İ‚İ
 Public Sub Action_MainMenu_Maintenance_ReloadModule()
   On Error Resume Next
   Dim modules As Variant
   modules = Array("RESOURCE.bas", "T1.bas", "T1M.bas", "TSUKUBA_UTIL.bas", _
                   "AssayResults.cls", "CompoundPlatemap.cls", "PlateAlignment.cls", "PlateAlignments.cls", "Well2RowCol.cls")
-  
-  
+ 
+ 
   If 0 < InStr(Application.OperatingSystem, "Windows") Then
     Dim mdl As Variant
     With ThisWorkbook.VBProject
-            
+ 
       Dim cpnt As Object
       For Each cpnt In .VBComponents
         If cpnt.Type = 1 Or cpnt.Type = 2 Then .VBComponents.Remove cpnt
       Next
-      
+ 
       For Each mdl In modules
         .VBComponents.Remove .VBComponents(Left(mdl, Len(mdl) - 4))
-        .VBComponents.Import ActiveWorkbook.path & "\" & mdl
+        .VBComponents.Import ActiveWorkbook.path & "€" & mdl
       Next
-    
+ 
       For Each mdl In modules
         .VBComponents(Left(mdl, Len(mdl) - 4) & "1").Name = Left(mdl, Len(mdl) - 4)
       Next
@@ -344,7 +344,7 @@ Public Sub Action_MainMenu_Maintenance_ReloadModule()
     MsgBox "‚±‚Ì‹@”\‚ÍWindows‚Ì‚İ‚É‚È‚è‚Ü‚·"
   End If
 End Sub
-
+ 
 ' ”’l‰»‚µ‚½‰ğÍƒV[ƒg‚ğÄ”®‰»‚·‚é
 Sub Action_CopyTemplate_Paste()
   If TSUKUBA_UTIL.ExistValueP(T1.ASSAY("plates"), ActiveSheet.Name) Then
@@ -356,7 +356,7 @@ Sub Action_CopyTemplate_Paste()
     Application.ScreenUpdating = True
   End If
 End Sub
-          
+ 
 ' ‰ğÍƒV[ƒg‚ğ”’l‰»‚·‚é
 Sub Action_Function_Value()
   If TSUKUBA_UTIL.ExistValueP(T1.ASSAY("plates"), ActiveSheet.Name) Then
@@ -368,15 +368,15 @@ Sub Action_Function_Value()
     Application.ScreenUpdating = True
   End If
 End Sub
-
-
-
+ 
+ 
+ 
 ' ‘¼ƒuƒbƒN‚ÉŠÖ”‚ğExport‚·‚é
 Private Sub Action_MainMenu_Export_Extended_Functions()
   Dim Code As String: Code = ""
   Dim flag As Boolean: flag = False
   Dim i As Integer
-        
+ 
   With Workbooks("ScreeningAnalysisPackage.xlsm").VBProject.VBComponents("T1").CodeModule
     For i = 1 To .CountOfLines
       If InStr(.Lines(i, 1), "EXPORT ON") Then
@@ -387,7 +387,7 @@ Private Sub Action_MainMenu_Export_Extended_Functions()
       If flag Then Code = Code & vbNewLine & .Lines(i, 1)
     Next
   End With
-        
+ 
   Dim targetfile As String: targetfile = Application.GetOpenFilename("Microsoft ExcelƒuƒbƒN,*.xls?")
   If targetfile <> "" Then
     Workbooks.Open targetfile
@@ -397,8 +397,8 @@ Private Sub Action_MainMenu_Export_Extended_Functions()
     End With
   End If
 End Sub
-
-
+ 
+ 
 '
 ' 1.ƒXƒNƒŠ[ƒjƒ“ƒOƒf[ƒ^‚Ìˆ— > 1-1. ƒf[ƒ^ƒtƒ@ƒCƒ‹‚ğƒŠƒXƒgƒAƒbƒv‚µAƒvƒŒ[ƒg–¼‚ğ‘Î‰•t‚¯‚é
 '
@@ -407,12 +407,12 @@ Private Sub Action_MainMenu_Binding_RawData_To_PlateName()
     Worksheets.Add
                 ActiveSheet.Name = SHEETNAME_ASSAY_SUMMARY
   End If
-        
+ 
   With Worksheets(SHEETNAME_ASSAY_SUMMARY)
     .Select
     .Range("A1").Value = PLATESHEET_TITLE_FOR_RAWDATA_COLUMN
     .Range("B1").Value = PLATESHEET_TITLE_FOR_PLATEID_COLUMN
-                
+ 
     Dim fil As String: fil = TSUKUBA_UTIL.WinMacDir(ActiveWorkbook.path, PLATESHEET_EXTENSION_FOR_FILE_LISTING)
     Dim cnt As Integer: cnt = 1
     While fil <> ""
@@ -423,9 +423,9 @@ Private Sub Action_MainMenu_Binding_RawData_To_PlateName()
     .Columns("A:B").AutoFit
   End With
 End Sub
-
-
-
+ 
+ 
+ 
 '
 ' 1.ƒXƒNƒŠ[ƒjƒ“ƒOƒf[ƒ^‚Ìˆ— > ‰ğÍŒ‹‰Ê‚ğÁ‹‚·‚é"
 '
@@ -433,7 +433,7 @@ Private Sub Action_MainMenu_Clear_All_Analyzed_Data()
   On Error GoTo Err_Action_MainMenu_Clear_All_Analyzed_Data
   Application.DisplayAlerts = False
   Application.ScreenUpdating = False
-
+ 
   Dim i As Integer
   Dim rawdatas As Variant:  ReDim rawdatas(1)
   Dim templates As Variant: ReDim templates(1)
@@ -449,20 +449,20 @@ Private Sub Action_MainMenu_Clear_All_Analyzed_Data()
         End With
   Worksheets(templates).Select: ActiveWindow.SelectedSheets.Delete
   Worksheets(rawdatas).Select:  ActiveWindow.SelectedSheets.Delete
-        
+ 
   TSUKUBA_UTIL.ShowStatusMessage "‘S‚Ä‚Ìƒf[ƒ^ƒV[ƒgAƒf[ƒ^ˆ—ƒV[ƒg‚ğíœ‚µ‚Ü‚µ‚½B"
   Worksheets(SHEETNAME_ASSAY_SUMMARY).Activate
   Application.DisplayAlerts = True
   Application.ScreenUpdating = True
-        
+ 
   Exit Sub
-
+ 
 Err_Action_MainMenu_Clear_All_Analyzed_Data:
   TSUKUBA_UTIL.ShowStatusMessage "ƒGƒ‰[‚Å‚·B@PlatesƒV[ƒg‚ğŠm”F‚µ‚ÄAÄ“xÀs‚µ‚Ä‚­‚¾‚³‚¢B"
   MsgBox "ƒGƒ‰[‚Å‚·B@PlatesƒV[ƒg‚ğŠm”F‚µ‚ÄAÄ“xÀs‚µ‚Ä‚­‚¾‚³‚¢B"
 End Sub
-
-
+ 
+ 
 '
 ' 1.ƒXƒNƒŠ[ƒjƒ“ƒOƒf[ƒ^‚Ìˆ— > 1-2.ƒAƒbƒZƒCƒf[ƒ^‚Ì©“®‰ğÍˆ—‚ğŠJn‚·‚é
 '
@@ -472,15 +472,15 @@ Private Sub Action_MainMenu_Data_Analysis()
   Application.DisplayAlerts = False
   Application.ScreenUpdating = True
   TSUKUBA_UTIL.ShowStatusMessage "ƒf[ƒ^ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ‚Æ”’lˆ—‚ğŠJn‚µ‚Ü‚·B"
-  
+ 
   Dim i As Integer
   With ThisWorkbook
     .Worksheets(SHEETNAME_ASSAY_SUMMARY).Select
     .Sheets("Template").EnableCalculation = False
-                
+ 
     Dim plates As Variant: plates = T1.CSV2ARY(T1.ASSAY("plates"))
     Dim dfiles As Variant: dfiles = T1.CSV2ARY(T1.ASSAY("datafiles"))
-    
+ 
     ' ƒf[ƒ^“Ç‚İ‚İ
     For i = 0 To UBound(plates)
       .Worksheets("Template").Copy After:=.Worksheets("Template")
@@ -491,7 +491,7 @@ Private Sub Action_MainMenu_Data_Analysis()
       TSUKUBA_UTIL.ShowStatusMessage "ƒf[ƒ^ˆ— [" & dfiles(i) & "] ->[" & plates(i) & "]"
       DoEvents
     Next i
-    
+ 
     ' ÄŒvZ
     For i = 0 To UBound(plates)
       TSUKUBA_UTIL.ShowStatusMessage "ƒf[ƒ^ÄŒvZ’† [" & plates(i) & "]"
@@ -500,11 +500,11 @@ Private Sub Action_MainMenu_Data_Analysis()
       .Worksheets(plates(i)).UsedRange.Calculate
       RESOURCE.UpdateAssayResult CStr(plates(i))
     Next i
-    
+ 
     ' ”’l‰»
     Action_Function_Value
   End With
-  
+ 
   ' ‰ğÍ’l‚ğListup
   With ThisWorkbook.Worksheets(SHEETNAME_ASSAY_SUMMARY)
     .Activate
@@ -525,39 +525,39 @@ Private Sub Action_MainMenu_Data_Analysis()
     Next i
     .Range(Cells(2, 3), Cells(2 + UBound(plates), 3 + UBound(lbls))).Formula = "=T1.PLATE($B2,C$1)"
   End With
-        
+ 
   Range("A1").Activate
   Columns("A:Z").AutoFit
-        
+ 
   TSUKUBA_UTIL.ShowStatusMessage "Excel•\¦‚ğXV’†"
   ThisWorkbook.Worksheets(SHEETNAME_ASSAY_SUMMARY).Activate
   ThisWorkbook.Worksheets(SHEETNAME_ASSAY_SUMMARY).Calculate
   TSUKUBA_UTIL.ShowStatusMessage "ƒf[ƒ^ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ‚Æ”’lˆ—‚ğI—¹‚µ‚Ü‚µ‚½B"
-  
+ 
   Application.DisplayAlerts = True
   Exit Sub
-
+ 
 End Sub
-
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
 Rem ******************************************************************************************************
 Rem "2. ‰ğÍƒf[ƒ^‚Ì“‡"
 Rem ******************************************************************************************************
-
+ 
 Rem
 Rem "2-a. ‘SƒV[ƒg‚Ì‰ğÍƒf[ƒ^‚ğcsv‚ÉExport‚·‚é"
 Rem
 Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
   On Error Resume Next
-  
+ 
   Dim cpd_filename As String
   Dim plt_filename As String
   Dim wel_filename As String
-  
+ 
   Dim curpath As String: curpath = ActiveWorkbook.path & Application.PathSeparator
   If TSUKUBA_UTIL.ExistNameP("Template", LABEL_TABLE) Then
     cpd_filename = curpath & "cpd.csv"
@@ -574,7 +574,7 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
   Open wel_filename For Output As #3
   ' Print #3, GetWellLabels() & "," & T1.CSV_SUB(T1M.GetPlateLabels(), "PLATE_NAME") ' v1.1.2
   Print #3, GetWellLabels() & "," & T1M.GetPlateLabels()
-  
+ 
   Dim csv As String
   Dim pltcsv As String
   Dim cpd_entry As Double: cpd_entry = 0
@@ -583,20 +583,20 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
   Dim plt As Variant
   Dim rw As Integer
   Dim lbl As Variant
-  
+ 
         Application.ScreenUpdating = True
-        
+ 
   RESOURCE.RestAssayResult
   For Each plt In T1.CSV2ARY(T1.ASSAY("plates")) ' :::: Plate‚ğ‚Ü‚í‚·
-    
+ 
     Sheets(plt).Activate
-    
+ 
     TSUKUBA_UTIL.ShowStatusMessage "ƒf[ƒ^ÄŒvZ’† [" & CStr(plt) & "]"
-    
+ 
     Sheets(plt).EnableCalculation = True
     Sheets(plt).Calculate
     RESOURCE.UpdateAssayResult CStr(plt)
-
+ 
     ' cpdƒe[ƒuƒ‹‚Ìo—Í
     If TSUKUBA_UTIL.ExistNameP("Template", LABEL_TABLE) Then
       TSUKUBA_UTIL.ShowStatusMessage "CSVƒGƒNƒXƒ|[ƒgˆ—(cpd) [" & plt & "]"
@@ -609,7 +609,7 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
         Print #1, Left(csv, Len(csv) - 1): cpd_entry = cpd_entry + 1
       Next rw
     End If
-    
+ 
     ' plateƒf[ƒ^‚Ìo—Í
     TSUKUBA_UTIL.ShowStatusMessage "CSVƒGƒNƒXƒ|[ƒgˆ—(plate) [" & plt & "]"
     csv = ""
@@ -617,7 +617,7 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
       csv = csv & RESOURCE.GetAssayResult(CStr(plt), "", CStr(lbl)) & ","
     Next
     Print #2, Left(csv, Len(csv) - 1): plt_entry = plt_entry + 1
-    
+ 
     ' wellƒe[ƒuƒ‹‚Ìo—Í
     TSUKUBA_UTIL.ShowStatusMessage "CSVƒGƒNƒXƒ|[ƒgˆ—(well) [" & plt & "]"
     pltcsv = ""
@@ -636,7 +636,7 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
       Print #3, Left(csv, Len(csv) - 1): wel_entry = wel_entry + 1
     Next
   Next
-  
+ 
         Application.ScreenUpdating = True
   Dim altname As String
   If TSUKUBA_UTIL.ExistNameP("Template", LABEL_TABLE) Then
@@ -646,23 +646,23 @@ Public Sub Action_MainMenu_Convert_All_Sheets_To_CSV()
     FileCopy cpd_filename, altname
     Kill cpd_filename
   End If
-  
+ 
   Close #2
   altname = curpath & Format(Now(), "YYMMDD") & "-plate-" & CStr(plt_entry) & ".csv"
   Kill altname
   FileCopy plt_filename, altname
   Kill plt_filename
-  
+ 
   Close #3
   altname = curpath & Format(Now(), "YYMMDD") & "-well-" & CStr(wel_entry) & ".csv"
   Kill altname
   FileCopy wel_filename, altname
   Kill wel_filename
-  
+ 
   TSUKUBA_UTIL.ShowStatusMessage "CSVƒGƒNƒXƒ|[ƒgˆ—‚ªŠ®—¹‚µ‚Ü‚µ‚½]"
-
+ 
 End Sub
-
+ 
 Rem
 Rem "2-b. ‰ğÍƒf[ƒ^‚ğ" & T1.SYSTEM("affiliation3") & "•ñ‘‚É“]‹L‚·‚é"
 Rem
@@ -671,19 +671,19 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
   TSUKUBA_UTIL.ShowStatusMessage "•ñ‘‚Ö‚Ì“]‹Lˆ—‚ğŠJn‚µ‚Ü‚·"
   Application.DisplayAlerts = False
   Application.ScreenUpdating = True
-
+ 
   Dim plt As String: Dim val As Variant
   Dim wb As String: wb = ActiveWorkbook.Name
   Dim ws As String: ws = ActiveSheet.Name
-  
+ 
   'Calculate
   '
-        
+ 
   TSUKUBA_UTIL.ShowStatusMessage "“]‹L‚·‚é•ñ‘‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢"
   Dim rep As String: rep = TSUKUBA_UTIL.WinMacSelectFile(ActiveWorkbook.path)
-  
+ 
   If rep <> "" Then
-    
+ 
     RESOURCE.RestAssayResult
     Dim p As Variant
     For Each p In T1.CSV2ARY(T1.ASSAY("plates")) ' :::: Plate‚ğ‚Ü‚í‚·
@@ -694,12 +694,12 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
       RESOURCE.UpdateAssayResult CStr(p)
       Sheets(p).EnableCalculation = False
     Next
-    
-    
+ 
+ 
     Workbooks.Open rep
     Dim repwb As String: repwb = ActiveWorkbook.Name
     Dim colplate As Integer
-    
+ 
     If TSUKUBA_UTIL.ExistSheetP(SHEETNAME_REPORT_QC_RESULT) = True Then
       TSUKUBA_UTIL.ShowStatusMessage "•ñ‘‚Ö‚Ì“]‹Lˆ—: [QCŒ‹‰Ê]"
       Dim colsb As Integer
@@ -708,7 +708,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
       Dim colzprime As Integer
       Dim cl As Variant
       Dim rw As Variant
-      
+ 
       For Each rw In Sheets(SHEETNAME_REPORT_QC_RESULT).UsedRange.Rows
         If rw.row = 1 Then
           For Each cl In rw.Columns
@@ -732,7 +732,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
         End If
       Next
     End If
-    
+ 
     If TSUKUBA_UTIL.ExistSheetP(SHEETNAME_REPORT_ASSAY_RESULT) = True Then
       TSUKUBA_UTIL.ShowStatusMessage "•ñ‘‚Ö‚Ì“]‹Lˆ—: [ƒAƒbƒZƒCŒ‹‰Ê]"
       Dim rc As Variant
@@ -743,7 +743,7 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
       Dim colactivity As Integer
       Dim coladditional As Integer
       Dim wellpos As String
-      
+ 
       For Each rw In Sheets(SHEETNAME_REPORT_ASSAY_RESULT).UsedRange.Rows
         If rw.row = 1 Then
           colplate = 0: colwell = 0: colhit = 0: colasyname = 0: colasyconc = 0: colactivity = 0
@@ -761,14 +761,14 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
             plt = .Cells(rw.row, colplate).Value
             wellpos = .Cells(rw.row, colwell).Value
             additional = T1.SYSTEM("today") & "’Ç‹L"
-            
+ 
             val = RESOURCE.GetAssayResult(plt, wellpos, "CPD_RESULT")
             If val <> "" Then
               .Cells(rw.row, colactivity).Value = val
               val = RESOURCE.GetAssayResult(plt, wellpos, "CPD_HIT"): If val <> "" Then .Cells(rw.row, colhit).Value = val
               val = RESOURCE.GetAssayResult(plt, "", "TEST_ASSAY"): If val <> "" Then .Cells(rw.row, colasyname).Value = val
               val = RESOURCE.GetAssayResult(plt, wellpos, LABEL_PLATE_COMPOUND_CONC): If val <> "" Then .Cells(rw.row, colasyconc).Value = val
-                                                        
+ 
               If Trim(.Cells(rw.row, coladditional).Value) <> "" Then
                 additional = additional & ", " & Trim(.Cells(rw.row, coladditional).Value)
               End If
@@ -778,18 +778,18 @@ Sub Action_MainMenu_Transfer_Data_To_ReportSheet()
         End If
       Next
     End If
-    
-    
+ 
+ 
     Workbooks(repwb).Save
     Workbooks(repwb).Close
   End If
   Application.DisplayAlerts = True
   Application.ScreenUpdating = True
-
+ 
   TSUKUBA_UTIL.ShowStatusMessage "•ñ‘‚Ö‚Ì“]‹Lˆ—‚ªŠ®—¹‚µ‚Ü‚µ‚½"
-
+ 
 End Sub
-
+ 
 Rem
 Rem "2-c. “¯ˆêƒfƒBƒŒƒNƒgƒŠ“à‚Ì‘Scsvƒtƒ@ƒCƒ‹‚ğƒ}[ƒW‚·‚é"
 Rem
@@ -802,7 +802,7 @@ Private Sub Action_MainMenu_Merge_All_CSV_Files()
 Err_Action_MainMenu_Merge_All_CSV_Files:
         MsgBox "error"
 End Sub
-
+ 
 Private Sub action_mainmenu_merge_csv_files(key As String)
   Dim curpath As String: curpath = ActiveWorkbook.path & Application.PathSeparator
   Dim csvf As String
@@ -810,7 +810,7 @@ Private Sub action_mainmenu_merge_csv_files(key As String)
   Dim entry As Double
   Dim lin As String
   Dim first As Boolean
-  
+ 
   csvf = TSUKUBA_UTIL.WinMacDir(ActiveWorkbook.path, "CSV")
   outf = curpath & key & ".csv": Open outf For Output As #1
   entry = 0: first = True
@@ -831,9 +831,9 @@ Private Sub action_mainmenu_merge_csv_files(key As String)
   Loop
   Close #1
   Name outf As curpath & Format(Now(), "YYMMDD") & "-" & UCase(key) & "-" & CStr(entry) & ".csv"
-        
+ 
 End Sub
-
+ 
 Rem
 Rem GetPlateLabels(), GetWellLabels(), GetCpdLabels()
 Rem
@@ -841,7 +841,7 @@ Rem GetPlateData(platename, labelname)
 Rem GetWellData(platename, wellpos, labelname)
 Rem GetCpdData(platename, recordpos, labelname)
 Rem
-
+ 
 Public Function GetPlateLabels() As Variant
   On Error Resume Next
   Application.ScreenUpdating = False
@@ -855,7 +855,7 @@ Public Function GetPlateLabels() As Variant
   Set sht = Nothing
   Application.ScreenUpdating = True
 End Function
-
+ 
 Private Function GetPlateData(platename As String, labelname As String)
   Select Case labelname
     Case "PLATE_TYPE":      GetPlateData = T1.PLATE(platename, "type")
@@ -870,7 +870,7 @@ Private Function GetPlateData(platename As String, labelname As String)
                         ' TEST_ASSAY, TEST_DATE, TEST_TIME, QC_ZPRIME, QC_SB, QC_CVPBK, QC_CVPCTRL, ƒ†[ƒU[’è‹`
   End Select
 End Function
-
+ 
 Public Function GetWellLabels() As Variant
   On Error Resume Next
   Application.ScreenUpdating = False
@@ -884,7 +884,7 @@ Public Function GetWellLabels() As Variant
   Set sht = Nothing
   Application.ScreenUpdating = True
 End Function
-
+ 
 Private Function GetWellData(platename As String, wellpos As String, labelname As String)
   On Error Resume Next
   Select Case labelname
@@ -900,7 +900,7 @@ Private Function GetWellData(platename As String, wellpos As String, labelname A
                         ' RAW_DATA, WELL_ROLE, CPD_CONC, CPD_RESULT, ƒ†[ƒU[’è‹`
   End Select
 End Function
-
+ 
 Public Function GetCpdLabels() As Variant
   Dim cl As Variant
   Dim csv As String
@@ -909,7 +909,7 @@ Public Function GetCpdLabels() As Variant
   Next
   GetCpdLabels = Left(csv, Len(csv) - 1)
 End Function
-
+ 
 Private Function GetCpdData(platename As String, recordpos As Double, labelname As String)
   Dim col As Integer
         Dim cl As Variant
@@ -919,102 +919,102 @@ Private Function GetCpdData(platename As String, recordpos As Double, labelname 
   GetCpdData = Sheets(platename).Cells(Range(LABEL_TABLE).row + recordpos, col).Value
   ' ƒ†[ƒU[’è‹`
 End Function
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 Rem ******************************************************************************************************
 Rem ƒRƒ“ƒeƒLƒXƒgƒƒjƒ…[ƒCƒxƒ“ƒg
 Rem ******************************************************************************************************
-
+ 
 ' Œ‹‰Ê‚ğPDF‚Éo—Í‚·‚é
 Private Sub Action_ContextMenu_Export_PDF()
   Worksheets(T1.CSV2ARY(T1.ASSAY("plates"))).Select
   ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, filename:=Replace(ThisWorkbook.FullName, "xlsm", "pdf")
 End Sub
-
-
+ 
+ 
 ' ‚Í‚¸‚ê’l‚ğœŠO‚·‚éB
 Public Sub Action_ContextMenu_ExcludeData(flag As String)
   Dim lb As String: lb = GetLabelOnCurPos()
   Dim rol As Range: Set rol = ActiveCell.Offset(Range("WELL_ROLE").row - Range(lb).row, Range("WELL_ROLE").Column - Range(lb).Column)
   Dim strk As Boolean
-  
+ 
   Select Case flag
     Case "include": rol.Value = Replace(rol.Value, "-", ""): strk = False
     Case "exclude": rol.Value = rol.Value & "-": strk = True
   End Select
-  
+ 
   TSUKUBA_UTIL.DeleteNonEffectiveNames
   RESOURCE.RestAssayResult
-  
+ 
   Dim lbl As Variant
         For Each lbl In T1.CSV2ARY(T1M.LabelNames("exist_well"))
                 rol.Offset(Range(lbl).row - Range("WELL_ROLE").row, Range(lbl).Column - Range("WELL_ROLE").Column).Font.Strikethrough = strk
         Next
         Set rol = Nothing
 End Sub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 Rem ******************************************************************************************************
 Rem "ƒeƒ“ƒvƒŒ[ƒg‚ğƒfƒUƒCƒ“‚·‚é"
 Rem ******************************************************************************************************
-
+ 
 ' "Template•ÒW‚Ì‚½‚ß‰¼ƒf[ƒ^‚ğ“Ç‚İ‚Ş"
 Private Sub Action_MainMenu_DataImportation_For_Template_Initialization()
         'On Error Resume Next
         Application.Volatile
         Application.DisplayAlerts = False
         Application.ScreenUpdating = False
-        
+ 
         ' ‰Šúİ’è
         Dim DataSheetName As String: DataSheetName = ActiveSheet.Name
         Dim DataBookName As String: DataBookName = ActiveWorkbook.Name
         Dim OpenFileName As String: OpenFileName = TSUKUBA_UTIL.WinMacSelectFile()
         If OpenFileName = "" Then Exit Sub
-        
+ 
         ' "TSUKUBA"‚ğŠÜ‚Ü‚È‚¢ƒV[ƒg‚ğ‚·‚×‚Äíœ
         Dim sht As Variant
         For Each sht In Sheets
@@ -1024,21 +1024,21 @@ Private Sub Action_MainMenu_DataImportation_For_Template_Initialization()
                 End If
         Next
         TSUKUBA_UTIL.DupulicateHiddenSheetAndShow "TSUKUBA_TEMPLATE", "Template" ' ‚±‚±‚Å‹ŒTemplateƒV[ƒg‚Ííœ
-        
+ 
         ' ƒf[ƒ^ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
         Workbooks.Open filename:=OpenFileName
         ActiveSheet.Move Before:=Workbooks(DataBookName).Worksheets(1)
         ActiveSheet.Name = "(raw)Template"
-        
+ 
         With Sheets("Template")
                 .Range("5:10000").Delete
                 .Range(LABEL_PLATE_TYPE).Value = "384"
                 .Range(LABEL_PLATE_READER).Value = "PHERASTER"
                 .Range(T1M.LABEL_PLATE_FORMAT).Value = "PRIMARY"
-                
+ 
                 .Activate
                 TSUKUBA_UTIL.DeleteNonEffectiveNames "Template"
-                
+ 
                 ' Template‚ÉPullDown•t‰Á
                 With .Range(LABEL_PLATE_TYPE).Validation: .Delete: .Add Type:=xlValidateList, Formula1:=SYSTEM_SUPPORT_PLATE_TYPE
                 End With
@@ -1046,37 +1046,37 @@ Private Sub Action_MainMenu_DataImportation_For_Template_Initialization()
                 End With
                 With .Range(LABEL_PLATE_READER).Validation: .Delete: .Add Type:=xlValidateList, Formula1:=SYSTEM_SUPPORT_PLATE_READER
                 End With
-                
+ 
                 .EnableCalculation = True
                 .Rows(1).Calculate
-                
+ 
                 T1M.Action_ContextMenu_InsertSection "end"
                 T1M.InsertInfoSection "384", "PRIMARY"
                 Range("A1").Select: Selection.Font.Bold = True
-                
+ 
                 ' temporary.xlsm ‚Æ‚µ‚Ä•Û‘¶
                 Application.DisplayAlerts = False
                 ThisWorkbook.SaveAs Left(OpenFileName, InStrRev(OpenFileName, Application.PathSeparator)) & "temporary.xlsm"
                 'ThisWorkbook.Close
         End With
-        
+ 
         Application.DisplayAlerts = True
         Application.ScreenUpdating = True
-        
+ 
 End Sub
-
-
-
+ 
+ 
+ 
 Public Function LabelNames(label_type As String)
         On Error GoTo LABELNAMES_ERR
-
+ 
         Const required_plate = "PLATE_TYPE,PLATE_FORMAT,PLATE_READER,TEST_ASSAY,TEST_DATE,TEST_TIME,QC_ZPRIME,QC_SB,QC_CVPBK,QC_CVPCTRL"
         Const required_well = "WELL_POS,WELL_ROLE,CPD_CONC,RAW_DATA,CPD_RESULT,CPD_HIT"
         Const reserved_plate = "PLATE_NAME,PLATE_DATAFILE,PLATE_EXCELFILE,ANALYZE_DATE,SYSTEM_VERSION"
         Const reserved_well = "CPD_ID,WELL_POS_0,WELL_ROW,WELL_COL,WELL_ROWNUM"
         Const reserved_table = LABEL_TABLE
         Dim lbl As String: lbl = ActiveSheet.Name
-        
+ 
         Select Case label_type
                 Case "exist_plate":    LabelNames = T1.PLATE(lbl, "platelabels")
                 Case "exist_well":     LabelNames = T1.PLATE(lbl, "welllabels")
@@ -1105,23 +1105,23 @@ Public Function LabelNames(label_type As String)
         Exit Function
 LABELNAMES_ERR:
         LabelNames = ""
-
+ 
 End Function
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 Public Function GetAnalysisState()
   ' 1) ScreeningAnalysisPackage.xlsm ‚Ì Template, TSUKUBA_TEMPLATE
   ' 2) temporary.xlsm ‚Ì Template
@@ -1132,19 +1132,19 @@ Public Function GetAnalysisState()
     GetAnalysisState = debug_force_to_popup_context_menu
     Exit Function
   End If
-  
+ 
   If ActiveWorkbook.Name = "ScreeningAnalysisPackage.xlsm" Then
     Select Case ActiveSheet.Name
       Case "Template", "TSUKUBA_TEMPLATE": GetAnalysisState = "Original@Template"
       Case Else: GetAnalysisState = "Original@" & ActiveSheet.Name
     End Select
-    
+ 
   ElseIf InStr(ActiveWorkbook.Name, "temporary.xlsm") Then
     Select Case ActiveSheet.Name
       Case "Template": GetAnalysisState = "Temporary@Template"
       Case Else: GetAnalysisState = "Temporary@" & ActiveSheet.Name
     End Select
-    
+ 
   Else
     Select Case ActiveSheet.Name
       Case "Template": GetAnalysisState = "Template@Template"
@@ -1157,10 +1157,10 @@ Public Function GetAnalysisState()
     End Select
   End If
 End Function
-
+ 
 Public Function Action_WorkSheet_ShowPopupMenu()
   On Error GoTo Action_WorkSheet_ShowPopupMenu_ERR
-  
+ 
   Select Case T1M.GetAnalysisState()
                 Case "Original@Template": Action_WorkSheet_ShowPopupMenu = action_worksheet_showpopupmenu_originaltemplate()
                 Case "Temporary@Template": Action_WorkSheet_ShowPopupMenu = action_worksheet_showpopupmenu_temporarytemplate()
@@ -1168,25 +1168,25 @@ Public Function Action_WorkSheet_ShowPopupMenu()
                 Case "Template@Data": Action_WorkSheet_ShowPopupMenu = action_worksheet_showpopupmenu_templatedata()
                 Case Else: Action_WorkSheet_ShowPopupMenu = True: Exit Function
   End Select
-  
+ 
   Action_WorkSheet_ShowPopupMenu = True
-        
+ 
   TSUKUBA_UTIL.DeleteNonEffectiveNames
-  
+ 
   RESOURCE.InitRoleInfo CStr(ActiveSheet.Name)
   'Dim plat As Variant
   'For Each plat In T1.CSV2ARY(T1.ASSAY("plates"))
   '  RESOURCE.InitRoleInfo CStr(plat)
   'Next
-
+ 
 Action_WorkSheet_ShowPopupMenu_ERR:
 End Function
-
-
+ 
+ 
 Public Function action_worksheet_showpopupmenu_originaltemplate()
   With Application.CommandBars("Cell")
     .reset
-
+ 
     With .Controls.Add(Before:=1, Type:=msoControlPopup): .Caption = "Šeíƒwƒ‹ƒv"
                         With .Controls.Add(): .Caption = "‰ğÍ—pŠÖ”‚Ìƒwƒ‹ƒv": .OnAction = "Action_Menu_Show_Help"
                         End With
@@ -1201,7 +1201,7 @@ Public Function action_worksheet_showpopupmenu_originaltemplate()
     End With
     With .Controls.Add(Before:=1): .Caption = "Še€–Ú‚ÌÄŒvZ": .OnAction = "Action_WorkSheet_Update"
     End With
-
+ 
     With .Controls.Add(Before:=1, Type:=msoControlPopup): .Caption = "Template‚ğì¬‚ğŠJn‚·‚é"
       With .Controls.Add(): .Caption = "Templateì¬‚Ì‚½‚ß‚Ì‰¼ƒf[ƒ^‚ğ“Ç‚İ‚Ş"
         .OnAction = "Action_MainMenu_DataImportation_For_Template_Initialization"
@@ -1212,12 +1212,12 @@ Public Function action_worksheet_showpopupmenu_originaltemplate()
     .reset
   End With
 End Function
-
-
-
+ 
+ 
+ 
 Public Function action_worksheet_showpopupmenu_temporarytemplate()
   Dim mn As Variant
-  
+ 
   With Application.CommandBars("Cell")
     .reset
     With .Controls.Add(Before:=1, Type:=msoControlPopup): .Caption = "Šeíƒwƒ‹ƒv"
@@ -1234,8 +1234,8 @@ Public Function action_worksheet_showpopupmenu_temporarytemplate()
     End With
     With .Controls.Add(Before:=1): .Caption = "Še€–Ú‚ÌÄŒvZ": .OnAction = "Action_WorkSheet_Update"
     End With
-    
-    
+ 
+ 
     ' ƒ‰ƒxƒ‹ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     With .Controls.Add(Type:=msoControlPopup, Before:=1): .Caption = "ƒf[ƒ^ƒ‰ƒxƒ‹İ’è"
       ' ƒvƒŒ[ƒg—p ========================================================================================
@@ -1270,7 +1270,7 @@ Public Function action_worksheet_showpopupmenu_temporarytemplate()
         With .Controls.Add(): .Caption = "ƒ†[ƒU[İ’è": .OnAction = "'T1M.Action_ContextMenu_CreatePlateLabel """"'": .BeginGroup = True
         End With
       End With
-                        
+ 
       ' ƒEƒFƒ‹—p ========================================================================================
       With .Controls.Add(Type:=msoControlPopup): .Caption = "ƒEƒFƒ‹ƒ‰ƒxƒ‹‚Ìİ’è (" & T1.PLATE("Template", "type") & ")": .BeginGroup = True:
         ' „§ƒEƒFƒ‹ƒ‰ƒxƒ‹
@@ -1300,10 +1300,10 @@ Public Function action_worksheet_showpopupmenu_temporarytemplate()
             End With
           End With
         Next
-        With .Controls.Add(): .Caption = "ƒ†[ƒU[İ’è": .OnAction = " 'T1M.Action_ContextMenu_CreateWellLabel """"'": .BeginGroup = True
+        With .Controls.Add(): .Caption = "ƒ†[ƒU[İ’è": .OnAction = " 'T1M.Action_ContextMenu_CreateWellLabel """"'": .BeginGroup = True
         End With
       End With
-
+ 
       ' ƒe[ƒuƒ‹—p ========================================================================================
       If TSUKUBA_UTIL.ExistNameP(ActiveSheet.Name, T1.TABLE("name")) Then
         With .Controls.Add(Type:=msoControlPopup)
@@ -1326,16 +1326,16 @@ Public Function action_worksheet_showpopupmenu_temporarytemplate()
           End With
         End With
       End If
-                        
+ 
       ' ‰»‡•¨ƒe[ƒuƒ‹—p ========================================================================================
       With .Controls.Add():
         .Caption = "‰»‡•¨ƒe[ƒuƒ‹‚ğ“Ç‚İ‚Ş"
         .OnAction = "RESOURCE.LoadCompoundTable"
         .BeginGroup = True
       End With
-                        
+ 
     End With
-                
+ 
     ' ƒZƒNƒVƒ‡ƒ“ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     With .Controls.Add(Before:=1, Type:=msoControlPopup): .Caption = "ƒZƒNƒVƒ‡ƒ“İ’è"
       With .Controls.Add(Type:=msoControlPopup): .Caption = "V‹K"
@@ -1352,7 +1352,7 @@ Public Function action_worksheet_showpopupmenu_temporarytemplate()
         End With
         With .Controls.Add(): .Caption = "‰ğÍ2:ƒqƒbƒg”»’è": .OnAction = "'T1M.Action_ContextMenu_InsertSection ""anal2""'"
         End With
-                                
+ 
         If T1M.SECTION(ActiveCell, "color") = DATA_SECTION_THEME_COLOR Or _
            T1M.SECTION(ActiveCell, "color") = ANAL_SECTION_THEME_COLOR Then
           With .Controls.Add(): .Caption = "U•z}1 (" & T1M.SECTION(ActiveCell, "current") & ")": .OnAction = "'T1M.Action_ContextMenu_InsertSection ""graph""'"
@@ -1374,16 +1374,16 @@ Public Function action_worksheet_showpopupmenu_temporarytemplate()
           End With
         End If
       End With
-                        
+ 
       With .Controls.Add(): .Caption = "íœ (" & T1M.SECTION(ActiveCell, "current") & ")": .OnAction = "T1M.Action_ContextMenu_DeleteCurrentSection"
       End With
       With .Controls.Add(): .Caption = "‘S•\¦": .OnAction = "T1M.Action_ContextMenu_ShowAllSection"
       End With
       With .Controls.Add(): .Caption = "‘S”ñ•\¦": .OnAction = "T1M.Action_ContextMenu_HideAllSection"
       End With
-                        
+ 
     End With
-                
+ 
     ' ƒvƒŒ[ƒg :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     With .Controls.Add(Type:=msoControlPopup, Before:=1): .Caption = "ƒvƒŒ[ƒgİ’è"
       With .Controls.Add(Type:=msoControlPopup): .Caption = "ƒvƒŒ[ƒgƒ^ƒCƒv: " & Range(LABEL_PLATE_TYPE)
@@ -1417,11 +1417,11 @@ Public Function action_worksheet_showpopupmenu_temporarytemplate()
     .reset
         End With
 End Function
-
+ 
 Public Function action_worksheet_showpopupmenu_templatetemplate()
   With Application.CommandBars("Cell")
     .reset
-
+ 
     With .Controls.Add(Before:=1, Type:=msoControlPopup): .Caption = "Šeíƒwƒ‹ƒv"
                         With .Controls.Add(): .Caption = "‰ğÍ—pŠÖ”‚Ìƒwƒ‹ƒv": .OnAction = "Action_Menu_Show_Help"
                         End With
@@ -1436,8 +1436,8 @@ Public Function action_worksheet_showpopupmenu_templatetemplate()
     End With
     With .Controls.Add(Before:=1): .Caption = "Še€–Ú‚ÌÄŒvZ": .OnAction = "Action_WorkSheet_Update"
     End With
-
-                
+ 
+ 
     ' ƒ‰ƒxƒ‹ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     With .Controls.Add(Type:=msoControlPopup, Before:=1): .Caption = "ƒf[ƒ^ƒ‰ƒxƒ‹İ’è"
       ' ƒvƒŒ[ƒg—p ========================================================================================
@@ -1469,10 +1469,10 @@ Public Function action_worksheet_showpopupmenu_templatetemplate()
             End With
           End With
         Next
-        With .Controls.Add(): .Caption = "ƒ†[ƒU[İ’è": .OnAction = "'T1M.Action_ContextMenu_CreatePlateLabel """"'": .BeginGroup = True
+        With .Controls.Add(): .Caption = "ƒ†[ƒU[İ’è": .OnAction = "'T1M.Action_ContextMenu_CreatePlateLabel """"'": .BeginGroup = True
         End With
       End With
-                        
+ 
       ' ƒEƒFƒ‹—p ========================================================================================
       With .Controls.Add(Type:=msoControlPopup): .Caption = "ƒEƒFƒ‹ƒ‰ƒxƒ‹‚Ìİ’è (" & T1.PLATE("Template", "type") & ")": .BeginGroup = True:
         ' „§ƒEƒFƒ‹ƒ‰ƒxƒ‹
@@ -1502,10 +1502,10 @@ Public Function action_worksheet_showpopupmenu_templatetemplate()
             End With
           End With
         Next
-        With .Controls.Add(): .Caption = "ƒ†[ƒU[İ’è": .OnAction = "'T1M.Action_ContextMenu_CreateWellLabel """"'": .BeginGroup = True
+        With .Controls.Add(): .Caption = "ƒ†[ƒU[İ’è": .OnAction = "'T1M.Action_ContextMenu_CreateWellLabel """"'": .BeginGroup = True
         End With
       End With
-
+ 
       ' ƒe[ƒuƒ‹—p ========================================================================================
       If TSUKUBA_UTIL.ExistNameP(ActiveSheet.Name, T1.TABLE("name")) Then
         With .Controls.Add(Type:=msoControlPopup)
@@ -1520,7 +1520,7 @@ Public Function action_worksheet_showpopupmenu_templatetemplate()
           With .Controls.Add(): .Caption = lbl: .Enabled = False
           End With
         Next
-                                
+ 
       Else
         With .Controls.Add(Type:=msoControlPopup)
           .Caption = "ƒe[ƒuƒ‹ƒ‰ƒxƒ‹‚Ìİ’è"
@@ -1531,16 +1531,16 @@ Public Function action_worksheet_showpopupmenu_templatetemplate()
           End With
         End With
       End If
-                        
+ 
       ' ‰»‡•¨ƒe[ƒuƒ‹—p ========================================================================================
       With .Controls.Add():
         .Caption = "‰»‡•¨ƒe[ƒuƒ‹‚ğ“Ç‚İ‚Ş"
         .OnAction = "RESOURCE.LoadCompoundTable"
         .BeginGroup = True
       End With
-                        
+ 
     End With
-                
+ 
     ' ƒZƒNƒVƒ‡ƒ“ :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     With .Controls.Add(Before:=1, Type:=msoControlPopup): .Caption = "ƒZƒNƒVƒ‡ƒ“İ’è"
       With .Controls.Add(): .Caption = "íœ (" & T1M.SECTION(ActiveCell, "current") & ")": .OnAction = "T1M.Action_ContextMenu_DeleteCurrentSection"
@@ -1550,18 +1550,18 @@ Public Function action_worksheet_showpopupmenu_templatetemplate()
       With .Controls.Add(): .Caption = "‘S”ñ•\¦": .OnAction = "T1M.Action_ContextMenu_HideAllSection"
       End With
     End With
-    
+ 
     .Controls(5).BeginGroup = True
     .ShowPopup
     .reset
   End With
 End Function
-
-
+ 
+ 
 Public Function action_worksheet_showpopupmenu_templatedata()
   With Application.CommandBars("Cell")
     .reset
-
+ 
     With .Controls.Add(Before:=1, Type:=msoControlPopup): .Caption = "Šeíƒwƒ‹ƒv"
                         With .Controls.Add(): .Caption = "‰ğÍ—pŠÖ”‚Ìƒwƒ‹ƒv": .OnAction = "Action_Menu_Show_Help"
                         End With
@@ -1576,8 +1576,8 @@ Public Function action_worksheet_showpopupmenu_templatedata()
     End With
     With .Controls.Add(Before:=1): .Caption = "Še€–Ú‚ÌÄŒvZ": .OnAction = "Action_WorkSheet_Update"
     End With
-
-
+ 
+ 
     With .Controls.Add(Type:=msoControlPopup, Before:=1): .Caption = "ƒf[ƒ^‰ğÍ"
       If InStr(T1M.LabelNames("exist_well"), T1M.GetLabelOnCurPos()) Then
         If T1M.ExcludedWellP() Then
@@ -1594,13 +1594,13 @@ Public Function action_worksheet_showpopupmenu_templatedata()
     .reset
   End With
 End Function
-
-
+ 
+ 
 Public Sub Action_ContextMenu_InsertSection(param As String)
         Application.DisplayAlerts = False
         Application.ScreenUpdating = False
         Dim rw, cl As Integer: rw = ActiveCell.row: cl = ActiveCell.Column
-        
+ 
         If ActiveSheet.Name <> "Template" Then MsgBox "Template‚Å‚È‚¢I": Exit Sub
         Dim typ As String: typ = Range(LABEL_PLATE_TYPE)
         Dim fmt As String: fmt = Range(LABEL_PLATE_FORMAT)
@@ -1618,13 +1618,13 @@ Public Sub Action_ContextMenu_InsertSection(param As String)
                 Case "end":   T1M.InsertEndSection
                 Case Else:    T1M.InsertExtraSection typ, fmt, param
         End Select
-        
+ 
         Cells(rw, cl).Select
         Application.DisplayAlerts = True
         Application.ScreenUpdating = True
-        
+ 
 End Sub
-
+ 
 Public Function GetExtraSections() As String
   On Error Resume Next
   Dim typ As String: typ = Range(LABEL_PLATE_TYPE)
@@ -1648,42 +1648,42 @@ Public Function GetExtraSections() As String
   Sheets(sht).Activate
   GetExtraSections = csv
 End Function
-
-
+ 
+ 
 Private Sub InsertGraphSection(typ As String, param As String)
   On Error Resume Next
   Application.DisplayAlerts = False
   Application.ScreenUpdating = False
   Dim rw As Integer: rw = T1M.SECTION(ActiveCell, "end") + 1
-
+ 
   Dim sect As String
   If 1 < rw Then
     Select Case T1M.SECTION(ActiveCell, "color")
       Case DATA_SECTION_THEME_COLOR: sect = "RAW_DATA"
       Case ANAL_SECTION_THEME_COLOR: sect = "CPD_RESULT"
     End Select
-    
+ 
     Rows(T1M.SECTION(ActiveCell, "inrows")).Hidden = False
-    
+ 
     Dim LABEL As String: LABEL = T1M.SECTION(ActiveCell, "current")
-    
+ 
     If CopySection(sect, "GRAPH", "") Then ' ƒOƒ‰ƒt‚ğƒRƒs[
       Rows(rw).Insert Shift:=xlDown
       Rows(T1M.SECTION(Rows(rw), "inrows")).Hidden = False
       Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = LABEL
-      
+ 
       Dim data_rng As Range
       Set data_rng = Range(LABEL)
       Set data_rng = data_rng.Resize(data_rng.Rows.COUNT + 1, data_rng.Columns.COUNT + 1).Offset(-1, -1)
       Dim grp_rng As Range
       Dim itm As Variant
-      
+ 
       If T1.SYSTEM("pc") = "Mac" Or T1.SYSTEM("excelver") <= 14 Then
         Set grp_rng = Range(Cells(rw + 2, 2), Cells(T1M.SECTION(Rows(rw), "end") - 2, 26))
-                                
+ 
         ActiveSheet.Shapes.AddChart.Select
         ActiveChart.ChartType = xlXYScatter
-                                
+ 
         'ActiveChart.SetSourceData Source:=Range(data_rng)
         ActiveChart.ChartArea.Left = grp_rng.Left
         ActiveChart.ChartArea.Top = grp_rng.Top
@@ -1692,7 +1692,7 @@ Private Sub InsertGraphSection(typ As String, param As String)
         ActiveChart.PlotBy = xlColumns
         ActiveChart.ApplyLayout (3)
         ActiveChart.ChartTitle.Delete
-        
+ 
         For Each itm In ActiveChart.SeriesCollection
           itm.MarkerStyle = 8
           itm.MarkerSize = 8
@@ -1700,12 +1700,12 @@ Private Sub InsertGraphSection(typ As String, param As String)
         Next
       Else
         Set grp_rng = Range(Cells(rw + 2, 2), Cells(T1M.SECTION(Rows(rw), "end") - 1, 26))
-        
+ 
         ActiveSheet.Shapes.AddChart2(240, xlXYScatter, grp_rng.Left, grp_rng.Top, grp_rng.Width, grp_rng.Height).Select
         Do While 0 < ActiveChart.SeriesCollection.COUNT
           ActiveChart.SeriesCollection(1).Delete
         Loop
-        
+ 
         Set data_rng = data_rng.Resize(data_rng.Rows.COUNT - 1, data_rng.Columns.COUNT - 1).Offset(1, 1)
         ActiveChart.SeriesCollection.NewSeries
         ActiveChart.FullSeriesCollection(1).Name = "=""" & LABEL & """"
@@ -1717,21 +1717,21 @@ Private Sub InsertGraphSection(typ As String, param As String)
         ActiveChart.FullSeriesCollection(1).Values = "=(" & Left(csv, Len(csv) - 1) & ")"
         ActiveChart.Axes(xlCategory).MinimumScale = 0
         ActiveChart.Axes(xlCategory).MaximumScale = Application.WorksheetFunction.Ceiling(data_rng.COUNT, 10)
-                                
+ 
         csv = ""
         For Each r In Range(LABEL_PLATE_WELL_POSITION).Rows
           csv = csv & ActiveSheet.Name & "!" & r.Address & ","
         Next
         ActiveChart.FullSeriesCollection(1).XValues = "=(" & Left(csv, Len(csv) - 1) & ")"
-        
+ 
         ActiveChart.Axes(xlCategory).Select
         Selection.TickLabelPosition = xlLow
         ActiveChart.Legend.Delete
         ActiveChart.ChartTitle.Delete
-        
+ 
         Dim i As Integer
         Dim xval As Variant: xval = ActiveChart.FullSeriesCollection(1).XValues
-        
+ 
         For i = 0 To ActiveChart.FullSeriesCollection(1).Points.COUNT
           With ActiveChart.FullSeriesCollection(1).Points(i)
             .MarkerStyle = 8
@@ -1757,46 +1757,46 @@ Private Sub InsertGraphSection(typ As String, param As String)
   End If
   Set data_rng = Nothing
   Set grp_rng = Nothing
-  
+ 
   Application.DisplayAlerts = True
   Application.ScreenUpdating = True
 End Sub
-
+ 
 Private Sub InsertGraphSection2(typ As String, param As String)
   On Error Resume Next
   Application.DisplayAlerts = False
   Application.ScreenUpdating = False
   Dim rw As Integer: rw = T1M.SECTION(ActiveCell, "end") + 1
-
+ 
   Dim sect As String
-  
+ 
   If 1 < rw Then
     Select Case T1M.SECTION(ActiveCell, "color")
       Case DATA_SECTION_THEME_COLOR: sect = "RAW_DATA"
       Case ANAL_SECTION_THEME_COLOR: sect = "CPD_RESULT"
     End Select
-    
+ 
     Rows(T1M.SECTION(ActiveCell, "inrows")).Hidden = False
-    
+ 
     Dim LABEL As String: LABEL = T1M.SECTION(ActiveCell, "current")
-    
+ 
     If CopySection(sect, "GRAPH", "") Then ' ƒOƒ‰ƒt‚ğƒRƒs[
       Rows(rw).Insert Shift:=xlDown
       Rows(T1M.SECTION(Rows(rw), "inrows")).Hidden = False
       Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = LABEL
-      
+ 
       Dim data_rng As Range
       Set data_rng = Range(LABEL)
       Set data_rng = data_rng.Resize(data_rng.Rows.COUNT + 1, data_rng.Columns.COUNT + 1).Offset(-1, -1)
       Dim grp_rng As Range
       Dim itm As Variant
-      
+ 
       If T1.SYSTEM("pc") = "Mac" Or T1.SYSTEM("excelver") <= 14 Then
         Set grp_rng = Range(Cells(rw + 2, 2), Cells(T1M.SECTION(Rows(rw), "end") - 2, 26))
-                                
+ 
         ActiveSheet.Shapes.AddChart.Select
         ActiveChart.ChartType = xlLineMarkers
-                                
+ 
         ActiveChart.SetSourceData Source:=Range(data_rng)
         ActiveChart.ChartArea.Left = grp_rng.Left
         ActiveChart.ChartArea.Top = grp_rng.Top
@@ -1819,22 +1819,22 @@ Private Sub InsertGraphSection2(typ As String, param As String)
         For Each itm In ActiveChart.SeriesCollection
                                         itm.Format.Line.Visible = msoFalse
         Next
-        
-        
+ 
+ 
       End If
     End If
   End If
   Set data_rng = Nothing
   Set grp_rng = Nothing
-  
+ 
   Application.DisplayAlerts = True
   Application.ScreenUpdating = True
 End Sub
-
+ 
 Private Sub InsertExtraSection(typ As String, fmt As String, param As String)
   Dim rw As Integer: rw = 0
   Dim c As Variant
-  
+ 
   For Each c In Range("A:A")
                 If c.Interior.ThemeColor = DATA_SECTION_THEME_COLOR Or _
                          c.Interior.ThemeColor = INFO_SECTION_THEME_COLOR Or _
@@ -1845,11 +1845,11 @@ Private Sub InsertExtraSection(typ As String, fmt As String, param As String)
                 End If
                 If 10000 < c.row Or c.Value = "END" Then Exit For
   Next
-  
+ 
   If 0 < rw Then
     Dim LABEL As String: LABEL = param
     rw = T1M.SECTION(Rows(rw), "end") + 1
-    
+ 
     If CopySection(fmt, typ, param) Then
       Rows(rw).Insert Shift:=xlDown
       Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = Split(Cells(rw, 1).Value, ":")(0)
@@ -1860,10 +1860,10 @@ Private Sub InsertExtraSection(typ As String, fmt As String, param As String)
       T1M.ShowCurrentSection
     End If
   End If
-  
+ 
 End Sub
-
-
+ 
+ 
 Private Sub InsertAnalSection(typ As String, param As String)
   Dim rw As Integer: rw = 0
   Dim c As Variant
@@ -1875,14 +1875,14 @@ Private Sub InsertAnalSection(typ As String, param As String)
                 End If
                 If 10000 < c.row Or c.Value = "END" Then Exit For
   Next
-  
+ 
   If 0 < rw Then
     Dim LABEL As String: LABEL = param
     rw = T1M.SECTION(Rows(rw), "end") + 1
     Do While LABEL <> "" And ExistNameP("Template", LABEL)
       LABEL = InputBox("[" & LABEL & "] ‚Æ‚ÍˆÙ‚È‚é–¼‘O‚ğ“ü—Í", "ƒ‰ƒxƒ‹–¼‚ğ“ü—Í", LABEL)
     Loop: If LABEL = "" Then Exit Sub
-    
+ 
     If CopySection(param, typ, "") Then ' ƒvƒŒ[ƒgƒtƒH[ƒ}ƒbƒg‚ğƒRƒs[
       Rows(rw).Insert Shift:=xlDown
       Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = Split(Cells(rw, 1).Value, ":")(0)
@@ -1893,10 +1893,10 @@ Private Sub InsertAnalSection(typ As String, param As String)
       T1M.ShowCurrentSection
     End If
   End If
-  
+ 
 End Sub
-
-
+ 
+ 
 Private Sub InsertDataSection(typ As String, param As String)
   Dim rw As Integer: rw = 0
   Dim c As Variant
@@ -1907,14 +1907,14 @@ Private Sub InsertDataSection(typ As String, param As String)
                 End If
                 If 10000 < c.row Or c.Value = "END" Then Exit For
   Next
-  
+ 
   If 0 < rw Then
     Dim LABEL As String: LABEL = "RAW_DATA"
     rw = T1M.SECTION(Rows(rw), "end") + 1
     Do While LABEL <> "" And ExistNameP("Template", LABEL)
       LABEL = InputBox("[" & LABEL & "] ‚Æ‚ÍˆÙ‚È‚é–¼‘O‚ğ“ü—Í", "ƒ‰ƒxƒ‹–¼‚ğ“ü—Í", LABEL)
     Loop: If LABEL = "" Then Exit Sub
-    
+ 
     If CopySection("RAW_DATA", typ, param) Then ' ƒvƒŒ[ƒgƒtƒH[ƒ}ƒbƒg‚ğƒRƒs[
       Rows(rw).Insert Shift:=xlDown
       Cells(rw, 1).Font.Bold = True: Cells(rw, 1).Value = Split(Cells(rw, 1).Value, ":")(0)
@@ -1925,18 +1925,18 @@ Private Sub InsertDataSection(typ As String, param As String)
       T1M.ShowCurrentSection
     End If
   End If
-  
+ 
 End Sub
-
+ 
 Private Sub InsertInfoSection(typ As String, fmt As String)
         Application.DisplayAlerts = False
         Application.ScreenUpdating = False
-        
+ 
         Dim p As Boolean
         Dim r As Boolean
         Dim c As Boolean
         Dim rw As Double
-        
+ 
   rw = T1.FIND_ROW(ActiveSheet.Columns(1), "WELL_POS"): p = Rows(rw + 1).Hidden
   If 0 < rw Then: Rows(T1M.SECTION(ActiveSheet.Rows(rw), "rows")).Delete
   TSUKUBA_UTIL.DeleteNonEffectiveNames "Template"
@@ -1946,7 +1946,7 @@ Private Sub InsertInfoSection(typ As String, fmt As String)
   rw = T1.FIND_ROW(ActiveSheet.Columns(1), LABEL_PLATE_COMPOUND_CONC): c = Rows(rw + 1).Hidden
   If 0 < rw Then: Rows(T1M.SECTION(ActiveSheet.Rows(rw), "rows")).Delete
   TSUKUBA_UTIL.DeleteNonEffectiveNames "Template"
-  
+ 
   If CopySection("WELL_POS", typ, fmt) Then
     rw = 1
     rw = T1M.SECTION(Rows(rw), "end") + 1
@@ -1955,7 +1955,7 @@ Private Sub InsertInfoSection(typ As String, fmt As String)
     Cells(rw + 3, 3).Select: Action_ContextMenu_CreateWellLabel "WELL_POS"
     If Not p Then ShowCurrentSection
   End If
-  
+ 
   If CopySection("WELL_ROLE", typ, fmt) Then
     rw = T1.FIND_ROW(ActiveSheet.Columns(1), "WELL_POS")
     rw = T1M.SECTION(Rows(rw), "end") + 1
@@ -1964,7 +1964,7 @@ Private Sub InsertInfoSection(typ As String, fmt As String)
     Cells(rw + 3, 3).Select: Action_ContextMenu_CreateWellLabel "WELL_ROLE"
     If Not r Then ShowCurrentSection
   End If
-  
+ 
   If CopySection(LABEL_PLATE_COMPOUND_CONC, typ, fmt) Then
     rw = T1.FIND_ROW(ActiveSheet.Columns(1), "WELL_ROLE")
     rw = T1M.SECTION(Rows(rw), "end") + 1
@@ -1973,11 +1973,11 @@ Private Sub InsertInfoSection(typ As String, fmt As String)
     Cells(rw + 3, 3).Select: Action_ContextMenu_CreateWellLabel LABEL_PLATE_COMPOUND_CONC
     If Not c Then ShowCurrentSection
   End If
-  
+ 
   Application.DisplayAlerts = True
   Application.ScreenUpdating = True
 End Sub
-
+ 
 Private Sub InsertTableSection(typ As String, fmt As String)
   T1M.Action_ContextMenu_InsertSection "END"
   rw = T1.FIND_ROW(ActiveSheet.Columns(1), LABEL_TABLE)
@@ -1998,9 +1998,9 @@ Private Sub InsertTableSection(typ As String, fmt As String)
     Cells(rw + 2, 2).Select: Action_ContextMenu_CreateTableLabel T1.TABLE("name")
     T1M.ShowCurrentSection
   End If
-
+ 
 End Sub
-
+ 
 Private Sub InsertEndSection()
   If 0 = T1.FIND_ROW(ActiveSheet.Columns(1), "END") Then
     rw = ActiveSheet.UsedRange.Rows.COUNT
@@ -2022,7 +2022,7 @@ Private Sub Action_ContextMenu_UpdatePlateProperty(mnu As String)
                 ActiveSheet.Range(LABEL_PLATE_READER) = mnu
         End If
 End Sub
-
+ 
 Private Function CopySection(Name As String, typ As String, fmt As String)
   On Error Resume Next
   Dim sht As String
@@ -2039,8 +2039,8 @@ Private Function CopySection(Name As String, typ As String, fmt As String)
     CopySection = False
   End If
 End Function
-
-
+ 
+ 
 Public Sub Action_ContextMenu_HideAllSection()
         Application.DisplayAlerts = False
         Application.ScreenUpdating = False
@@ -2056,7 +2056,7 @@ Public Sub Action_ContextMenu_HideAllSection()
         Application.DisplayAlerts = True
         Application.ScreenUpdating = True
 End Sub
-
+ 
 Public Sub Action_ContextMenu_ShowAllSection()
         Application.DisplayAlerts = False
         Application.ScreenUpdating = False
@@ -2069,26 +2069,26 @@ Public Sub Action_ContextMenu_ShowAllSection()
         Application.DisplayAlerts = True
         Application.ScreenUpdating = True
 End Sub
-
+ 
 Public Sub ShowCurrentSection()
   Rows(T1M.SECTION(ActiveCell, "inrows")).Hidden = False
 End Sub
-
+ 
 Public Sub HideCurrentSection()
   Rows(T1M.SECTION(ActiveCell, "inrows")).Hidden = True
 End Sub
-
+ 
 Public Sub Action_ContextMenu_DeleteCurrentSection()
   Rows(T1M.SECTION(ActiveCell, "rows")).Delete
 End Sub
-
-
+ 
+ 
 Public Function SECTION(rng As Range, func As String)
         On Error GoTo SECTION_ERR
         SECTION = 0
         Dim names As String: names = UCase(T1M.LabelNames("all_exist")) & ",EXTRA,END,SECTION,Template,TSUKUBA_TEMPLATE,"
         Dim val As Variant
-        
+ 
         Dim beg_row As Integer
         For beg_row = rng.row To WorksheetFunction.MIN(1, rng.row - 3000) Step -1
                 val = Cells(beg_row, 1).Value
@@ -2097,7 +2097,7 @@ Public Function SECTION(rng As Range, func As String)
                         If InStr(names, ttl) Then Exit For
                 End If
         Next
-        
+ 
         Dim end_row As Integer
         For end_row = beg_row + 1 To beg_row + 3001
                 val = Cells(end_row, 1).Value
@@ -2106,9 +2106,9 @@ Public Function SECTION(rng As Range, func As String)
                         If InStr(names, ttl) Then Exit For
                 End If
         Next
-        
+ 
         If 3000 <= end_row - beg_row Then end_row = 1: beg_row = 0
-        
+ 
         Select Case func
                 Case "beginning": SECTION = beg_row
                 Case "end":       SECTION = end_row - 1
@@ -2120,18 +2120,18 @@ Public Function SECTION(rng As Range, func As String)
                 Case "tint":      SECTION = Cells(beg_row, 1).Interior.TintAndShade
                 Case "hide?":     SECTION = Rows(beg_row + 1).Hidden
         End Select
-
+ 
         Exit Function
 SECTION_ERR:
         SECTION = CVErr(xlErrRef)
 End Function
-
-
+ 
+ 
 Private Sub Action_ContextMenu_SaveAsTemplate()
   Application.DisplayAlerts = False
-  
+ 
   ThisWorkbook.Save
-  
+ 
   Dim sht As Variant
   If 0 < InStr(SYSTEM_SUPPORT_PLATE_TYPE, Range(LABEL_PLATE_TYPE)) And _
      0 < InStr(SYSTEM_SUPPORT_PLATE_FORMAT, Range(LABEL_PLATE_FORMAT)) And _
@@ -2142,23 +2142,23 @@ Private Sub Action_ContextMenu_SaveAsTemplate()
         sht.Delete
       End If
     Next sht
-                
+ 
     ThisWorkbook.SaveAs filename:=ThisWorkbook.path & Application.PathSeparator & Format(Date, "yymmdd") & "_" & Range(LABEL_PLATE_FORMAT) & "_" & Range(LABEL_PLATE_TYPE) & "_" & Range(LABEL_PLATE_READER) & ".xlsm"
-                
+ 
     T1M.Action_WorkBook_Initialize
   Else
     MsgBox "ƒvƒŒ[ƒgİ’è‚ğŠ®—¹‚µ‚Ä‚­‚¾‚³‚¢"
     TSUKUBA_UTIL.ShowStatusMessage "ƒvƒŒ[ƒgİ’è‚ğŠ®—¹‚µ‚Ä‚­‚¾‚³‚¢"
   End If
-        
+ 
   Application.DisplayAlerts = True
 End Sub
-
+ 
 Private Sub Action_ContextMenu_CreateWellLabel(labelname As String)
         Dim cur As Range: Set cur = Selection: Selection.CurrentRegion.Select
         Dim sel As Range: Set sel = Selection
         Dim cnt As Integer: cnt = (sel.Rows.COUNT - 1) * (sel.Columns.COUNT - 1)
-        
+ 
         If CStr(cnt) = T1.PLATE("Template", "type") And sel.Cells(2, 1).Value = "A" And sel.Cells(1, 2).Value = "1" Then
                 If labelname = "" Then
                         labelname = sel.Cells(1, 1).Offset(-2, -1).Value
@@ -2175,9 +2175,9 @@ Private Sub Action_ContextMenu_CreateWellLabel(labelname As String)
         End If
   Set cur = Nothing
   Set sel = Nothing
-  
+ 
 End Sub
-
+ 
 Private Sub Action_ContextMenu_CreateTableLabel(labelname As String)
         Dim cur As Range
         Set cur = Selection
@@ -2193,11 +2193,11 @@ Private Sub Action_ContextMenu_CreateTableLabel(labelname As String)
         Set cur = Nothing
         Set sel = Nothing
 End Sub
-
+ 
 Private Sub Action_ContextMenu_SelectLabel(labelname As String)
         Range(labelname).Select
 End Sub
-
+ 
 Private Sub Action_ContextMenu_DeleteLabel(labelname As String)
         If CStr(Range(labelname).COUNT) = T1.PLATE("Template", "type") Then
                 ActiveSheet.Range(labelname).Cells(1, 1).Offset(-3, -2).Value = ""
@@ -2207,7 +2207,7 @@ Private Sub Action_ContextMenu_DeleteLabel(labelname As String)
         TSUKUBA_UTIL.ShowStatusMessage "–¼‘O [" & Replace(labelname, "Template!", "") & "] ‚ğíœ‚µ‚Ü‚µ‚½"
         ActiveWorkbook.Worksheets("Template").names(labelname).Delete
 End Sub
-
+ 
 Private Sub Action_ContextMenu_ChangeLabelName(labelname As String)
         Dim nam As String: nam = InputBox("–¼‘O‚ğ“ü—Í", "–¼‘O‚Ì•ÏX", labelname)
         If nam = "" Then nam = labelname
@@ -2220,7 +2220,7 @@ Private Sub Action_ContextMenu_ChangeLabelName(labelname As String)
         ActiveSheet.names(labelname).Delete
         TSUKUBA_UTIL.ShowStatusMessage "–¼‘O [" & labelname & "] ‚ğ [" & nam & "] ‚É•ÏX‚µ‚Ü‚µ‚½"
 End Sub
-
+ 
 Private Sub Action_ContextMenu_CreatePlateLabel(labelname As String)
         If 1 < Selection.COUNT Then
                 For Each c In Selection
@@ -2239,18 +2239,18 @@ Private Sub Action_ContextMenu_CreatePlateLabel(labelname As String)
                         End If
                         labelname = InputBox("–¼‘O‚ğ“ü—Í", "–¼‘O‚ğ“ü—Í", labelname)
                 End If
-                
+ 
                 labelname = Replace(labelname, "*", "")
                 labelname = Replace(labelname, "@", "_")
-                
+ 
                 If labelname <> "" Then
                         ActiveCell.Name = "'" & ActiveSheet.Name & "'!" & labelname
                         TSUKUBA_UTIL.ShowStatusMessage "–¼‘O [" & labelname & "] ‚ğì¬‚µ‚Ü‚µ‚½B"
                 End If
         End If
 End Sub
-
-
+ 
+ 
 Private Function ParameterName(ByVal adr As String)
         If T1M.LabelNames(adr) Then
                 ParameterName = adr
@@ -2261,34 +2261,34 @@ Private Function ParameterName(ByVal adr As String)
         End If
         ParameterName = UCase(ParameterName)
 End Function
-
-
+ 
+ 
 Public Sub Action_Worksheet_Update()
   On Error GoTo ERR_Action_WorkSheet_Update
-  
+ 
         TSUKUBA_UTIL.ShowStatusMessage "ƒf[ƒ^ÄŒvZ’† [" & ActiveSheet.Name & "]"
-        
+ 
   Application.DisplayAlerts = False
   Application.ScreenUpdating = False
-  
+ 
   ActiveSheet.EnableCalculation = False
-
+ 
   TSUKUBA_UTIL.DeleteNonEffectiveNames
   RESOURCE.RestAssayResult
-  
+ 
   ActiveSheet.EnableCalculation = True
   ActiveSheet.UsedRange.Calculate
-  
+ 
   Application.DisplayAlerts = True
   Application.ScreenUpdating = True
-  
+ 
   Exit Sub
-
+ 
 ERR_Action_WorkSheet_Update:
-  
+ 
 End Sub
-
-
+ 
+ 
 Public Function GetLabelOnCurPos()
   Dim lbl As Variant
   For Each lbl In T1.CSV2ARY(T1M.LabelNames("exist_well"))
@@ -2297,65 +2297,65 @@ Public Function GetLabelOnCurPos()
     End If
   Next
 End Function
-
-
+ 
+ 
 Public Function ExcludedWellP() As Boolean
   ExcludedWellP = ActiveCell.Font.Strikethrough
 End Function
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 Rem Mac‚Å‚ÌExcel VBAŠJ”­ã‚Ì’ˆÓ“_
 Rem
-
+ 
 Rem - ƒtƒ@ƒCƒ‹–¼AƒtƒHƒ‹ƒ_–¼‚Í31•¶šˆÈ“à‚Å‚ ‚é‚±‚ÆB
 Rem   ‚»‚êˆÈã‚Ìƒtƒ@ƒCƒ‹–¼‚Í31•¶š‚ÉŠÛ‚ß‚Ä‚µ‚Ü‚¤‚Ì‚ÅA–ÀãƒAƒNƒZƒX‚Å‚«‚È‚­‚È‚éB
 Rem
@@ -2380,11 +2380,11 @@ Rem - ƒ†[ƒU[ŠÖ”“à‚ÅFindŠÖ”‚ªg‚¦‚È‚¢B
 Rem
 Rem - Statusbar‚Ö‚Ì•¶š•\¦‚Ìƒ^ƒCƒ~ƒ“ƒO‚ªwindows‚ÆˆÙ‚È‚éB
 Rem
-
+ 
 Rem
 Rem “¤’m¯
 Rem
-
+ 
 Rem - VBAƒvƒƒWƒFƒNƒgƒIƒuƒWƒFƒNƒgƒ‚ƒfƒ‹‚Ö‚ÌƒAƒNƒZƒX‚ğ‹–‰Â‚·‚é‚ÆAƒR[ƒh‚ğ•ÒW‚Å‚«‚éB
 Rem   Msgbox Application.VBE.ActiveCodePane.CodeModule.Lines(50,3)
 Rem
@@ -2393,14 +2393,4 @@ Rem   MsgBox Workbooks("ƒRƒs[01342_Lab report_¶—‰»Šw_®’Jæ¶_]ã—l.xlsx").S
 Rem
 Rem - InStr("sdsd", "") ‚Í 1
 Rem
-
-
-
-
-
-
-
-
-
-
 
